@@ -1,0 +1,36 @@
+[
+  { "id": "lvl-01", "world": 1, "type": "volume", "title": "Create cube of target size", "shape": "cube", "targetValue": 1000, "concept": "Volume of a Cube = side³" },
+  { "id": "lvl-02", "world": 1, "type": "volume", "title": "Resize cuboid to fit cargo", "shape": "cuboid", "targetValue": 2400, "concept": "Volume of a Cuboid = length × width × height" },
+  { "id": "lvl-03", "world": 1, "type": "volume", "title": "Adjust cylinder dimensions", "shape": "cylinder", "targetValue": 3140, "concept": "Volume of a Cylinder = π × r² × h" },
+  { "id": "lvl-04", "world": 1, "type": "volume", "title": "Create cone ice cream holder", "shape": "cone", "targetValue": 1047, "concept": "Volume of a Cone = 1/3 × π × r² × h" },
+  { "id": "lvl-05", "world": 1, "type": "volume", "title": "Grow/shrink sphere planet", "shape": "sphere", "targetValue": 4188, "concept": "Volume of a Sphere = 4/3 × π × r³" },
+  { "id": "lvl-06", "world": 1, "type": "volume", "title": "Build hemisphere dome", "shape": "hemisphere", "targetValue": 2094, "concept": "Volume of a Hemisphere = 2/3 × π × r³" },
+
+  { "id": "lvl-07", "world": 2, "type": "surface_area", "title": "Paint curved surface of cylinder", "shape": "cylinder", "targetValue": 628, "concept": "Curved Surface Area (CSA) of a Cylinder = 2 × π × r × h" },
+  { "id": "lvl-08", "world": 2, "type": "surface_area", "title": "Wrap cuboid gift box", "shape": "cuboid", "targetValue": 1300, "concept": "Total Surface Area (TSA) of a Cuboid = 2(lw + lh + wh)" },
+  { "id": "lvl-09", "world": 2, "type": "surface_area", "title": "Insulate cylindrical pipe", "shape": "cylinder", "targetValue": 1256, "concept": "CSA of a Cylinder = 2 × π × r × h" },
+  { "id": "lvl-10", "world": 2, "type": "surface_area", "title": "Paint rocket cone outer surface", "shape": "cone", "targetValue": 471, "concept": "CSA of a Cone = π × r × l" },
+  { "id": "lvl-11", "world": 2, "type": "surface_area", "title": "Cover full sphere with glass", "shape": "sphere", "targetValue": 1256, "concept": "Surface Area of a Sphere = 4 × π × r²" },
+  { "id": "lvl-12", "world": 2, "type": "surface_area", "title": "Hemisphere CSA vs TSA", "shape": "hemisphere", "targetValue": 942, "concept": "TSA of a Hemisphere = 3 × π × r²" },
+
+  { "id": "lvl-13", "world": 3, "type": "volume", "title": "Fill warehouse using cuboids", "shape": "cuboid", "targetValue": 5000, "concept": "Total Volume = Volume of 1 Box × Number of Boxes" },
+  { "id": "lvl-14", "world": 3, "type": "volume", "title": "Predict container overflow", "shape": "cylinder", "targetValue": 2500, "concept": "Compare volumes to see which is smaller." },
+  { "id": "lvl-15", "world": 3, "type": "volume", "title": "Transfer liquid: cone to cylinder", "shape": "cone", "targetValue": 3, "concept": "A cylinder holds exactly 3 times the volume of a cone with same base and height." },
+  { "id": "lvl-16", "world": 3, "type": "volume", "title": "Select highest-capacity container", "shape": "sphere", "targetValue": 1000, "concept": "Calculate and compare volumes of different shapes." },
+  { "id": "lvl-17", "world": 3, "type": "volume", "title": "Build efficient water tower", "shape": "cylinder", "targetValue": 8000, "concept": "Maximize volume while minimizing surface area." },
+  { "id": "lvl-18", "world": 3, "type": "volume", "title": "Optimize fuel storage", "shape": "sphere", "targetValue": 10000, "concept": "Spheres are the most efficient shape for storing volume." },
+
+  { "id": "lvl-19", "world": 4, "type": "combination", "title": "Build toy: cone + hemisphere", "shape": "cone_hemisphere", "targetValue": 1500, "concept": "Total Volume = Volume of Cone + Volume of Hemisphere" },
+  { "id": "lvl-20", "world": 4, "type": "combination", "title": "Construct space capsule", "shape": "cylinder_hemisphere", "targetValue": 4500, "concept": "Add volumes of cylinder and hemisphere." },
+  { "id": "lvl-21", "world": 4, "type": "combination", "title": "Create scientific test tube", "shape": "cylinder_hemisphere", "targetValue": 500, "concept": "Total Volume = Cylinder + Hemisphere" },
+  { "id": "lvl-22", "world": 4, "type": "combination", "title": "Build castle tower", "shape": "cylinder_cone", "targetValue": 6000, "concept": "Total Volume = Cylinder + Cone" },
+  { "id": "lvl-23", "world": 4, "type": "combination", "title": "Assemble robot head", "shape": "cuboid_cube", "targetValue": 2000, "concept": "Total Volume = Cuboid + Cube" },
+  { "id": "lvl-24", "world": 4, "type": "combination", "title": "Build temple structure", "shape": "cuboid_pyramid", "targetValue": 8000, "concept": "Total Volume = Cuboid Base + Pyramid Top" },
+
+  { "id": "lvl-25", "world": 5, "type": "conversion", "title": "Melt sphere into cylinder", "shape": "sphere_to_cylinder", "targetValue": 10, "concept": "Volume remains constant during reshaping." },
+  { "id": "lvl-26", "world": 5, "type": "conversion", "title": "Convert large cube into small spheres", "shape": "cube_to_spheres", "targetValue": 8, "concept": "Number of items = Total Volume / Volume of one item" },
+  { "id": "lvl-27", "world": 5, "type": "conversion", "title": "Create cones from cylinder material", "shape": "cylinder_to_cones", "targetValue": 3, "concept": "A cylinder makes 3 identical cones." },
+  { "id": "lvl-28", "world": 5, "type": "conversion", "title": "Goldsmith reshaping optimization", "shape": "cuboid_to_cubes", "targetValue": 50, "concept": "Volume conservation principle." },
+  { "id": "lvl-29", "world": 5, "type": "conversion", "title": "Potion transfer multi-step", "shape": "multi_conversion", "targetValue": 5, "concept": "Track volume through multiple containers." },
+  { "id": "lvl-30", "world": 5, "type": "boss", "title": "FINAL BOSS: Mega engineering puzzle", "shape": "complex", "targetValue": 10000, "concept": "Mastery of all shapes, surface areas, and volumes." }
+]
