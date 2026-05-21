@@ -28,33 +28,34 @@ export const LevelGridScreen: React.FC = () => {
   const metadata = CHAPTER_METADATA[chapterId || 'ch-12'] || CHAPTER_METADATA['ch-12'];
 
   return (
-    <div className="h-screen bg-[var(--color-bg)] text-slate-800 p-6 md:p-10 overflow-y-auto relative select-none">
+    <div className="h-screen bg-[var(--color-bg)] text-slate-800 p-4 sm:p-6 md:p-10 overflow-y-auto relative select-none">
       {/* Decorative ambient gradients */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 left-1/4 w-[30rem] h-[30rem] bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 left-1/4 w-40 h-40 sm:w-[30rem] sm:h-[30rem] bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
           <button 
             onClick={() => navigate(`/chapter/${chapterId}`)}
-            className="self-start flex items-center text-slate-600 hover:text-slate-900 transition-all font-semibold bg-white/80 backdrop-blur px-5 py-2.5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
+            className="self-start flex items-center text-slate-600 hover:text-slate-900 transition-all font-semibold bg-white/80 backdrop-blur px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md cursor-pointer hover:-translate-y-0.5 active:translate-y-0 text-xs sm:text-sm"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            <span>Back to Intro</span>
+            <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+            <span className="hidden sm:inline">Back to Intro</span>
+            <span className="sm:hidden">Back</span>
           </button>
           
-          <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-100">
-            <BookOpen className="w-4 h-4 text-emerald-600" />
-            <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wider">
+          <div className="flex items-center gap-2 bg-emerald-50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-emerald-100">
+            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
+            <span className="text-[10px] sm:text-xs font-semibold text-emerald-800 uppercase tracking-wider">
               {metadata.fullName}
             </span>
           </div>
         </div>
 
-        <h2 className="text-3xl font-bold mb-2 text-slate-850 tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-1.5 sm:mb-2 text-slate-850 tracking-tight">
           {metadata.title}
         </h2>
-        <p className="text-slate-500 mb-10 text-sm leading-relaxed max-w-xl font-medium">
+        <p className="text-slate-500 mb-6 sm:mb-10 text-xs sm:text-sm leading-relaxed max-w-xl font-medium px-1">
           {metadata.syllabus}
         </p>
 

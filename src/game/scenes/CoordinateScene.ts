@@ -199,6 +199,14 @@ export class CoordinateScene extends Scene {
         this.events.once('shutdown', cleanup);
         this.events.once('destroy', cleanup);
 
+        // Handle canvas resize (e.g., orientation change, container resize on mobile)
+        this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
+            this.cameras.main.setSize(gameSize.width, gameSize.height);
+            if (this.isLevelActive && this.levelSpec) {
+                this.setupGrid();
+            }
+        });
+
         // Trigger load-level if levelData is already in PhaserGame
         EventBus.emit('game-ready');
     }

@@ -37,6 +37,18 @@ export class LevelScene extends Scene {
         this.labelGraphics = this.add.graphics();
         this.labelGraphics.setPosition(this.cameras.main.width / 2, this.cameras.main.height / 2 - 20);
 
+        // Handle canvas resize (e.g., orientation change, container resize on mobile)
+        this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
+            this.cameras.main.setSize(gameSize.width, gameSize.height);
+            if (this.graphics) {
+                this.graphics.setPosition(gameSize.width / 2, gameSize.height / 2 - 20);
+            }
+            if (this.labelGraphics) {
+                this.labelGraphics.setPosition(gameSize.width / 2, gameSize.height / 2 - 20);
+            }
+            this.updateShape();
+        });
+
         // Status text overlay
         this.statusText = this.add.text(20, 20, 'Ready', {
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', 
@@ -234,7 +246,8 @@ export class LevelScene extends Scene {
         this.labelGraphics.clear();
         
         const shape = this.currentLevelData.shape;
-        const s = this.shapeScale * 140; // Scaled base dimension
+        const baseDim = Math.min(this.cameras.main.width, this.cameras.main.height) * 0.35;
+        const s = this.shapeScale * Math.max(60, Math.min(140, baseDim)); // Scaled base dimension, responsive
         const activeVal = this.currentValue || 0;
 
         // Visual Colors: Green if perfect match, Red if way too large, Blue otherwise

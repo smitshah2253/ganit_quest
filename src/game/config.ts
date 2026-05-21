@@ -10,8 +10,10 @@ export const config: Phaser.Types.Core.GameConfig = {
     backgroundColor: '#ecf2f7',
     scale: {
         mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
         width: '100%',
-        height: '100%'
+        height: '100%',
+        expandParent: true
     },
     scene: [
         BootScene,

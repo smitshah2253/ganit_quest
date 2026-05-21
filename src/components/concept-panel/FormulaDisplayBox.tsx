@@ -1,5 +1,4 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
 
 interface FormulaDisplayBoxProps {
   formulaDisplay: string;
@@ -11,19 +10,18 @@ export const FormulaDisplayBox: React.FC<FormulaDisplayBoxProps> = ({
   concept 
 }) => {
   return (
-    <div className="bg-orange-50/40 rounded-2xl p-4.5 border border-orange-100/60 shadow-inner relative overflow-hidden shrink-0 select-none">
-      <div className="absolute top-2 right-2 text-orange-500/10">
-        <Sparkles className="w-8 h-8" />
+    <div className="bg-gradient-to-br from-orange-50 to-indigo-50 rounded-2xl p-3 sm:p-5 border border-slate-200/80 shadow-sm">
+      <div className="flex items-center justify-between mb-2 sm:mb-3">
+        <span className="text-[9px] sm:text-[10px] font-bold text-indigo-600 uppercase tracking-wider bg-indigo-100 px-2 sm:px-2.5 py-1 rounded-md">
+          Formula
+        </span>
+        <span className="text-[9px] sm:text-[10px] font-semibold text-slate-500">
+          {concept}
+        </span>
       </div>
-      <h3 className="text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-widest flex items-center gap-1">
-        <span>Core Formula</span>
-      </h3>
-      <p className="text-xl font-extrabold text-orange-700 tracking-wide font-mono">
+      <div className="text-xl sm:text-2xl font-bold text-slate-800 text-center py-2 sm:py-3">
         {formulaDisplay}
-      </p>
-      <p className="text-xs text-slate-650 mt-2 leading-relaxed font-medium">
-        {concept}
-      </p>
+      </div>
     </div>
   );
 };

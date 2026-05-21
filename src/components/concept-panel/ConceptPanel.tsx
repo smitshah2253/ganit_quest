@@ -321,17 +321,17 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
     : !inputValue;
 
   return (
-    <div className="flex flex-col h-full bg-white/80 backdrop-blur-md rounded-3xl p-6.5 shadow-xl border border-slate-200/80 relative overflow-hidden flex-1 select-none">
+    <div className="flex flex-col h-full bg-white/80 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6.5 shadow-xl border border-slate-200/80 relative overflow-hidden flex-1 select-none">
       {/* Soft gradient corner background blob */}
-      <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-orange-500 to-indigo-500 rounded-full opacity-5 blur-3xl pointer-events-none" />
+      <div className="absolute -top-16 -right-16 sm:-top-24 sm:-right-24 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-br from-orange-500 to-indigo-500 rounded-full opacity-5 blur-3xl pointer-events-none" />
       
-      <div className="flex-1 flex flex-col min-h-0 relative z-10 overflow-hidden space-y-5 pr-1">
+      <div className="flex-1 flex flex-col min-h-0 relative z-10 overflow-hidden space-y-3 sm:space-y-5 pr-1">
         
         {/* Header Badges */}
         <ConceptPanelHeader levelType={levelData.type} onOpenBook={onOpenBook} />
         
         {/* Level Title */}
-        <h2 className="text-2xl font-black text-slate-800 leading-tight shrink-0">
+        <h2 className="text-xl sm:text-2xl font-black text-slate-800 leading-tight shrink-0">
           {levelData.title}
         </h2>
         
@@ -339,7 +339,7 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
         <FormulaDisplayBox formulaDisplay={spec.formulaDisplay} concept={spec.bookPage.concept} />
         
         {/* Dynamic Workspace content */}
-        <div className="flex-1 flex flex-col min-h-0 space-y-4">
+        <div className="flex-1 flex flex-col min-h-0 space-y-3 sm:space-y-4">
           <AnimatePresence mode="wait">
             
             {isSolved || (showHint && spec.boardExamLines) ? (
@@ -357,14 +357,14 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="flex-1 flex flex-col min-h-0 space-y-4"
+                className="flex-1 flex flex-col min-h-0 space-y-3 sm:space-y-4"
               >
-                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200/60 shadow-sm flex-1 flex flex-col justify-center">
-                  <h4 className="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
-                    <HelpCircle className="w-4 h-4 text-blue-500" />
+                <div className="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200/60 shadow-sm flex-1 flex flex-col justify-center">
+                  <h4 className="text-[9px] sm:text-[10px] font-bold text-slate-400 mb-1.5 sm:mb-2 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
+                    <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500" />
                     Your Challenge
                   </h4>
-                  <p className="text-slate-700 font-bold text-base leading-relaxed">
+                  <p className="text-slate-700 font-bold text-sm sm:text-base leading-relaxed">
                     {spec.question}
                   </p>
                 </div>
@@ -374,13 +374,13 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 text-amber-900 shadow-sm text-xs font-semibold leading-relaxed relative overflow-hidden"
+                    className="bg-amber-50 border border-amber-200/80 rounded-2xl p-3 sm:p-4 text-amber-900 shadow-sm text-[11px] sm:text-xs font-semibold leading-relaxed relative overflow-hidden"
                   >
                     <div className="absolute top-2 right-2 text-amber-500/10">
-                      <Lightbulb className="w-8 h-8" />
+                      <Lightbulb className="w-6 h-6 sm:w-8 sm:h-8" />
                     </div>
-                    <h5 className="font-bold text-[10px] uppercase tracking-wider text-amber-850 mb-1 flex items-center gap-1.5">
-                      <Lightbulb className="w-3.5 h-3.5 text-amber-600" />
+                    <h5 className="font-bold text-[9px] sm:text-[10px] uppercase tracking-wider text-amber-850 mb-1 flex items-center gap-1.5">
+                      <Lightbulb className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-600" />
                       Quick Hint
                     </h5>
                     <p>{spec.bookPage?.visualTip || "Check the Formula Book at the top right to calculate the exact size."}</p>
@@ -392,18 +392,18 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowHint(true)}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 px-5 rounded-2xl border border-dashed border-orange-300 bg-orange-50/50 hover:bg-orange-50 text-orange-800 font-bold text-xs uppercase tracking-wider transition-all cursor-pointer hover:border-orange-400 shadow-sm"
+                    className="w-full flex items-center justify-center gap-2 py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl border border-dashed border-orange-300 bg-orange-50/50 hover:bg-orange-50 text-orange-800 font-bold text-[11px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer hover:border-orange-400 shadow-sm"
                   >
-                    <Lightbulb className="w-4 h-4 text-orange-500" />
+                    <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500" />
                     <span>💡 Do you want a Hint?</span>
                   </button>
                 ) : (
                   <button
                     type="button"
                     onClick={() => setShowSimpleHint(!showSimpleHint)}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 px-5 rounded-2xl border border-dashed border-orange-300 bg-orange-50/50 hover:bg-orange-50 text-orange-800 font-bold text-xs uppercase tracking-wider transition-all cursor-pointer hover:border-orange-400 shadow-sm"
+                    className="w-full flex items-center justify-center gap-2 py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl border border-dashed border-orange-300 bg-orange-50/50 hover:bg-orange-50 text-orange-800 font-bold text-[11px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer hover:border-orange-400 shadow-sm"
                   >
-                    <Lightbulb className="w-4 h-4 text-orange-500" />
+                    <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500" />
                     <span>{showSimpleHint ? "Hide Hint" : "💡 Do you want a Hint?"}</span>
                   </button>
                 )}
@@ -414,7 +414,7 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
       </div>
 
       {/* FOOTER FORM (Answer submission & level progression navigation) */}
-      <div className="mt-auto pt-5 border-t border-slate-100 relative z-10 shrink-0 select-none">
+      <div className="mt-auto pt-4 sm:pt-5 border-t border-slate-100 relative z-10 shrink-0 select-none">
         <AnimatePresence mode="wait">
           {isSolved ? (
             
@@ -428,10 +428,10 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
               <button
                 type="button"
                 onClick={onNextLevel}
-                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-2xl font-black text-white bg-gradient-to-r from-orange-600 to-indigo-650 hover:from-orange-500 hover:to-indigo-550 shadow-md shadow-orange-500/20 transition-all cursor-pointer uppercase tracking-wider text-sm active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-2 py-3.5 sm:py-4 px-5 sm:px-6 rounded-2xl font-black text-white bg-gradient-to-r from-orange-600 to-indigo-650 hover:from-orange-500 hover:to-indigo-550 shadow-md shadow-orange-500/20 transition-all cursor-pointer uppercase tracking-wider text-[11px] sm:text-sm active:scale-[0.98]"
               >
                 <span>Go to Next Level</span>
-                <ArrowRight className="w-5 h-5 animate-pulse" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
               </button>
             </motion.div>
           ) : (
@@ -440,22 +440,22 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
             <motion.form 
               key="active-footer"
               onSubmit={handleSubmit}
-              className="flex flex-col gap-3"
+              className="flex flex-col gap-2.5 sm:gap-3"
             >
               {!showHint && (
                 <div className="flex justify-between items-center">
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest" htmlFor="answer-input">
+                  <label className="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-widest" htmlFor="answer-input">
                     {spec.inputLabel}
                   </label>
                   {inputValue && (
-                    <span className="text-[10px] font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md border border-orange-100">
+                    <span className="text-[9px] sm:text-[10px] font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md border border-orange-100">
                       Live updating Phaser canvas
                     </span>
                   )}
                 </div>
               )}
               
-              <div className="flex gap-3 items-center">
+              <div className="flex gap-2 sm:gap-3 items-center">
                 {!showHint ? (
                   <input
                     id="answer-input"
@@ -464,12 +464,12 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
                     value={inputValue}
                     onChange={handleInputChange}
                     placeholder={spec.placeholder}
-                    className="flex-1 text-base font-bold bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 text-slate-800 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all placeholder:text-slate-400 placeholder:font-medium font-mono"
+                    className="flex-1 text-sm sm:text-base font-bold bg-slate-50 border border-slate-200 rounded-2xl px-3.5 sm:px-4 py-3 sm:py-3.5 text-slate-800 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all placeholder:text-slate-400 placeholder:font-medium font-mono"
                     autoComplete="off"
                     required
                   />
                 ) : (
-                  <div className="flex-1 text-xs font-bold text-slate-500 bg-slate-50 px-4.5 py-4 rounded-xl border border-slate-200 uppercase tracking-wider">
+                  <div className="flex-1 text-[10px] sm:text-xs font-bold text-slate-500 bg-slate-50 px-3.5 sm:px-4.5 py-3 sm:py-4 rounded-xl border border-slate-200 uppercase tracking-wider">
                     Solve the step blanks on the notebook!
                   </div>
                 )}
@@ -477,7 +477,7 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitDisabled}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-7 py-3.5 rounded-2xl font-extrabold text-sm uppercase tracking-wider hover:shadow-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0 active:scale-[0.97]"
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 sm:px-7 py-3 sm:py-3.5 rounded-2xl font-extrabold text-[11px] sm:text-sm uppercase tracking-wider hover:shadow-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0 active:scale-[0.97]"
                 >
                   Submit
                 </button>

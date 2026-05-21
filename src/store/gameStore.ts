@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import levels from '../data/levels'
 
 interface GameState {
   xp: number
@@ -15,7 +16,7 @@ export const useGameStore = create<GameState>((set) => ({
   xp: 0,
   stars: 0,
   currentLevelId: null,
-  unlockedLevels: ['lvl-01'], // Default unlocked level
+  unlockedLevels: levels.map(l => l.id), // All levels unlocked for all 3 chapters
   
   addXp: (amount) => set((state) => ({ xp: state.xp + amount })),
   addStars: (amount) => set((state) => ({ stars: state.stars + amount })),

@@ -48,27 +48,27 @@ export const ResetPasswordScreen = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center bg-[var(--color-bg)] p-4 relative overflow-hidden select-none">
+    <div className="w-full min-h-screen flex items-center justify-center bg-[var(--color-bg)] p-3 sm:p-4 relative overflow-hidden select-none">
       {/* Decorative saffron & indigo highlights */}
-      <div className="absolute top-10 left-10 w-72 h-72 bg-orange-400/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-10 left-10 w-48 h-48 sm:w-72 sm:h-72 bg-orange-400/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-56 h-56 sm:w-80 sm:h-80 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-md p-8 rounded-3xl bg-white/80 backdrop-blur-md shadow-2xl border border-slate-200/80 overflow-hidden relative z-10"
+        className="w-full max-w-md p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white/80 backdrop-blur-md shadow-2xl border border-slate-200/80 overflow-hidden relative z-10"
       >
         <div className="relative z-10">
           <motion.h2 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-3xl font-black text-slate-850 text-center mb-4 tracking-tight"
+            className="text-2xl sm:text-3xl font-black text-slate-850 text-center mb-3 sm:mb-4 tracking-tight"
           >
             New Password
           </motion.h2>
-          <p className="text-slate-500 text-center text-xs mb-8 font-semibold">
+          <p className="text-slate-500 text-center text-[10px] sm:text-xs mb-6 sm:mb-8 font-semibold">
             Please enter your new password below.
           </p>
 
@@ -84,26 +84,26 @@ export const ResetPasswordScreen = () => {
             </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
-              <label className="block text-slate-700 text-xs font-bold mb-2 uppercase tracking-wider">NEW PASSWORD</label>
+              <label className="block text-slate-700 text-[10px] sm:text-xs font-bold mb-1.5 sm:mb-2 uppercase tracking-wider">NEW PASSWORD</label>
               <input 
                 type="password" 
                 value={newPassword}
                 onChange={e => setNewPassword(e.target.value)}
-                className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-semibold"
+                className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-semibold text-sm sm:text-base"
                 placeholder="••••••••"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-slate-700 text-xs font-bold mb-2 uppercase tracking-wider">CONFIRM PASSWORD</label>
+              <label className="block text-slate-700 text-[10px] sm:text-xs font-bold mb-1.5 sm:mb-2 uppercase tracking-wider">CONFIRM PASSWORD</label>
               <input 
                 type="password" 
                 value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
-                className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-semibold"
+                className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-semibold text-sm sm:text-base"
                 placeholder="••••••••"
                 required
               />
@@ -114,13 +114,13 @@ export const ResetPasswordScreen = () => {
               whileTap={{ scale: 0.99 }}
               type="submit" 
               disabled={loading || !!message}
-              className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-orange-600 to-indigo-600 hover:from-orange-500 hover:to-indigo-500 transition-all shadow-md shadow-orange-500/20 disabled:opacity-70 text-base uppercase tracking-wider cursor-pointer"
+              className="w-full py-3.5 sm:py-4 rounded-xl font-bold text-white bg-gradient-to-r from-orange-600 to-indigo-600 hover:from-orange-500 hover:to-indigo-500 transition-all shadow-md shadow-orange-500/20 disabled:opacity-70 text-sm sm:text-base uppercase tracking-wider cursor-pointer"
             >
               {loading ? 'SAVING...' : 'UPDATE PASSWORD'}
             </motion.button>
           </form>
 
-          <p className="mt-8 text-center text-xs font-semibold text-slate-500">
+          <p className="mt-6 sm:mt-8 text-center text-[10px] sm:text-xs font-semibold text-slate-500">
             Remembered it? {' '}
             <Link to="/login" className="text-orange-600 font-bold hover:underline">
               Login here

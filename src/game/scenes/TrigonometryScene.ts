@@ -129,10 +129,12 @@ export class TrigonometryScene extends Scene {
                 let dx = pointer.x - (cx - 100); // Shift base left for triangle layout
                 let dy = cy - pointer.y; // Opposite height
 
+                const maxDragX = Math.min(400, this.cameras.main.width * 0.7);
+                const maxDragY = Math.min(300, this.cameras.main.height * 0.6);
                 if (dx < 30) dx = 30; // Min limits
                 if (dy < 10) dy = 10;
-                if (dx > 400) dx = 400;
-                if (dy > 300) dy = 300;
+                if (dx > maxDragX) dx = maxDragX;
+                if (dy > maxDragY) dy = maxDragY;
 
                 this.currentWidth = Math.round(dx);
                 this.currentHeight = Math.round(dy);
@@ -253,6 +255,14 @@ export class TrigonometryScene extends Scene {
         this.events.once('shutdown', cleanup);
         this.events.once('destroy', cleanup);
 
+        // Handle canvas resize (e.g., orientation change, container resize on mobile)
+        this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
+            this.cameras.main.setSize(gameSize.width, gameSize.height);
+            if (this.formulaOverlayText) {
+                this.formulaOverlayText.setPosition(25, gameSize.height - 35);
+            }
+        });
+
         // Let the system know the game is booted
         EventBus.emit('game-ready');
     }
@@ -324,12 +334,13 @@ export class TrigonometryScene extends Scene {
     private renderAngleFoundations() {
         const cx = this.cameras.main.width / 2;
         const cy = this.cameras.main.height / 2 + 30;
-        const radius = 180;
+        const radius = Math.min(180, Math.min(this.cameras.main.width, this.cameras.main.height) * 0.38);
 
         // Draw dynamic coordinate baselines (dashed horizontal baseline)
+        const extent = radius + 60;
         this.backgroundGraphics.lineStyle(2, 0xcbd5e1, 1);
-        this.backgroundGraphics.lineBetween(cx - 240, cy, cx + 240, cy);
-        this.backgroundGraphics.lineBetween(cx, cy - 240, cx, cy + 20);
+        this.backgroundGraphics.lineBetween(cx - extent, cy, cx + extent, cy);
+        this.backgroundGraphics.lineBetween(cx, cy - extent, cx, cy + 20);
 
         // Draw reference arc
         this.backgroundGraphics.lineStyle(1.5, 0x94a3b8, 0.5);
@@ -371,8 +382,9 @@ export class TrigonometryScene extends Scene {
     // MODE 2: Trigonometric Ratios (World 2)
     // ==========================================
     private renderRatiosTriangle() {
-        const cx = this.cameras.main.width / 2 - 120;
-        const cy = this.cameras.main.height / 2 + 100;
+        const layoutScale = Math.min(1, Math.min(this.cameras.main.width, this.cameras.main.height) / 500);
+        const cx = this.cameras.main.width / 2 - 120 * layoutScale;
+        const cy = this.cameras.main.height / 2 + 100 * layoutScale;
 
         const w = this.currentWidth;
         const h = this.currentHeight;
@@ -437,7 +449,7 @@ export class TrigonometryScene extends Scene {
     private renderIdentityLab() {
         const cx = this.cameras.main.width / 2;
         const cy = this.cameras.main.height / 2 + 20;
-        const radius = 150; // unit circle scale
+        const radius = Math.min(150, Math.min(this.cameras.main.width, this.cameras.main.height) * 0.33); // unit circle scale
 
         // Draw unit circle grid
         this.backgroundGraphics.lineStyle(1.5, 0xcbd5e1, 0.8);
@@ -485,12 +497,13 @@ export class TrigonometryScene extends Scene {
     private renderComplementaryGrid() {
         const cx = this.cameras.main.width / 2;
         const cy = this.cameras.main.height / 2 + 30;
-        const radius = 180;
+        const radius = Math.min(180, Math.min(this.cameras.main.width, this.cameras.main.height) * 0.38);
 
         // Baselines
+        const compExtent = radius + 40;
         this.backgroundGraphics.lineStyle(1.5, 0xcbd5e1, 1);
-        this.backgroundGraphics.lineBetween(cx - 220, cy, cx + 220, cy);
-        this.backgroundGraphics.lineBetween(cx, cy - 220, cx, cy + 20);
+        this.backgroundGraphics.lineBetween(cx - compExtent, cy, cx + compExtent, cy);
+        this.backgroundGraphics.lineBetween(cx, cy - compExtent, cx, cy + 20);
 
         // Perpendicular bounding box representing 90°
         this.backgroundGraphics.lineStyle(1, 0xef4444, 0.4);
@@ -531,8 +544,9 @@ export class TrigonometryScene extends Scene {
     // MODE 5: Heights & Distances (World 5)
     // ==========================================
     private renderHeightsLandscape() {
-        const cx = this.cameras.main.width / 2 - 140;
-        const cy = this.cameras.main.height / 2 + 100;
+        const heightsScale = Math.min(1, Math.min(this.cameras.main.width, this.cameras.main.height) / 500);
+        const cx = this.cameras.main.width / 2 - 140 * heightsScale;
+        const cy = this.cameras.main.height / 2 + 100 * heightsScale;
 
         const w = this.currentWidth;
         const h = this.currentHeight;

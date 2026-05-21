@@ -193,43 +193,43 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
             <div id="game-container" className="absolute inset-0 w-full h-full" />
 
             {/* REAL-TIME PREMIUM HUD OVERLAY */}
-            <div className="absolute inset-x-0 top-0 p-6 flex justify-between items-start pointer-events-none z-10 select-none">
+            <div className="absolute inset-x-0 top-0 p-2 sm:p-3 md:p-6 flex justify-between items-start pointer-events-none z-10 select-none">
                 
                 {/* Shape title badge */}
-                <div className="bg-white/80 backdrop-blur-md px-5 py-3 rounded-2xl border border-slate-200/80 shadow-md flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
+                <div className="bg-white/80 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-2 md:px-5 md:py-3 rounded-lg sm:rounded-xl md:rounded-2xl border border-slate-200/80 shadow-md flex items-center gap-1.5 sm:gap-2 md:gap-3">
+                    <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-blue-500 animate-pulse" />
                     <div>
-                        <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">interactive model</span>
-                        <span className="text-sm font-bold text-slate-800 uppercase tracking-wider">{currentLevelData.shape}</span>
+                        <span className="text-[7px] sm:text-[8px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block leading-tight">interactive model</span>
+                        <span className="text-[10px] sm:text-xs md:text-sm font-bold text-slate-800 uppercase tracking-wider">{currentLevelData.shape}</span>
                     </div>
                 </div>
 
-                {/* Target vs Current Live board */}
-                <div className="flex flex-col gap-3 items-end">
-                    <div className="bg-white/80 backdrop-blur-md px-5 py-4.5 rounded-2xl border border-slate-200/80 shadow-md flex gap-6">
+                {/* Target vs Current Live board - hidden on very small screens */}
+                <div className="flex flex-col gap-1.5 sm:gap-2 md:gap-3 items-end">
+                    <div className="hidden sm:flex bg-white/80 backdrop-blur-md px-3 py-2.5 sm:px-4 sm:py-3 md:px-5 md:py-4.5 rounded-xl md:rounded-2xl border border-slate-200/80 shadow-md gap-3 sm:gap-4 md:gap-6">
                         
                         {/* Target Display */}
                         <div className="text-right">
-                            <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
+                            <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
                                 {isCG ? "Target Answer" : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "Target Angle" : "Target Ratio") : "Target Size"}
                             </span>
-                            <span className="text-xl font-bold text-emerald-600">
+                            <span className="text-sm sm:text-base md:text-xl font-bold text-emerald-600">
                                 {targetVal.toLocaleString(undefined, {maximumFractionDigits: 3})}
                             </span>
-                            <span className="text-[9px] font-semibold text-slate-400 block uppercase">
+                            <span className="text-[7px] sm:text-[8px] md:text-[9px] font-semibold text-slate-400 block uppercase">
                                 {isCG ? "units" : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "degrees" : "ratio") : "units³"}
                             </span>
                         </div>
 
                         {/* Divider */}
-                        <div className="w-px h-10 bg-slate-200 self-center" />
+                        <div className="w-px h-8 md:h-10 bg-slate-200 self-center" />
 
                         {/* Live Calculated Display */}
                         <div>
-                            <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
+                            <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
                                 {isCG ? "Live Answer" : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "Live Angle" : "Live Ratio") : "Live Volume"}
                             </span>
-                            <span className={`text-xl font-bold transition-colors duration-200 ${
+                            <span className={`text-sm sm:text-base md:text-xl font-bold transition-colors duration-200 ${
                                 matchStatus === 'correct' 
                                     ? 'text-emerald-600' 
                                     : matchStatus === 'too_big' 
@@ -240,22 +240,29 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                             }`}>
                                 {matchStatus !== 'awaiting_input' ? calculatedVal.toLocaleString(undefined, {maximumFractionDigits: isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? 1 : 3}) : '---'}
                             </span>
-                            <span className="text-[9px] font-semibold text-slate-400 block uppercase">
+                            <span className="text-[7px] sm:text-[8px] md:text-[9px] font-semibold text-slate-400 block uppercase">
                                 {isCG ? "units" : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "degrees" : "ratio") : "units³"}
                             </span>
                         </div>
                     </div>
 
-                    {/* Live Match State Badge */}
+                    {/* Compact mobile-only status indicator */}
+                    <div className={`sm:hidden bg-white/80 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200/80 shadow-sm text-[9px] font-bold uppercase tracking-wider ${
+                        matchStatus === 'correct' ? 'text-emerald-600' : matchStatus === 'too_big' ? 'text-rose-600' : matchStatus === 'too_small' ? 'text-amber-600' : 'text-slate-400'
+                    }`}>
+                        {matchStatus !== 'awaiting_input' ? calculatedVal.toLocaleString(undefined, {maximumFractionDigits: 2}) : '---'} / {targetVal.toLocaleString(undefined, {maximumFractionDigits: 2})}
+                    </div>
+
+                    {/* Live Match State Badge - hidden on mobile */}
                     <AnimatePresence mode="wait">
                         {matchStatus === 'correct' && (
                             <motion.div 
                                 initial={{ opacity: 0, scale: 0.8, y: -10 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.8, y: -10 }}
-                                className="bg-emerald-600/90 backdrop-blur text-white text-xs font-semibold px-4 py-2 rounded-xl border border-emerald-500 shadow-lg flex items-center gap-1.5"
+                                className="hidden sm:flex bg-emerald-600/90 backdrop-blur text-white text-[10px] sm:text-xs font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border border-emerald-500 shadow-lg items-center gap-1.5"
                             >
-                                <Sparkles className="w-4 h-4 animate-spin text-emerald-300" />
+                                <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 animate-spin text-emerald-300" />
                                 <span>Perfect Match! Ready to Submit 🎉</span>
                             </motion.div>
                         )}
@@ -264,9 +271,9 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                                 initial={{ opacity: 0, scale: 0.8, y: -10 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.8, y: -10 }}
-                                className="bg-amber-600/90 backdrop-blur text-white text-xs font-semibold px-4 py-2 rounded-xl border border-amber-500 shadow-lg flex items-center gap-1.5"
+                                className="hidden sm:flex bg-amber-600/90 backdrop-blur text-white text-[10px] sm:text-xs font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border border-amber-500 shadow-lg items-center gap-1.5"
                             >
-                                <HelpCircle className="w-4 h-4 text-amber-200" />
+                                <HelpCircle className="w-3 h-3 sm:w-4 sm:h-4 text-amber-200" />
                                 <span>Too Small! Increase values 🔍</span>
                             </motion.div>
                         )}
@@ -275,9 +282,9 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                                 initial={{ opacity: 0, scale: 0.8, y: -10 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.8, y: -10 }}
-                                className="bg-rose-600/90 backdrop-blur text-white text-xs font-semibold px-4 py-2 rounded-xl border border-rose-500 shadow-lg flex items-center gap-1.5"
+                                className="hidden sm:flex bg-rose-600/90 backdrop-blur text-white text-[10px] sm:text-xs font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border border-rose-500 shadow-lg items-center gap-1.5"
                             >
-                                <Activity className="w-4 h-4 text-rose-200" />
+                                <Activity className="w-3 h-3 sm:w-4 sm:h-4 text-rose-200" />
                                 <span>Too Large! Reduce values 💥</span>
                             </motion.div>
                         )}
@@ -285,22 +292,22 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                 </div>
             </div>
 
-            {/* Bottom Real-time Accuracy Progress bar */}
-            <div className="absolute inset-x-0 bottom-6 px-6 pointer-events-none z-10 w-full select-none">
-                <div className="w-full bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200/80 p-4 flex items-center gap-4.5 shadow-lg">
-                    <div className="bg-slate-50 p-2 rounded-xl border border-slate-200 text-blue-600 shrink-0 shadow-sm">
-                        <Crosshair className="w-4.5 h-4.5" />
+            {/* Bottom Real-time Accuracy Progress bar - compact on mobile */}
+            <div className="absolute inset-x-0 bottom-2 sm:bottom-4 md:bottom-6 px-2 sm:px-4 md:px-6 pointer-events-none z-10 w-full select-none">
+                <div className="w-full bg-white/80 backdrop-blur-md rounded-xl sm:rounded-2xl border border-slate-200/80 p-2 sm:p-3 md:p-4 flex items-center gap-2 sm:gap-3 md:gap-4.5 shadow-lg">
+                    <div className="bg-slate-50 p-1 sm:p-1.5 md:p-2 rounded-lg sm:rounded-xl border border-slate-200 text-blue-600 shrink-0 shadow-sm">
+                        <Crosshair className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4.5 md:h-4.5" />
                     </div>
                     
-                    <div className="flex-1 space-y-1">
-                        <div className="flex justify-between items-center text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
-                            <span>accuracy rate</span>
+                    <div className="flex-1 space-y-0.5 sm:space-y-1">
+                        <div className="flex justify-between items-center text-[8px] sm:text-[9px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                            <span>accuracy</span>
                             <span className={accuracy >= 95 ? 'text-emerald-600 font-bold' : 'text-slate-600'}>
                                 {accuracy}%
                             </span>
                         </div>
                         
-                        <div className="w-full bg-slate-100 rounded-full h-2.5 border border-slate-200 overflow-hidden p-0.5">
+                        <div className="w-full bg-slate-100 rounded-full h-1.5 sm:h-2 md:h-2.5 border border-slate-200 overflow-hidden p-0.5">
                             <motion.div 
                                 className={`h-full rounded-full ${
                                     matchStatus === 'correct' 

@@ -10,6 +10,7 @@ import { ConceptPanel } from './concept-panel/ConceptPanel';
 import { ConceptBook } from './ConceptBook';
 import { getLevelSpec } from '../data/levelSpecs';
 import { AnimatePresence } from 'framer-motion';
+import Swal from 'sweetalert2';
 
 export const GameContainer: React.FC = () => {
   const { chapterId, levelId } = useParams<{ chapterId: string; levelId: string }>();
@@ -71,7 +72,15 @@ export const GameContainer: React.FC = () => {
         unlockLevel(chapterLevels[currentIndex + 1].id);
       }
     } else {
-      alert("That's not quite right. Try again!");
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops!',
+        text: "That's not quite right. Try again!",
+        confirmButtonText: 'Retry',
+        confirmButtonColor: '#f97316',
+        background: '#fff',
+        customClass: { popup: 'rounded-2xl' }
+      });
     }
   };
 
@@ -81,35 +90,37 @@ export const GameContainer: React.FC = () => {
     <div className="w-screen h-screen bg-[var(--color-bg)] flex flex-col overflow-hidden relative">
       
       {/* Top Header */}
-      <div className="w-full px-8 py-4 flex items-center justify-between bg-white/70 backdrop-blur-md border-b border-slate-200/80 z-10 shrink-0 shadow-sm select-none">
+      <div className="w-full px-4 md:px-8 py-3 md:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/70 backdrop-blur-md border-b border-slate-200/80 z-10 shrink-0 shadow-sm select-none">
         <button 
           onClick={() => navigate(`/chapter/${chapterId}/levels`)}
-          className="flex items-center text-slate-500 hover:text-slate-800 transition-colors font-semibold text-sm uppercase tracking-wider cursor-pointer"
+          className="flex items-center text-slate-500 hover:text-slate-800 transition-colors font-semibold text-xs sm:text-sm uppercase tracking-wider cursor-pointer"
         >
-          <ArrowLeft className="w-5 h-5 mr-1.5" />
-          <span>Back to Levels</span>
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
+          <span className="hidden sm:inline">Back to Levels</span>
+          <span className="sm:hidden">Back</span>
         </button>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
           <button
             onClick={() => setShowConceptBook(true)}
-            className="flex items-center gap-1.5 bg-gradient-to-r from-orange-600 to-indigo-650 hover:from-orange-500 hover:to-indigo-550 text-white font-semibold px-4.5 py-2 rounded-xl shadow-md transition-all text-xs uppercase tracking-wider cursor-pointer"
+            className="flex items-center gap-1.5 bg-gradient-to-r from-orange-600 to-indigo-650 hover:from-orange-500 hover:to-indigo-550 text-white font-semibold px-3 sm:px-4.5 py-2 rounded-xl shadow-md transition-all text-[10px] sm:text-xs uppercase tracking-wider cursor-pointer"
           >
-            <BookOpen className="w-4 h-4" />
-            <span>Read Concept Book</span>
+            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Read Concept Book</span>
+            <span className="sm:hidden">Concept Book</span>
           </button>
           
-          <div className="text-xs font-semibold text-slate-600 bg-white px-4 py-2 rounded-xl border border-slate-200 uppercase tracking-wider shadow-sm">
+          <div className="text-[10px] sm:text-xs font-semibold text-slate-600 bg-white px-3 sm:px-4 py-2 rounded-xl border border-slate-200 uppercase tracking-wider shadow-sm">
             World {levelData.world}
           </div>
         </div>
       </div>
 
-      {/* Main Content: 40/60 Split */}
-      <div className="flex flex-1 w-full p-6 gap-6 overflow-hidden">
+      {/* Main Content: Responsive Layout */}
+      <div className="flex flex-col md:flex-row flex-1 w-full p-3 md:p-6 gap-3 md:gap-6 overflow-y-auto md:overflow-hidden">
         
-        {/* Left Side (40%) - Concept Panel */}
-        <div className="w-[40%] h-full flex flex-col">
+        {/* Left Side - Concept Panel (Full width on mobile, 40% on desktop) */}
+        <div className="w-full md:w-[40%] md:h-full flex flex-col order-2 md:order-1 min-h-0">
           <ConceptPanel 
             levelData={levelData} 
             onCheckAnswer={handleCheckAnswer}
@@ -119,8 +130,8 @@ export const GameContainer: React.FC = () => {
           />
         </div>
 
-        {/* Right Side (60%) - Animative UI (Phaser) */}
-        <div className="w-[60%] h-full relative rounded-3xl overflow-hidden shadow-xl border border-slate-200 bg-[#ecf2f7]">
+        {/* Right Side - Animative UI (Phaser) (Full width on mobile, 60% on desktop) */}
+        <div className="w-full md:w-[60%] h-[220px] sm:h-[280px] md:h-full shrink-0 relative rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-slate-200 bg-[#ecf2f7] order-1 md:order-2">
           <PhaserGame currentLevelData={levelData} />
         </div>
 
