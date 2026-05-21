@@ -74,6 +74,12 @@ export class CoordinateScene extends Scene {
             this.isLevelActive = true;
             this.coordinateInfoText.setText(`Active: ${levelData.title}`);
             this.setupGrid();
+
+            // Smooth camera transition on level load
+            this.cameras.main.zoomTo(1.1, 500, 'Power2');
+            this.time.delayedCall(500, () => {
+                this.cameras.main.zoomTo(1, 400, 'Power2');
+            });
         };
 
         const onUserInputChanged = (data: { value: string, levelId: string }) => {

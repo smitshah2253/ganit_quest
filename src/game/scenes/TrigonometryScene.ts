@@ -2,6 +2,7 @@ import Phaser, { Scene, GameObjects } from 'phaser';
 import { EventBus } from '../EventBus';
 import { getLevelSpec } from '../../data/levelSpecs';
 import type { LevelSpecification } from '../../data/levelSpecs';
+import { soundManager } from '../SoundManager';
 
 export class TrigonometryScene extends Scene {
     private levelSpec: LevelSpecification | null = null;
@@ -112,6 +113,7 @@ export class TrigonometryScene extends Scene {
                         if (this.lastSnappedAngle !== bench) {
                             this.lastSnappedAngle = bench;
                             this.triggerSnapFlash();
+                            soundManager.playSnap();
                         }
                         break;
                     }
@@ -195,6 +197,12 @@ export class TrigonometryScene extends Scene {
 
             this.resetVisualState();
             this.redrawScene();
+
+            // Smooth camera transition on level load
+            this.cameras.main.zoomTo(1.12, 500, 'Power2');
+            this.time.delayedCall(500, () => {
+                this.cameras.main.zoomTo(1, 400, 'Power2');
+            });
         };
 
         const onUserInputChanged = (data: { value: string, levelId: string }) => {

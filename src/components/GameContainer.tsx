@@ -11,6 +11,7 @@ import { ConceptBook } from './ConceptBook';
 import { getLevelSpec } from '../data/levelSpecs';
 import { AnimatePresence } from 'framer-motion';
 import Swal from 'sweetalert2';
+import { soundManager } from '../game/SoundManager';
 
 export const GameContainer: React.FC = () => {
   const { chapterId, levelId } = useParams<{ chapterId: string; levelId: string }>();
@@ -60,13 +61,15 @@ export const GameContainer: React.FC = () => {
 
   const handleCheckAnswer = (isCorrect: boolean) => {
     if (isCorrect && levelId) {
+      soundManager.playSuccess();
+      EventBus.emit('answer-correct');
       const earnedStars = 3;
       setStars(earnedStars);
       setIsSolved(true);
       setShowResult(true);
       addXp(earnedStars * 50);
       addStars(earnedStars);
-      
+
       const currentIndex = chapterLevels.findIndex(l => l.id === levelId);
       if (levelId) {
         completeLevel(levelId);
@@ -75,6 +78,8 @@ export const GameContainer: React.FC = () => {
         unlockLevel(chapterLevels[currentIndex + 1].id);
       }
     } else {
+      soundManager.playError();
+      EventBus.emit('answer-wrong');
       Swal.fire({
         icon: 'error',
         title: 'Oops!',

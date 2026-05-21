@@ -14,7 +14,10 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
     const game = useRef<Phaser.Game | null>(null);
     const [inputValue, setInputValue] = useState<number>(0);
     const [boardExamInputs, setBoardExamInputs] = useState<string[]>([]);
-    
+    const [isGameReady, setIsGameReady] = useState(false);
+    const [isLoadingLevel, setIsLoadingLevel] = useState(false);
+    const gameReadyRef = useRef(false);
+
     const spec = currentLevelData ? getLevelSpec(currentLevelData.id, currentLevelData) : null;
 
     useLayoutEffect(() => {
@@ -23,8 +26,12 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
             game.current = new Phaser.Game({ ...config, parent: 'game-container' });
 
             onGameReady = () => {
+                gameReadyRef.current = true;
+                setIsGameReady(true);
                 if (currentLevelData) {
+                    setIsLoadingLevel(true);
                     EventBus.emit('load-level', currentLevelData);
+                    setTimeout(() => setIsLoadingLevel(false), 600);
                 }
             };
             EventBus.on('game-ready', onGameReady);
@@ -42,10 +49,12 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
     }, []);
 
     useEffect(() => {
-        if (currentLevelData && game.current) {
+        if (currentLevelData && game.current && gameReadyRef.current) {
+            setIsLoadingLevel(true);
             EventBus.emit('load-level', currentLevelData);
             setInputValue(0); // Reset live HUD
             setBoardExamInputs([]);
+            setTimeout(() => setIsLoadingLevel(false), 600);
         }
     }, [currentLevelData]);
 
@@ -188,9 +197,45 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
 
     return (
         <div className="relative w-full h-full overflow-hidden flex flex-col">
-            
+
             {/* Phaser Game Canvas Wrapper */}
             <div id="game-container" className="absolute inset-0 w-full h-full" />
+
+            {/* Loading Overlay */}
+            <AnimatePresence>
+                {(!isGameReady || isLoadingLevel) && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 bg-slate-50 z-20 flex flex-col items-center justify-center"
+                    >
+                        <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                            className="mb-4"
+                        >
+                            <Sparkles className="w-12 h-12 sm:w-16 sm:h-16 text-blue-600" />
+                        </motion.div>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-lg sm:text-xl font-bold text-slate-800 mb-2"
+                        >
+                            {isGameReady ? 'Constructing your level...' : 'Initializing game engine...'}
+                        </motion.h2>
+                        <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: '100%' }}
+                            transition={{ duration: 1.5, ease: 'easeInOut' }}
+                            className="w-32 sm:w-40 h-1 bg-slate-200 rounded-full overflow-hidden"
+                        >
+                            <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-600" />
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* REAL-TIME PREMIUM HUD OVERLAY */}
             <div className="absolute inset-x-0 top-0 p-2 sm:p-3 md:p-6 flex justify-between items-start pointer-events-none z-10 select-none">

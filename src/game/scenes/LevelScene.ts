@@ -7,13 +7,17 @@ export class LevelScene extends Scene {
     private currentLevelData: any;
     private levelSpec: LevelSpecification | null = null;
     private currentValue: number = 0;
-    
+
     private graphics!: GameObjects.Graphics;
     private labelGraphics!: GameObjects.Graphics;
     private shapeScale: number = 0.4;
     private isLevelActive: boolean = false;
     private boardExamInputs: string[] = [];
-    
+
+    // Particle emitters for effects
+    private glowEmitter!: GameObjects.Particles.ParticleEmitter;
+    private smokeEmitter!: GameObjects.Particles.ParticleEmitter;
+
     // UI Label Elements
     private statusText!: GameObjects.Text;
     private bottomLabel!: GameObjects.Text;
@@ -36,6 +40,36 @@ export class LevelScene extends Scene {
         // Separate graphics layer for dimensions/arrows
         this.labelGraphics = this.add.graphics();
         this.labelGraphics.setPosition(this.cameras.main.width / 2, this.cameras.main.height / 2 - 20);
+
+        // Initialize particle emitters
+        // Glow particles (golden sparkles) for perfect match feedback
+        this.glowEmitter = this.add.particles(0, 0, 'spark', {
+            x: this.cameras.main.width / 2,
+            y: this.cameras.main.height / 2,
+            speed: { min: 50, max: 150 },
+            scale: { start: 0.8, end: 0 },
+            alpha: { start: 1, end: 0 },
+            lifespan: 800,
+            frequency: 50,
+            quantity: 3,
+            blendMode: 'ADD',
+            emitting: false
+        });
+
+        // Smoke particles (gray) for wrong answer feedback
+        this.smokeEmitter = this.add.particles(0, 0, 'spark', {
+            x: this.cameras.main.width / 2,
+            y: this.cameras.main.height / 2,
+            speed: { min: 30, max: 80 },
+            scale: { start: 1.5, end: 3 },
+            alpha: { start: 0.6, end: 0 },
+            lifespan: 1000,
+            frequency: 30,
+            quantity: 2,
+            blendMode: 'NORMAL',
+            emitting: false,
+            tint: 0x64748b
+        });
 
         // Handle canvas resize (e.g., orientation change, container resize on mobile)
         this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
@@ -100,6 +134,12 @@ export class LevelScene extends Scene {
             
             this.hideLabels();
             this.updateShape();
+
+            // Smooth camera transition on level load
+            this.cameras.main.zoomTo(1.15, 500, 'Power2');
+            this.time.delayedCall(500, () => {
+                this.cameras.main.zoomTo(1, 400, 'Power2');
+            });
         };
 
         const onUserInputChanged = (data: { value: string, levelId: string }) => {
@@ -168,18 +208,43 @@ export class LevelScene extends Scene {
         EventBus.on('load-level', onLoadLevel);
         EventBus.on('user-input-changed', onUserInputChanged);
         EventBus.on('board-exam-input-changed', onBoardExamInputChanged);
+        EventBus.on('answer-correct', () => this.triggerGlowEffect());
+        EventBus.on('answer-wrong', () => this.triggerSmokeEffect());
 
         // Safely detach all listeners on scene shutdown or destruction
         const cleanup = () => {
             EventBus.off('load-level', onLoadLevel);
             EventBus.off('user-input-changed', onUserInputChanged);
             EventBus.off('board-exam-input-changed', onBoardExamInputChanged);
+            EventBus.off('answer-correct', () => this.triggerGlowEffect());
+            EventBus.off('answer-wrong', () => this.triggerSmokeEffect());
         };
 
         this.events.once('shutdown', cleanup);
         this.events.once('destroy', cleanup);
 
         EventBus.emit(EVENTS.GAME_READY, this);
+    }
+
+    // Trigger golden glow particles for correct answer
+    private triggerGlowEffect() {
+        if (this.glowEmitter && this.cameras.main) {
+            const centerX = this.cameras.main.width / 2;
+            const centerY = this.cameras.main.height / 2;
+            this.glowEmitter.emitParticleAt(centerX, centerY, 30);
+            this.time.delayedCall(200, () => {
+                this.glowEmitter.emitParticleAt(centerX, centerY, 20);
+            });
+        }
+    }
+
+    // Trigger gray smoke particles for wrong answer
+    private triggerSmokeEffect() {
+        if (this.smokeEmitter && this.cameras.main) {
+            const centerX = this.cameras.main.width / 2;
+            const centerY = this.cameras.main.height / 2;
+            this.smokeEmitter.emitParticleAt(centerX, centerY, 15);
+        }
     }
 
     hideLabels() {
