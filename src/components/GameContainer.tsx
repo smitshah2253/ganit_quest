@@ -23,7 +23,7 @@ export const GameContainer: React.FC = () => {
   const [stars, setStars] = useState(0);
   const [showConceptBook, setShowConceptBook] = useState(true);
   const [isSolved, setIsSolved] = useState(false);
-  const { addXp, addStars, unlockLevel, setCurrentLevel } = useGameStore();
+  const { addXp, addStars, unlockLevel, setCurrentLevel, completeLevel } = useGameStore();
 
   // Filter levels for the current chapter to handle progression
   const chapterLevels = levels.filter(level => {
@@ -68,6 +68,9 @@ export const GameContainer: React.FC = () => {
       addStars(earnedStars);
       
       const currentIndex = chapterLevels.findIndex(l => l.id === levelId);
+      if (levelId) {
+        completeLevel(levelId);
+      }
       if (currentIndex !== -1 && currentIndex + 1 < chapterLevels.length) {
         unlockLevel(chapterLevels[currentIndex + 1].id);
       }

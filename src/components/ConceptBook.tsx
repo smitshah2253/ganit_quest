@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Sparkles, Lightbulb, Play, ArrowRight, HelpCircle, Award, CheckCircle } from 'lucide-react';
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
 import type { LevelSpecification } from '../data/levelSpecs';
 
 interface ConceptBookProps {
   spec: LevelSpecification;
   onClose: () => void;
 }
+
+const KaTeXFormula: React.FC<{ latex: string; className?: string }> = ({ latex, className }) => {
+  const html = useMemo(() => {
+    try {
+      return katex.renderToString(latex, { throwOnError: false, displayMode: true });
+    } catch {
+      return latex;
+    }
+  }, [latex]);
+
+  return (
+    <div
+      className={className}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+};
 
 export const ConceptBook: React.FC<ConceptBookProps> = ({ spec, onClose }) => {
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -96,9 +115,12 @@ export const ConceptBook: React.FC<ConceptBookProps> = ({ spec, onClose }) => {
                   Formula Breakdown
                 </span>
                 
-                <h2 className="text-xl sm:text-2xl font-bold mt-2 sm:mt-3 mb-1 sm:mb-1.5 text-blue-600 tracking-wide">
-                  {spec.formulaDisplay}
-                </h2>
+                <div className="mt-2 sm:mt-3 mb-1 sm:mb-1.5">
+                  <KaTeXFormula
+                    latex={spec.formulaDisplay}
+                    className="text-blue-600 text-lg sm:text-xl"
+                  />
+                </div>
                 <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-medium">
                   {page.formulaBreakdown}
                 </p>
