@@ -13,21 +13,27 @@ interface PhaserGameProps {
 export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
     const game = useRef<Phaser.Game | null>(null);
     const [inputValue, setInputValue] = useState<number>(0);
+    const [boardExamInputs, setBoardExamInputs] = useState<string[]>([]);
     
     const spec = currentLevelData ? getLevelSpec(currentLevelData.id, currentLevelData) : null;
 
     useLayoutEffect(() => {
+        let onGameReady: (() => void) | null = null;
         if (game.current === null) {
             game.current = new Phaser.Game({ ...config, parent: 'game-container' });
 
-            EventBus.on('game-ready', () => {
+            onGameReady = () => {
                 if (currentLevelData) {
                     EventBus.emit('load-level', currentLevelData);
                 }
-            });
+            };
+            EventBus.on('game-ready', onGameReady);
         }
 
         return () => {
+            if (onGameReady) {
+                EventBus.off('game-ready', onGameReady);
+            }
             if (game.current) {
                 game.current.destroy(true);
                 game.current = null;
@@ -39,44 +45,146 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
         if (currentLevelData && game.current) {
             EventBus.emit('load-level', currentLevelData);
             setInputValue(0); // Reset live HUD
+            setBoardExamInputs([]);
         }
     }, [currentLevelData]);
 
     useEffect(() => {
         const handleLiveInput = (data: { value: string, levelId: string }) => {
             const val = parseFloat(data.value);
-            if (!isNaN(val) && val > 0) {
+            if (!isNaN(val)) {
                 setInputValue(val);
             } else {
                 setInputValue(0);
             }
         };
 
+        const handleBoardExamLiveInput = (data: { inputs: string[], levelId: string }) => {
+            setBoardExamInputs(data.inputs);
+        };
+
         EventBus.on('user-input-changed', handleLiveInput);
+        EventBus.on('board-exam-input-changed', handleBoardExamLiveInput);
+        
         return () => {
             EventBus.off('user-input-changed', handleLiveInput);
+            EventBus.off('board-exam-input-changed', handleBoardExamLiveInput);
         };
     }, []);
 
+
     if (!currentLevelData || !spec) return null;
 
-    // Calculate current volume/area based on live typing
-    const calculatedVal = inputValue > 0 ? spec.calculateValue(inputValue) : 0;
-    const targetVal = currentLevelData.targetValue;
-    
-    // Status text details
-    let matchStatus = 'awaiting_input'; // 'too_small' | 'too_big' | 'correct'
-    if (inputValue > 0) {
-        if (Math.abs(inputValue - spec.correctAnswer) <= spec.tolerance) {
-            matchStatus = 'correct';
-        } else if (calculatedVal < targetVal) {
-            matchStatus = 'too_small';
+    const isCG = currentLevelData.id.startsWith('lvl-cg-');
+    const isTrig = currentLevelData.id.startsWith('lvl-trig-');
+
+    let calculatedVal = 0;
+    let targetVal = currentLevelData.targetValue;
+    let matchStatus = 'awaiting_input';
+    let accuracy = 0;
+
+    if (isCG || isTrig) {
+        let activeVal: number | null = null;
+        if (spec.boardExamLines) {
+            const val = parseFloat(boardExamInputs[0]);
+            if (!isNaN(val)) {
+                activeVal = val;
+            }
         } else {
-            matchStatus = 'too_big';
+            activeVal = inputValue;
+        }
+
+        targetVal = spec.correctAnswer;
+        calculatedVal = activeVal !== null ? activeVal : 0;
+
+        if (activeVal !== null && !isNaN(activeVal)) {
+            if (Math.abs(activeVal - spec.correctAnswer) <= (spec.tolerance || 0)) {
+                matchStatus = 'correct';
+            } else if (activeVal < spec.correctAnswer) {
+                matchStatus = 'too_small';
+            } else {
+                matchStatus = 'too_big';
+            }
+            
+            if (matchStatus === 'correct') {
+                accuracy = 100;
+            } else {
+                const divisor = spec.correctAnswer === 0 ? 1 : Math.abs(spec.correctAnswer);
+                accuracy = Math.max(0, Math.min(99, Math.round((1 - Math.abs(activeVal - spec.correctAnswer) / divisor) * 100)));
+            }
+        } else {
+            matchStatus = 'awaiting_input';
+            accuracy = 0;
+        }
+    } else if (spec.boardExamLines && currentLevelData.id === 'lvl-25') {
+        const vSphereStr = boardExamInputs[0] || '';
+        const hCylinderStr = boardExamInputs[1] || '';
+        const vSphere = parseFloat(vSphereStr);
+        const hCylinder = parseFloat(hCylinderStr);
+
+        targetVal = 113.04;
+
+        if (vSphereStr.trim() !== "113.04") {
+            calculatedVal = !isNaN(vSphere) ? vSphere : 0;
+            if (vSphereStr.trim() !== '') {
+                if (vSphere === 113.04) {
+                    matchStatus = 'correct';
+                } else if (vSphere < 113.04) {
+                    matchStatus = 'too_small';
+                } else {
+                    matchStatus = 'too_big';
+                }
+                accuracy = Math.max(0, Math.min(100, Math.round((1 - Math.abs(vSphere - 113.04) / 113.04) * 100)));
+            }
+        } else {
+            calculatedVal = !isNaN(hCylinder) ? 12.56 * hCylinder : 0;
+            if (hCylinderStr.trim() !== '') {
+                const filledVolume = 12.56 * hCylinder;
+                if (hCylinder === 9) {
+                    matchStatus = 'correct';
+                } else if (filledVolume < 113.04) {
+                    matchStatus = 'too_small';
+                } else {
+                    matchStatus = 'too_big';
+                }
+                accuracy = Math.max(0, Math.min(100, Math.round((1 - Math.abs(filledVolume - 113.04) / 113.04) * 100)));
+            } else {
+                matchStatus = 'awaiting_input';
+                accuracy = 50;
+            }
+        }
+    } else {
+        // Generic logic for other levels (both standard/easy and multi-step board exams)
+        let activeVal = 0;
+        if (spec.boardExamLines) {
+            // Find the last valid numeric input in boardExamInputs
+            for (let i = boardExamInputs.length - 1; i >= 0; i--) {
+                const val = parseFloat(boardExamInputs[i]);
+                if (!isNaN(val) && val > 0) {
+                    activeVal = val;
+                    break;
+                }
+            }
+        } else {
+            activeVal = inputValue;
+        }
+
+        calculatedVal = activeVal > 0 ? spec.calculateValue(activeVal) : 0;
+        if (activeVal > 0) {
+            if (Math.abs(activeVal - spec.correctAnswer) <= spec.tolerance) {
+                matchStatus = 'correct';
+            } else if (calculatedVal < targetVal) {
+                matchStatus = 'too_small';
+            } else {
+                matchStatus = 'too_big';
+            }
+            accuracy = Math.max(0, Math.min(100, Math.round((1 - Math.abs(calculatedVal - targetVal) / targetVal) * 100)));
+        } else {
+            matchStatus = 'awaiting_input';
+            accuracy = 0;
         }
     }
 
-    const accuracy = inputValue > 0 ? Math.max(0, Math.min(100, Math.round((1 - Math.abs(calculatedVal - targetVal) / targetVal) * 100))) : 0;
 
     return (
         <div className="relative w-full h-full overflow-hidden flex flex-col">
@@ -102,11 +210,15 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                         
                         {/* Target Display */}
                         <div className="text-right">
-                            <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">Target Size</span>
-                            <span className="text-xl font-bold text-emerald-600">
-                                {targetVal.toLocaleString()}
+                            <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
+                                {isCG ? "Target Answer" : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "Target Angle" : "Target Ratio") : "Target Size"}
                             </span>
-                            <span className="text-[9px] font-semibold text-slate-400 block uppercase">units³</span>
+                            <span className="text-xl font-bold text-emerald-600">
+                                {targetVal.toLocaleString(undefined, {maximumFractionDigits: 3})}
+                            </span>
+                            <span className="text-[9px] font-semibold text-slate-400 block uppercase">
+                                {isCG ? "units" : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "degrees" : "ratio") : "units³"}
+                            </span>
                         </div>
 
                         {/* Divider */}
@@ -114,19 +226,23 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
 
                         {/* Live Calculated Display */}
                         <div>
-                            <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">Live Volume</span>
+                            <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
+                                {isCG ? "Live Answer" : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "Live Angle" : "Live Ratio") : "Live Volume"}
+                            </span>
                             <span className={`text-xl font-bold transition-colors duration-200 ${
                                 matchStatus === 'correct' 
                                     ? 'text-emerald-600' 
                                     : matchStatus === 'too_big' 
                                     ? 'text-rose-600' 
-                                    : inputValue > 0 
+                                    : matchStatus !== 'awaiting_input'
                                     ? 'text-amber-600' 
                                     : 'text-slate-400'
                             }`}>
-                                {calculatedVal > 0 ? calculatedVal.toLocaleString(undefined, {maximumFractionDigits: 1}) : '---'}
+                                {matchStatus !== 'awaiting_input' ? calculatedVal.toLocaleString(undefined, {maximumFractionDigits: isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? 1 : 3}) : '---'}
                             </span>
-                            <span className="text-[9px] font-semibold text-slate-400 block uppercase">units³</span>
+                            <span className="text-[9px] font-semibold text-slate-400 block uppercase">
+                                {isCG ? "units" : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "degrees" : "ratio") : "units³"}
+                            </span>
                         </div>
                     </div>
 

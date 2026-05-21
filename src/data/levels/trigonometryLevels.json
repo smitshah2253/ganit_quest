@@ -1,0 +1,36 @@
+[
+  { "id": "lvl-trig-01", "world": 1, "type": "angle", "title": "Rotate Laser Cannon", "shape": "cannon", "targetValue": 45, "concept": "Angle Foundations: Exact Rotation θ = 45°" },
+  { "id": "lvl-trig-02", "world": 1, "type": "angle", "title": "Identify Robot Path Angle", "shape": "paths", "targetValue": 60, "concept": "Measuring interior angle between straight lines" },
+  { "id": "lvl-trig-03", "world": 1, "type": "angle", "title": "Aim Scanner Drone", "shape": "drone", "targetValue": 30, "concept": "Setting pitch angle using numeric slider" },
+  { "id": "lvl-trig-04", "world": 1, "type": "angle", "title": "Adjust Viewing Tower", "shape": "tower", "targetValue": 30, "concept": "Measuring angles of depression below horizontal" },
+  { "id": "lvl-trig-05", "world": 1, "type": "angle", "title": "Navigate Slope Rover", "shape": "slope", "targetValue": 45, "concept": "Ascending ramps with constant angle of slope" },
+  { "id": "lvl-trig-06", "world": 1, "type": "angle", "title": "Precision Timing Sweeper", "shape": "timing", "targetValue": 90, "concept": "Timing and angular sweep synchronization" },
+
+  { "id": "lvl-trig-07", "world": 2, "type": "ratio", "title": "Dynamic Triangle Measure", "shape": "triangle", "targetValue": 1, "concept": "Defining Opposite, Adjacent, and Hypotenuse sides" },
+  { "id": "lvl-trig-08", "world": 2, "type": "ratio", "title": "Sine Ratio Calibration", "shape": "sine_ratio", "targetValue": 0.5, "concept": "sin θ = Opposite Side / Hypotenuse" },
+  { "id": "lvl-trig-09", "world": 2, "type": "ratio", "title": "Cosine Shadow Projection", "shape": "cosine_ratio", "targetValue": 0.866, "concept": "cos θ = Adjacent Side / Hypotenuse" },
+  { "id": "lvl-trig-10", "world": 2, "type": "ratio", "title": "Tangent Slope Control", "shape": "tangent_ratio", "targetValue": 0.577, "concept": "tan θ = Opposite Side / Adjacent Side" },
+  { "id": "lvl-trig-11", "world": 2, "type": "ratio", "title": "Trig Ratio Matching", "shape": "matching_ratio", "targetValue": 1, "concept": "Reciprocals: cosec θ = 1/sin θ, sec θ = 1/cos θ, cot θ = 1/tan θ" },
+  { "id": "lvl-trig-12", "world": 2, "type": "ratio", "title": "Ratio Adjustment challenge", "shape": "ratio_adjust", "targetValue": 0.75, "concept": "Configuring triangles to target trigonometric ratios" },
+
+  { "id": "lvl-trig-13", "world": 3, "type": "identity", "title": "Energy Beam Balancer", "shape": "beam_balance", "targetValue": 1, "concept": "Trigonometric Identity: sin²θ + cos²θ = 1" },
+  { "id": "lvl-trig-14", "world": 3, "type": "identity", "title": "Fix Broken Trig Reactor", "shape": "reactor", "targetValue": 1, "concept": "Simplifying identities under square relations" },
+  { "id": "lvl-trig-15", "world": 3, "type": "identity", "title": "Tangent Constituent Beam", "shape": "tan_transform", "targetValue": 1, "concept": "Trigonometric Relation: tan θ = sin θ / cos θ" },
+  { "id": "lvl-trig-16", "world": 3, "type": "identity", "title": "Identity Block Matching", "shape": "identity_match", "targetValue": 1, "concept": "Matching fundamental identities: cosec²θ - cot²θ = 1" },
+  { "id": "lvl-trig-17", "world": 3, "type": "identity", "title": "Unit Circle Simulator", "shape": "circle_identity", "targetValue": 1, "concept": "Visual proof of Pythagorean relation on Unit Circle" },
+  { "id": "lvl-trig-18", "world": 3, "type": "identity", "title": "Stabilize Timed Reactor", "shape": "timed_stabilize", "targetValue": 1, "concept": "Identity coefficient balancing in active systems" },
+
+  { "id": "lvl-trig-19", "world": 4, "type": "complementary", "title": "Mirror Laser grid", "shape": "mirror_grid", "targetValue": 45, "concept": "Angles summing to 90°: complementary relations" },
+  { "id": "lvl-trig-20", "world": 4, "type": "complementary", "title": "Complementary Bridge Align", "shape": "bridge_align", "targetValue": 90, "concept": "Aligning bridges with matching elevation angles" },
+  { "id": "lvl-trig-21", "world": 4, "type": "complementary", "title": "Sine Cosine Wave Shift", "shape": "wave_convert", "targetValue": 90, "concept": "sin(90° - θ) = cos θ and cos(90° - θ) = sin θ" },
+  { "id": "lvl-trig-22", "world": 4, "type": "complementary", "title": "Complementary Gate Lock", "shape": "gate_unlock", "targetValue": 1, "concept": "Complementary pairs: tan(90° - θ) = cot θ" },
+  { "id": "lvl-trig-23", "world": 4, "type": "complementary", "title": "Dual Drone Synchronizer", "shape": "dual_sync", "targetValue": 90, "concept": "Combining complementary angles of elevation" },
+  { "id": "lvl-trig-24", "world": 4, "type": "complementary", "title": "Complementary Labyrinth", "shape": "complementary_nav", "targetValue": 90, "concept": "Advanced navigation using complementary identities" },
+
+  { "id": "lvl-trig-25", "world": 5, "type": "heights_distances", "title": "Observation Tower Heights", "shape": "building_height", "targetValue": 20, "concept": "Height measurement using angle of elevation" },
+  { "id": "lvl-trig-26", "world": 5, "type": "heights_distances", "title": "Mountain Peak Drone Scan", "shape": "mountain_height", "targetValue": 173.2, "concept": "Mountain heights using elevation from drone scanner" },
+  { "id": "lvl-trig-27", "world": 5, "type": "heights_distances", "title": "Searchlight Rescue Mission", "shape": "searchlight", "targetValue": 15, "concept": "Determining searchlight beam length (Hypotenuse)" },
+  { "id": "lvl-trig-28", "world": 5, "type": "heights_distances", "title": "Spaceship Landing Distance", "shape": "landing_distance", "targetValue": 40, "concept": "Horizontal range using angle of depression" },
+  { "id": "lvl-trig-29", "world": 5, "type": "heights_distances", "title": "Double Shadow Obelisk", "shape": "shadow_height", "targetValue": 30, "concept": "Heights using two observation angles and shadow widths" },
+  { "id": "lvl-trig-30", "world": 5, "type": "boss", "title": "FINAL BOSS: Planetary Observatory", "shape": "boss_observatory", "targetValue": 100, "concept": "Grand Trigonometry Synthesis Master Challenge" }
+]

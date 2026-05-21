@@ -12,6 +12,7 @@ export class LevelScene extends Scene {
     private labelGraphics!: GameObjects.Graphics;
     private shapeScale: number = 0.4;
     private isLevelActive: boolean = false;
+    private boardExamInputs: string[] = [];
     
     // UI Label Elements
     private statusText!: GameObjects.Text;
@@ -22,6 +23,7 @@ export class LevelScene extends Scene {
     constructor() {
         super('LevelScene');
     }
+
 
     create() {
         // Soft premium light blue-gray background color to match web UI background
@@ -60,13 +62,25 @@ export class LevelScene extends Scene {
         // Hide labels initially
         this.hideLabels();
 
-        // Listen for level data from React
-        EventBus.on('load-level', (levelData: any) => {
+        // Named listeners to allow safe cleanup on shutdown/destroy
+        const onLoadLevel = (levelData: any) => {
+            if (!this.scene || !this.scene.systems) return;
+            if (levelData.id.startsWith('lvl-cg-')) {
+                this.isLevelActive = false;
+                this.scene.start('CoordinateScene');
+                return;
+            }
+            if (levelData.id.startsWith('lvl-trig-')) {
+                this.isLevelActive = false;
+                this.scene.start('TrigonometryScene');
+                return;
+            }
             this.currentLevelData = levelData;
             this.levelSpec = getLevelSpec(levelData.id, levelData);
             this.currentValue = 0;
             this.shapeScale = 0.4; // Default starting scale (40%)
             this.isLevelActive = true;
+            this.boardExamInputs = [];
             
             if (this.statusText) {
                 this.statusText.setText(`Shape: ${levelData.shape.toUpperCase()}`);
@@ -74,10 +88,10 @@ export class LevelScene extends Scene {
             
             this.hideLabels();
             this.updateShape();
-        });
+        };
 
-        // Listen for user input from React
-        EventBus.on('user-input-changed', (data: { value: string, levelId: string }) => {
+        const onUserInputChanged = (data: { value: string, levelId: string }) => {
+            if (!this.scene || !this.scene.systems) return;
             if (!this.isLevelActive || !this.levelSpec) return;
             const val = parseFloat(data.value);
             if (!isNaN(val) && val > 0) {
@@ -105,7 +119,53 @@ export class LevelScene extends Scene {
                     onUpdate: () => this.updateShape()
                 });
             }
-        });
+        };
+
+        const onBoardExamInputChanged = (data: { inputs: string[], levelId: string }) => {
+            if (!this.scene || !this.scene.systems) return;
+            if (!this.isLevelActive || !this.levelSpec) return;
+            this.boardExamInputs = data.inputs;
+            
+            // Find the last valid numeric input to scale standard/fallback shapes
+            let lastVal = 0;
+            for (let i = data.inputs.length - 1; i >= 0; i--) {
+                const val = parseFloat(data.inputs[i]);
+                if (!isNaN(val) && val > 0) {
+                    lastVal = val;
+                    break;
+                }
+            }
+            
+            if (lastVal > 0) {
+                this.currentValue = lastVal;
+                const ratio = Phaser.Math.Clamp(lastVal / this.levelSpec.correctAnswer, 0.2, 2.0);
+                this.tweens.add({
+                    targets: this,
+                    shapeScale: ratio,
+                    duration: 350,
+                    ease: 'Cubic.easeOut',
+                    onUpdate: () => this.updateShape()
+                });
+            } else {
+                this.currentValue = 0;
+                this.updateShape();
+            }
+        };
+
+        // Register listeners
+        EventBus.on('load-level', onLoadLevel);
+        EventBus.on('user-input-changed', onUserInputChanged);
+        EventBus.on('board-exam-input-changed', onBoardExamInputChanged);
+
+        // Safely detach all listeners on scene shutdown or destruction
+        const cleanup = () => {
+            EventBus.off('load-level', onLoadLevel);
+            EventBus.off('user-input-changed', onUserInputChanged);
+            EventBus.off('board-exam-input-changed', onBoardExamInputChanged);
+        };
+
+        this.events.once('shutdown', cleanup);
+        this.events.once('destroy', cleanup);
 
         EventBus.emit(EVENTS.GAME_READY, this);
     }
@@ -195,6 +255,644 @@ export class LevelScene extends Scene {
         // Center offsets
         const cx = 0;
         const cy = 0;
+
+        const levelId = this.currentLevelData.id;
+        const inputs = this.boardExamInputs || [];
+
+        // --- CUSTOM BOARD EXAM RENDERERS FOR ADVANCED LEVELS ---
+        if (levelId === 'lvl-13') {
+            this.hideLabels();
+            const nVal = parseFloat(inputs[2] || '');
+
+            // Draw warehouse outline
+            const wX = -120, wY = -80, wW = 240, wH = 150;
+            this.graphics.lineStyle(2, 0x475569, 0.4);
+            this.graphics.strokeRect(wX, wY, wW, wH);
+
+            if (this.bottomLabel) {
+                this.bottomLabel.setText("Warehouse: 20m x 10m x 25m").setPosition(this.graphics.x, this.graphics.y - 100).setVisible(true);
+            }
+
+            // Draw filled mini-boxes
+            if (!isNaN(nVal) && nVal > 0) {
+                const fillRatio = Math.min(1.0, nVal / 5000);
+                const fillCol = nVal === 5000 ? 0x10b981 : 0xf59e0b;
+                this.graphics.fillStyle(fillCol, 0.6);
+                this.graphics.fillRect(wX + 2, wY + wH * (1 - fillRatio) + 2, wW - 4, wH * fillRatio - 4);
+                
+                if (this.sideLabel) {
+                    this.sideLabel.setText(`Boxes: ${nVal.toFixed(0)}`).setPosition(this.graphics.x, this.graphics.y + 90).setVisible(true);
+                }
+            }
+            return;
+        }
+
+        if (levelId === 'lvl-14') {
+            this.hideLabels();
+            const vBucket = parseFloat(inputs[0] || '');
+            const hVessel = parseFloat(inputs[1] || '');
+
+            // Left Bucket: r = 10, h = 10 (wide)
+            const bX = -100, bY = 50, bR = 60, bH = 100;
+            this.graphics.lineStyle(2, 0x475569, 0.5);
+            this.graphics.strokeEllipse(bX, bY + bH/2, bR, bR * 0.35);
+            this.graphics.strokeEllipse(bX, bY - bH/2, bR, bR * 0.35);
+            this.graphics.lineBetween(bX - bR/2, bY - bH/2, bX - bR/2, bY + bH/2);
+            this.graphics.lineBetween(bX + bR/2, bY - bH/2, bX + bR/2, bY + bH/2);
+
+            // Right Vessel: r = 5, h = 40 (tall)
+            const vX = 100, vY = 50, vR = 35, vH = 150;
+            this.graphics.strokeEllipse(vX, vY + vH/2, vR, vR * 0.35);
+            this.graphics.strokeEllipse(vX, vY - vH/2, vR, vR * 0.35);
+            this.graphics.lineBetween(vX - vR/2, vY - vH/2, vX - vR/2, vY + vH/2);
+            this.graphics.lineBetween(vX + vR/2, vY - vH/2, vX + vR/2, vY + vH/2);
+
+            if (this.bottomLabel) this.bottomLabel.setText("Bucket (r=10)").setPosition(this.graphics.x + bX, this.graphics.y + bY + bH/2 + 25).setVisible(true);
+            if (this.sideLabel) this.sideLabel.setText("Vessel (r=5)").setPosition(this.graphics.x + vX, this.graphics.y + vY + vH/2 + 25).setVisible(true);
+
+            // Potion Fill Animations
+            if (vBucket === 3140) {
+                let fillRatioLeft = 1.0;
+                if (!isNaN(hVessel) && hVessel > 0) {
+                    fillRatioLeft = Math.max(0, 1 - (hVessel / 40));
+                }
+                // Fill left
+                if (fillRatioLeft > 0) {
+                    this.graphics.fillStyle(0x3b82f6, 0.5);
+                    this.graphics.fillRect(bX - bR/2 + 1, bY + bH/2 - bH * fillRatioLeft, bR - 2, bH * fillRatioLeft);
+                    this.graphics.fillEllipse(bX, bY + bH/2, bR - 2, bR * 0.35);
+                    this.graphics.fillEllipse(bX, bY + bH/2 - bH * fillRatioLeft, bR - 2, bR * 0.35);
+                }
+
+                // Fill right
+                if (!isNaN(hVessel) && hVessel > 0) {
+                    const fillRatioRight = Math.min(1.0, hVessel / 40);
+                    const fillCol = hVessel === 40 ? 0x10b981 : 0xf59e0b;
+                    this.graphics.fillStyle(fillCol, 0.6);
+                    this.graphics.fillRect(vX - vR/2 + 1, vY + vH/2 - vH * fillRatioRight, vR - 2, vH * fillRatioRight);
+                    this.graphics.fillEllipse(vX, vY + vH/2, vR - 2, vR * 0.35);
+                    this.graphics.fillEllipse(vX, vY + vH/2 - vH * fillRatioRight, vR - 2, vR * 0.35);
+
+                    if (this.depthLabel) this.depthLabel.setText(`h = ${hVessel} cm`).setPosition(this.graphics.x + vX, this.graphics.y - 50).setVisible(true);
+                }
+            }
+            return;
+        }
+
+        if (levelId === 'lvl-15') {
+            this.hideLabels();
+            const vCone = parseFloat(inputs[0] || '');
+            const hCyl = parseFloat(inputs[1] || '');
+
+            // Left Cone Cup: r = 6, h = 12 (tall conical glass)
+            const cX = -100, cY = 30, cR = 50, cH = 120;
+            this.graphics.lineStyle(2, 0x475569, 0.5);
+            this.graphics.strokeEllipse(cX, cY - cH/2, cR, cR * 0.35);
+            this.graphics.beginPath();
+            this.graphics.moveTo(cX - cR/2, cY - cH/2);
+            this.graphics.lineTo(cX, cY + cH/2);
+            this.graphics.lineTo(cX + cR/2, cY - cH/2);
+            this.graphics.strokePath();
+
+            // Right Beaker Cylinder: r = 4, h = 9 sitting lower
+            const bX = 100, bY = 50, bR = 40, bH = 100;
+            this.graphics.strokeEllipse(bX, bY + bH/2, bR, bR * 0.35);
+            this.graphics.strokeEllipse(bX, bY - bH/2, bR, bR * 0.35);
+            this.graphics.lineBetween(bX - bR/2, bY - bH/2, bX - bR/2, bY + bH/2);
+            this.graphics.lineBetween(bX + bR/2, bY - bH/2, bX + bR/2, bY + bH/2);
+
+            if (this.bottomLabel) this.bottomLabel.setText("Cone Cup").setPosition(this.graphics.x + cX, this.graphics.y + cY + cH/2 + 20).setVisible(true);
+            if (this.sideLabel) this.sideLabel.setText("Beaker").setPosition(this.graphics.x + bX, this.graphics.y + bY + bH/2 + 20).setVisible(true);
+
+            if (vCone === 144) {
+                let fillRatioLeft = 1.0;
+                if (!isNaN(hCyl) && hCyl > 0) {
+                    fillRatioLeft = Math.max(0, 1 - (hCyl / 9));
+                }
+
+                // Fill left cone
+                if (fillRatioLeft > 0) {
+                    this.graphics.fillStyle(0xf59e0b, 0.6);
+                    this.graphics.beginPath();
+                    this.graphics.moveTo(cX - (cR/2) * fillRatioLeft, cY + cH/2 - cH * fillRatioLeft);
+                    this.graphics.lineTo(cX, cY + cH/2);
+                    this.graphics.lineTo(cX + (cR/2) * fillRatioLeft, cY + cH/2 - cH * fillRatioLeft);
+                    this.graphics.closePath();
+                    this.graphics.fillPath();
+                    this.graphics.fillEllipse(cX, cY + cH/2 - cH * fillRatioLeft, cR * fillRatioLeft, cR * 0.35 * fillRatioLeft);
+                }
+
+                // Fill right beaker
+                if (!isNaN(hCyl) && hCyl > 0) {
+                    const fillRatioRight = Math.min(1.0, hCyl / 9);
+                    const fillCol = hCyl === 9 ? 0x10b981 : 0xf59e0b;
+                    this.graphics.fillStyle(fillCol, 0.6);
+                    this.graphics.fillRect(bX - bR/2 + 1, bY + bH/2 - bH * fillRatioRight, bR - 2, bH * fillRatioRight);
+                    this.graphics.fillEllipse(bX, bY + bH/2, bR - 2, bR * 0.35);
+                    this.graphics.fillEllipse(bX, bY + bH/2 - bH * fillRatioRight, bR - 2, bR * 0.35);
+                    
+                    if (this.depthLabel) this.depthLabel.setText(`h = ${hCyl} cm`).setPosition(this.graphics.x + bX, this.graphics.y - 50).setVisible(true);
+                }
+            }
+            return;
+        }
+
+        if (levelId === 'lvl-16') {
+            const rad = 100;
+            this.graphics.strokeCircle(cx, cy, rad);
+            this.graphics.fillCircle(cx, cy, rad);
+            this.graphics.strokeEllipse(cx, cy, rad * 2, rad * 0.4);
+            this.hideLabels();
+            if (this.bottomLabel) {
+                const totalV = parseFloat(inputs[1] || '');
+                this.bottomLabel.setText(isNaN(totalV) ? "Radius = 6m" : `Volume = ${totalV} m³`).setPosition(this.graphics.x, this.graphics.y + rad + 25).setVisible(true);
+            }
+            return;
+        }
+
+        if (levelId === 'lvl-17') {
+            const hVal = parseFloat(inputs[0] || '');
+            const h = 120;
+            const r = 80;
+            this.graphics.strokeEllipse(cx, cy + h/2, r, r * 0.35);
+            this.graphics.strokeEllipse(cx, cy - h/2, r, r * 0.35);
+            this.graphics.lineBetween(cx - r/2, cy - h/2, cx - r/2, cy + h/2);
+            this.graphics.lineBetween(cx + r/2, cy - h/2, cx + r/2, cy + h/2);
+            this.graphics.fillRect(cx - r/2, cy - h/2, r, h);
+            this.graphics.fillEllipse(cx, cy - h/2, r, r * 0.35);
+
+            this.hideLabels();
+            if (this.bottomLabel) {
+                this.bottomLabel.setText(`r = 10m`).setPosition(this.graphics.x, this.graphics.y + h/2 + 25).setVisible(true);
+            }
+            if (this.sideLabel) {
+                this.sideLabel.setText(isNaN(hVal) ? "h = ?" : `h = ${hVal}m`).setPosition(this.graphics.x + r/2 + 35, this.graphics.y).setVisible(true);
+            }
+            return;
+        }
+
+        if (levelId === 'lvl-18') {
+            const saVal = parseFloat(inputs[1] || '');
+            const rad = 100;
+            this.graphics.strokeCircle(cx, cy, rad);
+            this.graphics.fillCircle(cx, cy, rad);
+            this.graphics.strokeEllipse(cx, cy, rad * 2, rad * 0.4);
+            this.hideLabels();
+            if (this.bottomLabel) {
+                this.bottomLabel.setText(isNaN(saVal) ? "Radius = 15m" : `Surface Area = ${saVal} m²`).setPosition(this.graphics.x, this.graphics.y + rad + 25).setVisible(true);
+            }
+            return;
+        }
+
+        // --- COMBINATION OF SHAPES ---
+        if (levelId === 'lvl-19') {
+            this.hideLabels();
+            const vCone = parseFloat(inputs[0] || '');
+            const vHemi = parseFloat(inputs[1] || '');
+
+            const r = 70;
+            const hCone = 80;
+
+            // Draw Hemisphere Base
+            let hemiCol = 0x3b82f6;
+            if (vHemi === 56.52) hemiCol = 0x10b981;
+            else if (!isNaN(vHemi)) hemiCol = 0xf59e0b;
+
+            this.graphics.fillStyle(hemiCol, 0.4);
+            this.graphics.lineStyle(3, hemiCol, 1);
+            this.graphics.strokeEllipse(cx, cy, r * 2, r * 0.4);
+            this.graphics.fillEllipse(cx, cy, r * 2, r * 0.4);
+            this.graphics.beginPath();
+            this.graphics.arc(cx, cy, r, 0, Math.PI, false);
+            this.graphics.strokePath();
+            this.graphics.fillPath();
+
+            // Draw Cone surmounted on top
+            let coneCol = 0x3b82f6;
+            if (vCone === 37.68) coneCol = 0x10b981;
+            else if (!isNaN(vCone)) coneCol = 0xf59e0b;
+
+            this.graphics.fillStyle(coneCol, 0.4);
+            this.graphics.lineStyle(3, coneCol, 1);
+            this.graphics.beginPath();
+            this.graphics.moveTo(cx - r, cy);
+            this.graphics.lineTo(cx, cy - hCone);
+            this.graphics.lineTo(cx + r, cy);
+            this.graphics.closePath();
+            this.graphics.strokePath();
+            this.graphics.fillPath();
+
+            if (this.bottomLabel) this.bottomLabel.setText("r = 3").setPosition(this.graphics.x, this.graphics.y + r + 20).setVisible(true);
+            if (this.sideLabel) this.sideLabel.setText("h = 4").setPosition(this.graphics.x + r + 25, this.graphics.y - hCone/2).setVisible(true);
+            return;
+        }
+
+        if (levelId === 'lvl-20' || levelId === 'lvl-21') {
+            this.hideLabels();
+            const vCyl = parseFloat(inputs[0] || '');
+            const vCaps = parseFloat(inputs[1] || '');
+
+            const r = 50;
+            const hCyl = 100;
+
+            // Draw Cylinder
+            let cylCol = 0x3b82f6;
+            if (vCyl > 0) cylCol = 0x10b981;
+            this.graphics.fillStyle(cylCol, 0.3);
+            this.graphics.lineStyle(3, cylCol, 1);
+            this.graphics.strokeEllipse(cx, cy - hCyl/2, r * 2, r * 0.4);
+            this.graphics.strokeEllipse(cx, cy + hCyl/2, r * 2, r * 0.4);
+            this.graphics.lineBetween(cx - r, cy - hCyl/2, cx - r, cy + hCyl/2);
+            this.graphics.lineBetween(cx + r, cy - hCyl/2, cx + r, cy + hCyl/2);
+            this.graphics.fillRect(cx - r, cy - hCyl/2, r * 2, hCyl);
+            this.graphics.fillEllipse(cx, cy + hCyl/2, r * 2, r * 0.4);
+            this.graphics.fillEllipse(cx, cy - hCyl/2, r * 2, r * 0.4);
+
+            // Draw Bottom Cap (Hemisphere)
+            let capCol = 0x3b82f6;
+            if (vCaps > 0) capCol = 0x10b981;
+            this.graphics.fillStyle(capCol, 0.3);
+            this.graphics.lineStyle(3, capCol, 1);
+            this.graphics.beginPath();
+            this.graphics.arc(cx, cy + hCyl/2, r, 0, Math.PI, false);
+            this.graphics.strokePath();
+            this.graphics.fillPath();
+            this.graphics.strokeEllipse(cx, cy + hCyl/2, r * 2, r * 0.4);
+
+            // Draw Top Cap (only for lvl-20 Space Capsule)
+            if (levelId === 'lvl-20') {
+                this.graphics.beginPath();
+                this.graphics.arc(cx, cy - hCyl/2, r, 0, Math.PI, true);
+                this.graphics.strokePath();
+                this.graphics.fillPath();
+                this.graphics.strokeEllipse(cx, cy - hCyl/2, r * 2, r * 0.4);
+            }
+
+            if (this.bottomLabel) this.bottomLabel.setText("r = 3").setPosition(this.graphics.x, this.graphics.y + hCyl/2 + r + 15).setVisible(true);
+            return;
+        }
+
+        if (levelId === 'lvl-22') {
+            this.hideLabels();
+            const vCyl = parseFloat(inputs[0] || '');
+            const vCone = parseFloat(inputs[1] || '');
+
+            const r = 60;
+            const hCyl = 100;
+            const hCone = 50;
+
+            // Cylinder
+            let cylCol = 0x3b82f6;
+            if (vCyl === 1130.4) cylCol = 0x10b981;
+            else if (!isNaN(vCyl)) cylCol = 0xf59e0b;
+
+            this.graphics.fillStyle(cylCol, 0.3);
+            this.graphics.lineStyle(3, cylCol, 1);
+            this.graphics.strokeEllipse(cx, cy + hCyl/2, r * 2, r * 0.4);
+            this.graphics.lineBetween(cx - r, cy - hCyl/2, cx - r, cy + hCyl/2);
+            this.graphics.lineBetween(cx + r, cy - hCyl/2, cx + r, cy + hCyl/2);
+            this.graphics.fillRect(cx - r, cy - hCyl/2, r * 2, hCyl);
+            this.graphics.fillEllipse(cx, cy + hCyl/2, r * 2, r * 0.4);
+            this.graphics.fillEllipse(cx, cy - hCyl/2, r * 2, r * 0.4);
+
+            // Cone roof surmounted on top
+            let coneCol = 0x3b82f6;
+            if (vCone === 113.04) coneCol = 0x10b981;
+            else if (!isNaN(vCone)) coneCol = 0xf59e0b;
+
+            this.graphics.fillStyle(coneCol, 0.4);
+            this.graphics.lineStyle(3, coneCol, 1);
+            this.graphics.beginPath();
+            this.graphics.moveTo(cx - r, cy - hCyl/2);
+            this.graphics.lineTo(cx, cy - hCyl/2 - hCone);
+            this.graphics.lineTo(cx + r, cy - hCyl/2);
+            this.graphics.closePath();
+            this.graphics.strokePath();
+            this.graphics.fillPath();
+
+            return;
+        }
+
+        if (levelId === 'lvl-23') {
+            this.hideLabels();
+            const vCub = parseFloat(inputs[0] || '');
+            const vCube = parseFloat(inputs[1] || '');
+
+            // Draw Head Cuboid
+            let headCol = 0x3b82f6;
+            if (vCub === 480) headCol = 0x10b981;
+            else if (!isNaN(vCub)) headCol = 0xf59e0b;
+
+            this.graphics.fillStyle(headCol, 0.35);
+            this.graphics.lineStyle(3, headCol, 1);
+            this.graphics.strokeRect(cx - 70, cy, 140, 70);
+            this.graphics.fillRect(cx - 70, cy, 140, 70);
+
+            // Draw Top Sensor Cube
+            let sensCol = 0x3b82f6;
+            if (vCube === 27) sensCol = 0x10b981;
+            else if (!isNaN(vCube)) sensCol = 0xf59e0b;
+
+            this.graphics.fillStyle(sensCol, 0.4);
+            this.graphics.lineStyle(3, sensCol, 1);
+            this.graphics.strokeRect(cx - 20, cy - 40, 40, 40);
+            this.graphics.fillRect(cx - 20, cy - 40, 40, 40);
+            return;
+        }
+
+        if (levelId === 'lvl-24') {
+            this.hideLabels();
+            const vCub = parseFloat(inputs[0] || '');
+            const vPyr = parseFloat(inputs[1] || '');
+
+            // Cuboid Base
+            let baseCol = 0x3b82f6;
+            if (vCub === 600) baseCol = 0x10b981;
+            else if (!isNaN(vCub)) baseCol = 0xf59e0b;
+
+            this.graphics.fillStyle(baseCol, 0.3);
+            this.graphics.lineStyle(3, baseCol, 1);
+            this.graphics.strokeRect(cx - 80, cy, 160, 70);
+            this.graphics.fillRect(cx - 80, cy, 160, 70);
+
+            // Pyramid surmounting
+            let pyrCol = 0x3b82f6;
+            if (vPyr === 240) pyrCol = 0x10b981;
+            else if (!isNaN(vPyr)) pyrCol = 0xf59e0b;
+
+            this.graphics.fillStyle(pyrCol, 0.4);
+            this.graphics.lineStyle(3, pyrCol, 1);
+            this.graphics.beginPath();
+            this.graphics.moveTo(cx - 80, cy);
+            this.graphics.lineTo(cx, cy - 70);
+            this.graphics.lineTo(cx + 80, cy);
+            this.graphics.closePath();
+            this.graphics.strokePath();
+            this.graphics.fillPath();
+            return;
+        }
+
+        // Custom Board Exam Step Writer Renderer for Level 25: Recasting Forge
+        if (levelId === 'lvl-25') {
+            this.hideLabels();
+
+            const vSphereStr = (this.boardExamInputs && this.boardExamInputs[0]) || '';
+            const hCylinderStr = (this.boardExamInputs && this.boardExamInputs[1]) || '';
+            
+            const vSphere = parseFloat(vSphereStr);
+            const hCylinder = parseFloat(hCylinderStr);
+
+            // 1. Draw the Liquid Gold Pool/Reservoir at the bottom
+            const poolX = -200;
+            const poolY = 100;
+            const poolWidth = 400;
+            const poolHeight = 25;
+
+            // Draw pool outline
+            this.graphics.lineStyle(2, 0x475569, 0.4); // Thin slate
+            this.graphics.strokeRect(poolX, poolY, poolWidth, poolHeight);
+
+            // 2. Draw Sphere on the Left (center at -120, -20)
+            const sx = -120;
+            const sy = -20;
+            let sphereRadius = 60;
+            let sphereColor = 0x3b82f6; // Sky blue by default
+            let sphereOpacity = 0.25;
+
+            if (vSphereStr.trim() !== '') {
+                if (!isNaN(vSphere)) {
+                    if (vSphere === 113.04) {
+                        sphereColor = 0x10b981; // Vibrant success emerald green
+                        sphereOpacity = 0.45;
+                    } else if (vSphere > 113.04) {
+                        sphereColor = 0xf43f5e; // Too large red
+                    } else {
+                        sphereColor = 0xf59e0b; // Amber
+                    }
+                    // Scale radius based on input
+                    sphereRadius = 60 * Math.max(0.3, Math.min(1.6, vSphere / 113.04));
+                }
+            }
+
+            // Draw Sphere
+            const isStage1Correct = vSphere === 113.04;
+            const hasMelted = isStage1Correct;
+            const showSphere = !hasMelted || (hCylinderStr.trim() === '');
+
+            if (showSphere) {
+                this.graphics.lineStyle(3, sphereColor, 1);
+                this.graphics.fillStyle(sphereColor, sphereOpacity);
+                this.graphics.strokeCircle(sx, sy, sphereRadius);
+                this.graphics.fillCircle(sx, sy, sphereRadius);
+                
+                // Elliptical equator lines to give perfect 3D spherical rendering
+                this.graphics.strokeEllipse(sx, sy, sphereRadius * 2, sphereRadius * 0.4);
+                
+                // Center Dot
+                this.labelGraphics.fillStyle(0x0f172a, 1);
+                this.labelGraphics.fillCircle(sx, sy, 4);
+
+                // Sphere Radius Helper Line
+                this.graphics.lineStyle(2, 0x475569, 0.6);
+                this.graphics.lineBetween(sx, sy, sx + sphereRadius, sy);
+                
+                // Label
+                this.bottomLabel.setText("r = 3")
+                    .setPosition(this.graphics.x + sx + sphereRadius/2, this.graphics.y + sy - 20)
+                    .setVisible(true);
+            }
+
+            // If Stage 1 is correct, show melting animation draining into the pool!
+            if (isStage1Correct) {
+                // Draw pool gold fill
+                let currentPoolFillRatio = 1.0;
+                
+                // If user is recasting (typing height), the pool shrinks
+                if (!isNaN(hCylinder) && hCylinder > 0) {
+                    currentPoolFillRatio = Math.max(0, 1 - (hCylinder / 9));
+                }
+
+                if (currentPoolFillRatio > 0) {
+                    this.graphics.fillStyle(0xf59e0b, 0.85); // Molten Gold
+                    this.graphics.fillRect(poolX + 2, poolY + poolHeight * (1 - currentPoolFillRatio) + 1, poolWidth - 4, poolHeight * currentPoolFillRatio - 2);
+                }
+
+                // If sphere is melting (no cylinder height yet), draw flow streams!
+                if (hCylinderStr.trim() === '') {
+                    this.graphics.lineStyle(3, 0xf59e0b, 0.8);
+                    // Flowing stream from sphere bottom to pool
+                    this.graphics.lineBetween(sx, sy + 15, sx, poolY);
+                    this.graphics.lineBetween(sx - 10, sy + 18, sx - 10, poolY + 5);
+                    this.graphics.lineBetween(sx + 10, sy + 18, sx + 10, poolY + 5);
+                }
+            }
+
+            // 3. Draw Cylinder Mold on the Right (center at 120, -10)
+            const cxRight = 120;
+            const cyRight = poolY; // Bottom of cylinder sits exactly on top of the pool!
+            const cylRadius = 45;
+            const maxCylHeight = 130;
+            let cylColor = 0x475569; // Faint slate mold outline
+            
+            // Draw cylinder mold outline
+            this.graphics.lineStyle(2.5, cylColor, 0.35); // dashed or faint solid
+            
+            // Bottom cap ellipse
+            this.graphics.strokeEllipse(cxRight, cyRight, cylRadius * 2, cylRadius * 0.4);
+            // Top cap ellipse
+            this.graphics.strokeEllipse(cxRight, cyRight - maxCylHeight, cylRadius * 2, cylRadius * 0.4);
+            // Side lines of the mold
+            this.graphics.lineBetween(cxRight - cylRadius, cyRight, cxRight - cylRadius, cyRight - maxCylHeight);
+            this.graphics.lineBetween(cxRight + cylRadius, cyRight, cxRight + cylRadius, cyRight - maxCylHeight);
+
+            // Radius indicator label
+            if (this.sideLabel) {
+                this.sideLabel.setText("r = 2")
+                    .setPosition(this.graphics.x + cxRight, this.graphics.y + cyRight - maxCylHeight - 20)
+                    .setVisible(true);
+            }
+
+            // If user types in Stage 2 (cylinder height)
+            if (isStage1Correct && hCylinderStr.trim() !== '') {
+                if (!isNaN(hCylinder) && hCylinder > 0) {
+                    let fillRatio = Math.min(1.2, hCylinder / 9);
+                    let fillHeight = maxCylHeight * fillRatio;
+                    
+                    let fillCylinderColor = 0xf59e0b; // Molten Gold by default
+                    let fillOpacity = 0.85;
+
+                    if (hCylinder === 9) {
+                        fillCylinderColor = 0x10b981; // Success Green!
+                        fillOpacity = 0.9;
+                    } else if (hCylinder > 9) {
+                        fillCylinderColor = 0xf43f5e; // Too high!
+                    }
+
+                    // Draw filled liquid in cylinder mold
+                    this.graphics.fillStyle(fillCylinderColor, fillOpacity);
+                    this.graphics.lineStyle(3, fillCylinderColor, 1);
+                    
+                    // Fill body
+                    this.graphics.fillRect(cxRight - cylRadius + 1.5, cyRight - fillHeight, cylRadius * 2 - 3, fillHeight);
+                    // Ellipse caps
+                    this.graphics.fillEllipse(cxRight, cyRight, cylRadius * 2 - 3, cylRadius * 0.4);
+                    this.graphics.fillEllipse(cxRight, cyRight - fillHeight, cylRadius * 2 - 3, cylRadius * 0.4);
+                    this.graphics.strokeEllipse(cxRight, cyRight - fillHeight, cylRadius * 2 - 3, cylRadius * 0.4);
+                    
+                    // Re-draw sides of the filled part
+                    this.graphics.lineBetween(cxRight - cylRadius, cyRight, cxRight - cylRadius, cyRight - fillHeight);
+                    this.graphics.lineBetween(cxRight + cylRadius, cyRight, cxRight + cylRadius, cyRight - fillHeight);
+
+                    // Height value label
+                    this.depthLabel.setText(`h = ${hCylinder.toFixed(1)}`)
+                        .setPosition(this.graphics.x + cxRight + cylRadius + 30, this.graphics.y + cyRight - fillHeight / 2)
+                        .setVisible(true);
+
+                    // Draw pouring stream from base pool into the cylinder!
+                    if (hCylinder < 9) {
+                        this.graphics.lineStyle(3, 0xf59e0b, 0.8);
+                        this.graphics.lineBetween(cxRight, cyRight + 15, cxRight, cyRight - fillHeight);
+                    }
+                }
+            } else {
+                // Awaiting cylinder height
+                if (this.depthLabel) this.depthLabel.setVisible(false);
+            }
+            return;
+        }
+
+        // --- CONVERSIONS OF SHAPES ---
+        if (levelId === 'lvl-26' || levelId === 'lvl-27' || levelId === 'lvl-28' || levelId === 'lvl-29' || levelId === 'lvl-30') {
+            this.hideLabels();
+            const stage1Val = parseFloat(inputs[0] || '');
+            const stage2Val = parseFloat(inputs[1] || '');
+            const stage3Val = parseFloat(inputs[2] || '');
+
+            // Left side starting solid
+            const sX = -120, sY = -20, sSize = 50;
+            let solidCol = 0x3b82f6;
+            if (stage1Val > 0) solidCol = 0x10b981;
+
+            this.graphics.fillStyle(solidCol, 0.35);
+            this.graphics.lineStyle(3, solidCol, 1);
+
+            if (levelId === 'lvl-26') {
+                // Cube
+                this.graphics.strokeRect(sX - sSize, sY - sSize, sSize * 2, sSize * 2);
+                this.graphics.fillRect(sX - sSize, sY - sSize, sSize * 2, sSize * 2);
+            } else if (levelId === 'lvl-27' || levelId === 'lvl-29') {
+                // Cylinder
+                this.graphics.strokeEllipse(sX, sY + sSize, sSize, sSize * 0.35);
+                this.graphics.strokeEllipse(sX, sY - sSize, sSize, sSize * 0.35);
+                this.graphics.lineBetween(sX - sSize, sY - sSize, sX - sSize, sY + sSize);
+                this.graphics.lineBetween(sX + sSize, sY - sSize, sX + sSize, sY + sSize);
+                this.graphics.fillRect(sX - sSize, sY - sSize, sSize * 2, sSize * 2);
+                this.graphics.fillEllipse(sX, sY + sSize, sSize, sSize * 0.35);
+                this.graphics.fillEllipse(sX, sY - sSize, sSize, sSize * 0.35);
+            } else if (levelId === 'lvl-28') {
+                // Cuboid Gold Bar
+                this.graphics.strokeRect(sX - sSize * 1.3, sY - sSize * 0.8, sSize * 2.6, sSize * 1.6);
+                this.graphics.fillRect(sX - sSize * 1.3, sY - sSize * 0.8, sSize * 2.6, sSize * 1.6);
+            } else if (levelId === 'lvl-30') {
+                // Mega Complex Tower (Final Boss)
+                const cRadius = 40;
+                const cHeight = 80;
+                // Cylinder
+                this.graphics.strokeEllipse(cx, cy + cHeight/2, cRadius * 2, cRadius * 0.4);
+                this.graphics.strokeEllipse(cx, cy - cHeight/2, cRadius * 2, cRadius * 0.4);
+                this.graphics.lineBetween(cx - cRadius, cy - cHeight/2, cx - cRadius, cy + cHeight/2);
+                this.graphics.lineBetween(cx + cRadius, cy - cHeight/2, cx + cRadius, cy + cHeight/2);
+                this.graphics.fillRect(cx - cRadius, cy - cHeight/2, cRadius * 2, cHeight);
+                this.graphics.fillEllipse(cx, cy + cHeight/2, cRadius * 2, cRadius * 0.4);
+                this.graphics.fillEllipse(cx, cy - cHeight/2, cRadius * 2, cRadius * 0.4);
+                // Cone top
+                this.graphics.beginPath();
+                this.graphics.moveTo(cx - cRadius, cy - cHeight/2);
+                this.graphics.lineTo(cx, cy - cHeight/2 - 40);
+                this.graphics.lineTo(cx + cRadius, cy - cHeight/2);
+                this.graphics.closePath();
+                this.graphics.strokePath();
+                this.graphics.fillPath();
+                // Hemisphere bottom
+                this.graphics.beginPath();
+                this.graphics.arc(cx, cy + cHeight/2, cRadius, 0, Math.PI, false);
+                this.graphics.strokePath();
+                this.graphics.fillPath();
+                return;
+            }
+
+            // Right side molds/moulds (representing casting results)
+            const mX = 100, mY = -20;
+            let moldCol = 0x475569;
+            if (stage3Val > 0) moldCol = 0x10b981;
+            else if (stage2Val > 0) moldCol = 0xf59e0b;
+
+            this.graphics.fillStyle(moldCol, 0.45);
+            this.graphics.lineStyle(3, moldCol, 1);
+
+            // Draw casting visual
+            for (let i = 0; i < 4; i++) {
+                const ox = mX + (i % 2) * 50 - 25;
+                const oy = mY + Math.floor(i / 2) * 50 - 25;
+                if (levelId === 'lvl-26' || levelId === 'lvl-29') {
+                    this.graphics.strokeCircle(ox, oy, 15);
+                    if (stage3Val > 0) this.graphics.fillCircle(ox, oy, 15);
+                } else if (levelId === 'lvl-27') {
+                    this.graphics.beginPath();
+                    this.graphics.moveTo(ox - 15, oy + 15);
+                    this.graphics.lineTo(ox, oy - 15);
+                    this.graphics.lineTo(ox + 15, oy + 15);
+                    this.graphics.closePath();
+                    this.graphics.strokePath();
+                    if (stage3Val > 0) this.graphics.fillPath();
+                } else if (levelId === 'lvl-28') {
+                    this.graphics.strokeRect(ox - 15, oy - 15, 30, 30);
+                    if (stage3Val > 0) this.graphics.fillRect(ox - 15, oy - 15, 30, 30);
+                }
+            }
+
+            return;
+        }
 
         if (shape.includes('cylinder')) {
             const rx = s;

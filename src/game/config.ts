@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { BootScene } from './scenes/BootScene';
 import { LevelScene } from './scenes/LevelScene';
+import { CoordinateScene } from './scenes/CoordinateScene';
+import { TrigonometryScene } from './scenes/TrigonometryScene';
 
 export const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -13,6 +15,8 @@ export const config: Phaser.Types.Core.GameConfig = {
     },
     scene: [
         BootScene,
-        LevelScene
+        LevelScene,
+        CoordinateScene,
+        TrigonometryScene
     ]
 };

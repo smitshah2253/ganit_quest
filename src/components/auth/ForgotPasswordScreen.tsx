@@ -28,12 +28,16 @@ export const ForgotPasswordScreen = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <div className="w-full min-h-screen flex items-center justify-center bg-[var(--color-bg)] p-4 relative overflow-hidden select-none">
+      {/* Decorative saffron & indigo highlights */}
+      <div className="absolute top-10 left-10 w-72 h-72 bg-orange-400/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
+
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="w-full max-w-md p-8 rounded-3xl bg-white shadow-2xl border border-gray-100 overflow-hidden"
+        className="w-full max-w-md p-8 rounded-3xl bg-white/80 backdrop-blur-md shadow-2xl border border-slate-200/80 overflow-hidden relative z-10"
       >
         <div className="relative z-10">
           <motion.div
@@ -41,12 +45,12 @@ export const ForgotPasswordScreen = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1, duration: 0.4 }}
           >
-            <h2 className="text-3xl font-extrabold text-blue-600 text-center mb-3 tracking-tight">
+            <h2 className="text-3xl font-black text-slate-850 text-center mb-3 tracking-tight">
               Reset Password
             </h2>
           </motion.div>
           
-          <p className="text-gray-500 text-center text-sm mb-8 font-medium px-4">
+          <p className="text-slate-500 text-center text-xs mb-8 font-semibold px-4">
             Enter your email and we'll send you instructions to reset your password.
           </p>
 
@@ -54,7 +58,7 @@ export const ForgotPasswordScreen = () => {
             <motion.div 
               initial={{ opacity: 0, x: -10 }} 
               animate={{ opacity: 1, x: 0 }} 
-              className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm text-center font-medium"
+              className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-650 text-sm text-center font-medium"
             >
               {error}
             </motion.div>
@@ -64,7 +68,7 @@ export const ForgotPasswordScreen = () => {
             <motion.div 
               initial={{ opacity: 0, x: -10 }} 
               animate={{ opacity: 1, x: 0 }} 
-              className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-600 text-sm text-center font-medium"
+              className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm text-center font-semibold"
             >
               {message}
             </motion.div>
@@ -72,31 +76,31 @@ export const ForgotPasswordScreen = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-gray-700 text-xs font-bold mb-2 tracking-wide uppercase">Email Address</label>
+              <label className="block text-slate-700 text-xs font-bold mb-2 tracking-wide uppercase">Email Address</label>
               <input 
                 type="email" 
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all font-medium"
+                className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-semibold"
                 placeholder="student@school.com"
                 required
               />
             </div>
 
             <motion.button 
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
               type="submit" 
               disabled={loading}
-              className="w-full py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30 disabled:opacity-70 text-lg"
+              className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-orange-600 to-indigo-600 hover:from-orange-500 hover:to-indigo-500 transition-all shadow-md shadow-orange-500/20 disabled:opacity-70 text-base uppercase tracking-wider cursor-pointer"
             >
               {loading ? 'Sending Instructions...' : 'Reset Password'}
             </motion.button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-gray-500 font-medium">
+          <p className="mt-8 text-center text-xs font-semibold text-slate-500">
             Remember your password? {' '}
-            <Link to="/login" className="text-blue-600 font-bold hover:underline">
+            <Link to="/login" className="text-orange-600 font-bold hover:underline">
               Log in
             </Link>
           </p>
@@ -105,3 +109,4 @@ export const ForgotPasswordScreen = () => {
     </div>
   );
 };
+export default ForgotPasswordScreen;

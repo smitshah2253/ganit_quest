@@ -1,63 +1,76 @@
 import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import { PhaserGame } from '../game/PhaserGame';
 import { EventBus } from '../game/EventBus';
 import { ResultScreen } from './ResultScreen';
-import levels from '../data/levels.json';
+import levels from '../data/levels';
 import { useGameStore } from '../store/gameStore';
-import { ConceptPanel } from './ConceptPanel';
+import { ConceptPanel } from './concept-panel/ConceptPanel';
 import { ConceptBook } from './ConceptBook';
 import { getLevelSpec } from '../data/levelSpecs';
 import { AnimatePresence } from 'framer-motion';
 
-interface GameContainerProps {
-  levelId: string;
-  onBack: () => void;
-}
+export const GameContainer: React.FC = () => {
+  const { chapterId, levelId } = useParams<{ chapterId: string; levelId: string }>();
+  const navigate = useNavigate();
 
-export const GameContainer: React.FC<GameContainerProps> = ({ levelId, onBack }) => {
   const levelData = levels.find(l => l.id === levelId);
   const spec = levelData ? getLevelSpec(levelData.id, levelData) : null;
   
   const [showResult, setShowResult] = useState(false);
   const [stars, setStars] = useState(0);
   const [showConceptBook, setShowConceptBook] = useState(true);
-  const { addXp, addStars, unlockLevel } = useGameStore();
+  const [isSolved, setIsSolved] = useState(false);
+  const { addXp, addStars, unlockLevel, setCurrentLevel } = useGameStore();
+
+  // Filter levels for the current chapter to handle progression
+  const chapterLevels = levels.filter(level => {
+    if (chapterId === 'ch-7') return level.id.startsWith('lvl-cg-');
+    if (chapterId === 'ch-8') return level.id.startsWith('lvl-trig-');
+    return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-');
+  });
 
   useEffect(() => {
     setShowConceptBook(true);
     setShowResult(false);
+    setIsSolved(false);
   }, [levelId]);
 
   const handleNextLevel = () => {
-    const currentIndex = levels.findIndex(l => l.id === levelId);
-    if (currentIndex !== -1 && currentIndex + 1 < levels.length) {
-      onBack(); // Simplest is to go back to chapters and let them pick the next unlocked
+    const currentIndex = chapterLevels.findIndex(l => l.id === levelId);
+    if (currentIndex !== -1 && currentIndex + 1 < chapterLevels.length) {
+      const nextLevel = chapterLevels[currentIndex + 1];
+      unlockLevel(nextLevel.id);
+      setCurrentLevel(nextLevel.id);
+      navigate(`/chapter/${chapterId}/level/${nextLevel.id}`);
+      setShowResult(false);
+      setIsSolved(false);
     } else {
-      onBack();
+      navigate(`/chapter/${chapterId}/levels`);
     }
   };
 
   const handleRetry = () => {
     setShowResult(false);
+    setIsSolved(false);
     EventBus.emit('load-level', levelData);
   };
 
   const handleCheckAnswer = (isCorrect: boolean) => {
-    if (isCorrect) {
-      // Calculate stars based on some logic, or just give 3 for now since it's an exact match mostly
+    if (isCorrect && levelId) {
       const earnedStars = 3;
       setStars(earnedStars);
+      setIsSolved(true);
       setShowResult(true);
       addXp(earnedStars * 50);
       addStars(earnedStars);
       
-      const currentIndex = levels.findIndex(l => l.id === levelId);
-      if (currentIndex !== -1 && currentIndex + 1 < levels.length) {
-        unlockLevel(levels[currentIndex + 1].id);
+      const currentIndex = chapterLevels.findIndex(l => l.id === levelId);
+      if (currentIndex !== -1 && currentIndex + 1 < chapterLevels.length) {
+        unlockLevel(chapterLevels[currentIndex + 1].id);
       }
     } else {
-      // Could show a "try again" toast or animation here
       alert("That's not quite right. Try again!");
     }
   };
@@ -70,17 +83,17 @@ export const GameContainer: React.FC<GameContainerProps> = ({ levelId, onBack })
       {/* Top Header */}
       <div className="w-full px-8 py-4 flex items-center justify-between bg-white/70 backdrop-blur-md border-b border-slate-200/80 z-10 shrink-0 shadow-sm select-none">
         <button 
-          onClick={onBack}
+          onClick={() => navigate(`/chapter/${chapterId}/levels`)}
           className="flex items-center text-slate-500 hover:text-slate-800 transition-colors font-semibold text-sm uppercase tracking-wider cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5 mr-1.5" />
-          <span>Back to Chapters</span>
+          <span>Back to Levels</span>
         </button>
         
         <div className="flex items-center gap-4">
           <button
             onClick={() => setShowConceptBook(true)}
-            className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4.5 py-2 rounded-xl shadow-md transition-all text-xs uppercase tracking-wider cursor-pointer"
+            className="flex items-center gap-1.5 bg-gradient-to-r from-orange-600 to-indigo-650 hover:from-orange-500 hover:to-indigo-550 text-white font-semibold px-4.5 py-2 rounded-xl shadow-md transition-all text-xs uppercase tracking-wider cursor-pointer"
           >
             <BookOpen className="w-4 h-4" />
             <span>Read Concept Book</span>
@@ -101,6 +114,8 @@ export const GameContainer: React.FC<GameContainerProps> = ({ levelId, onBack })
             levelData={levelData} 
             onCheckAnswer={handleCheckAnswer}
             onOpenBook={() => setShowConceptBook(true)}
+            isSolved={isSolved}
+            onNextLevel={handleNextLevel}
           />
         </div>
 
@@ -132,3 +147,4 @@ export const GameContainer: React.FC<GameContainerProps> = ({ levelId, onBack })
     </div>
   );
 };
+export default GameContainer;

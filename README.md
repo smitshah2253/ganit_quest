@@ -1,73 +1,32 @@
-# React + TypeScript + Vite
+# GanitQuest: Gamified Math Lab (Class X NCERT/CBSE)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+GanitQuest is an interactive, gamified math learning platform that translates abstract Class X NCERT syllabus concepts into visual, manipulable geometry laboratories. 
 
-Currently, two official plugins are available:
+Developed with a React + TypeScript frontend, a Phaser 3 interactive engine, and a Node.js/Express + MySQL backend, the platform bridges the gap between spatial intuition and formal symbolic worksheets.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 📖 Key Documentation Modules
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+We have compiled comprehensive guides detailing the architecture, pedagogy, mobile roadmap, and commercial scaling vectors of the startup:
 
-## Expanding the ESLint configuration
+1. 🛠️ **[Technical Documentation](file:///c:/Users/Smit/OneDrive/Desktop/Projects/startup/gamified_math/docs/technical_documentation.md)**
+   - Deploys the complete system architecture, frontend Phaser-React EventBus bridge, Zustand state stores, MySQL schema, Express REST API, and deployment instructions.
+   
+2. 📐 **[Business Logic & Pedagogy](file:///c:/Users/Smit/OneDrive/Desktop/Projects/startup/gamified_math/docs/business_logic.md)**
+   - Maps out the core learning loops, NCERT curriculum mapping, star/XP rewards formulas, and details the step-by-step intermediate verification engine designed to mirror Class X board exam formats.
+   
+3. 🚀 **[Launch, Marketing & Monetization Strategy (Indian Localized)](file:///c:/Users/Smit/OneDrive/Desktop/Projects/startup/gamified_math/docs/launch_marketing_monetization.md)**
+   - Sets up a Go-To-Market roadmap, Indian-localized saffron/indigo theme tokens, logo concept, freemium pricing structures, school B2B licensing targets, and a detailed market analysis (potential, competition, student appeal).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+4. 📱 **[React Native Mobile Conversion Guide](file:///c:/Users/Smit/OneDrive/Desktop/Projects/startup/gamified_math/docs/react_native_conversion.md)**
+   - Outlines the step-by-step roadmap to migrate the web application into a React Native (Expo) mobile app, covering Phaser WebView bridging, native Skia layouts, gesture handlers, and secure local storage.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## ⚡ Core Features
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Real-Time Interactive Canvas**: Students manipulate vertices, angles, heights, and radii directly in the browser to watch calculations update dynamically.
+- **CBSE Step-by-Step Hint System**: Converts simple input boxes into interactive worksheets with step-by-step mathematical statements, preparing students for written board exam formats.
+- **NCERT Alignment**: Custom levels targeting Quadrant Cartesian plotting, coordinate distance formulas, trigonometry identities, heights & distances observer towers, and volumes/surface areas of combination solids.
+- **Secure Authentication**: Supports JWT-based email registration/login, password recovery workflows, and Google OAuth Single-Sign-On integrations.

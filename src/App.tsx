@@ -1,61 +1,15 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { HomeScreen } from './components/HomeScreen';
-import { ChapterScreen } from './components/ChapterScreen';
+import { LoginScreen } from './components/auth/LoginScreen';
+import { RegisterScreen } from './components/auth/RegisterScreen';
+import { ForgotPasswordScreen } from './components/auth/ForgotPasswordScreen';
+import { ResetPasswordScreen } from './components/auth/ResetPasswordScreen';
+import { HomeScreen } from './components/screens/HomeScreen';
+import { ChapterScreen } from './components/screens/ChapterScreen';
+import { ChapterIntroScreen } from './components/screens/ChapterIntroScreen';
+import { LevelGridScreen } from './components/screens/LevelGridScreen';
 import { GameContainer } from './components/GameContainer';
-import { LoginScreen } from './components/LoginScreen';
-import { RegisterScreen } from './components/RegisterScreen';
-import { ForgotPasswordScreen } from './components/ForgotPasswordScreen';
-import { ResetPasswordScreen } from './components/ResetPasswordScreen';
-import { useGameStore } from './store/gameStore';
 import { useAuthStore } from './store/authStore';
-
-// We'll wrap the existing state-based flow in a GameFlow component
-// This keeps the existing logic working while adding routing on top
-const GameFlow = () => {
-  const [currentScreen, setCurrentScreen] = React.useState<'home' | 'chapters' | 'game'>('home');
-  const { currentLevelId, setCurrentLevel } = useGameStore();
-
-  const handleStartFromHome = () => {
-    setCurrentScreen('chapters');
-  };
-
-  const handleSelectLevel = (levelId: string) => {
-    setCurrentLevel(levelId);
-    setCurrentScreen('game');
-  };
-
-  const handleBackToChapters = () => {
-    setCurrentScreen('chapters');
-    setCurrentLevel(null!);
-  };
-
-  const handleBackToHome = () => {
-    setCurrentScreen('home');
-  };
-
-  return (
-    <div className="w-full min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] font-sans">
-      {currentScreen === 'home' && (
-        <HomeScreen onStart={handleStartFromHome} />
-      )}
-      
-      {currentScreen === 'chapters' && (
-        <ChapterScreen 
-          onBack={handleBackToHome}
-          onSelectLevel={handleSelectLevel}
-        />
-      )}
-      
-      {currentScreen === 'game' && currentLevelId && (
-        <GameContainer 
-          levelId={currentLevelId}
-          onBack={handleBackToChapters}
-        />
-      )}
-    </div>
-  );
-};
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -67,7 +21,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       setAuth('guest-bypass-token', {
         id: 999,
         name: 'Guest Explorer',
-        email: 'guest@mathquest.dev',
+        email: 'guest@ganitquest.in',
         xp: 120,
         level: 1,
         stars: 3
@@ -88,10 +42,42 @@ function App() {
       <Route path="/reset-password" element={<ResetPasswordScreen />} />
       
       <Route 
-        path="/home/*" 
+        path="/home" 
         element={
           <ProtectedRoute>
-            <GameFlow />
+            <HomeScreen />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/chapters" 
+        element={
+          <ProtectedRoute>
+            <ChapterScreen />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/chapter/:chapterId" 
+        element={
+          <ProtectedRoute>
+            <ChapterIntroScreen />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/chapter/:chapterId/levels" 
+        element={
+          <ProtectedRoute>
+            <LevelGridScreen />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/chapter/:chapterId/level/:levelId" 
+        element={
+          <ProtectedRoute>
+            <GameContainer />
           </ProtectedRoute>
         } 
       />

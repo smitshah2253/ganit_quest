@@ -1,0 +1,36 @@
+[
+  { "id": "lvl-cg-01", "world": 1, "type": "coordinate", "title": "Plot the Robot Location", "shape": "point", "targetValue": 0, "concept": "Coordinate System Basics: Point P(x, y)" },
+  { "id": "lvl-cg-02", "world": 1, "type": "coordinate", "title": "Identify Axis Offsets", "shape": "point", "targetValue": 0, "concept": "Distances from standard X and Y axes" },
+  { "id": "lvl-cg-03", "world": 1, "type": "coordinate", "title": "Navigate Sector C", "shape": "point", "targetValue": 0, "concept": "Plotting ordered pairs precisely" },
+  { "id": "lvl-cg-04", "world": 1, "type": "coordinate", "title": "Hidden Treasure coordinates", "shape": "point", "targetValue": 0, "concept": "Plotting point in negative ranges" },
+  { "id": "lvl-cg-05", "world": 1, "type": "coordinate", "title": "Surveyor Probe Quadrant", "shape": "point", "targetValue": 0, "concept": "Quadrant III navigation details" },
+  { "id": "lvl-cg-06", "world": 1, "type": "coordinate", "title": "Navigational Checkpoints", "shape": "point", "targetValue": 0, "concept": "Visualizing multi-point paths" },
+
+  { "id": "lvl-cg-07", "world": 2, "type": "plotting", "title": "Place Three Energy Nodes", "shape": "points_3", "targetValue": 0, "concept": "Plotting multiple nodes concurrently" },
+  { "id": "lvl-cg-08", "world": 2, "type": "plotting", "title": "Draw Diagonal Energy Line", "shape": "line", "targetValue": 0, "concept": "Creating line segments via vertices" },
+  { "id": "lvl-cg-09", "world": 2, "type": "plotting", "title": "Avoid Axis Plotting Traps", "shape": "point", "targetValue": 0, "concept": "Differentiating (x, y) from (y, x)" },
+  { "id": "lvl-cg-10", "world": 2, "type": "plotting", "title": "Y-Axis Symmetry Reflection", "shape": "point_reflection", "targetValue": 0, "concept": "Reflection across Y-axis: (x,y) to (-x,y)" },
+  { "id": "lvl-cg-11", "world": 2, "type": "plotting", "title": "Build Rectangle Shield", "shape": "rectangle", "targetValue": 0, "concept": "Connecting 4 vertices to form shapes" },
+  { "id": "lvl-cg-12", "world": 2, "type": "plotting", "title": "Speed Plotting Target", "shape": "point", "targetValue": 0, "concept": "Precision grid snapping under challenge" },
+
+  { "id": "lvl-cg-13", "world": 3, "type": "distance", "title": "Shortest Diagonal Distance", "shape": "line_distance", "targetValue": 5, "concept": "Distance Formula: d = √((x₂-x₁)² + (y₂-y₁)²)" },
+  { "id": "lvl-cg-14", "world": 3, "type": "distance", "title": "Robot Diagonal Path Length", "shape": "line_distance", "targetValue": 10, "concept": "Diagonal path measurements using coordinate bounds" },
+  { "id": "lvl-cg-15", "world": 3, "type": "distance", "title": "Connect Spaceships A and B", "shape": "line_distance", "targetValue": 10, "concept": "Calculating distance across quadrants" },
+  { "id": "lvl-cg-16", "world": 3, "type": "distance", "title": "Equidistant Signal Tower", "shape": "point", "targetValue": 0, "concept": "Points equidistant from two coordinates" },
+  { "id": "lvl-cg-17", "world": 3, "type": "distance", "title": "Check Cargo Collinearity", "shape": "collinear", "targetValue": 0, "concept": "Collinearity check: AB + BC = AC" },
+  { "id": "lvl-cg-18", "world": 3, "type": "distance", "title": "Isosceles Solar Triangle", "shape": "triangle_check", "targetValue": 0, "concept": "Proving isosceles geometry properties" },
+
+  { "id": "lvl-cg-19", "world": 4, "type": "section", "title": "Build Bridge Midpoint", "shape": "midpoint", "targetValue": 0, "concept": "Midpoint Formula: ((x₁+x₂)/2, (y₁+y₂)/2)" },
+  { "id": "lvl-cg-20", "world": 4, "type": "section", "title": "Midpoint Energy Station", "shape": "midpoint", "targetValue": 0, "concept": "Calculate midpoints inside negative grid ranges" },
+  { "id": "lvl-cg-21", "world": 4, "type": "section", "title": "Divide Laser Segment (1:2)", "shape": "section_point", "targetValue": 0, "concept": "Section Formula: ((mx₂+nx₁)/(m+n), (my₂+ny₁)/(m+n))" },
+  { "id": "lvl-cg-22", "world": 4, "type": "section", "title": "Balance Logistics (3:1)", "shape": "section_point", "targetValue": 0, "concept": "Section formula with division ratio 3:1" },
+  { "id": "lvl-cg-23", "world": 4, "type": "section", "title": "Symmetrical Wing Division", "shape": "midpoint", "targetValue": 0, "concept": "Midpoint verification for symmetrical wings" },
+  { "id": "lvl-cg-24", "world": 4, "type": "section", "title": "Divide Segment ratio (2:3)", "shape": "section_point", "targetValue": 0, "concept": "Section formula with coordinates division ratio 2:3" },
+
+  { "id": "lvl-cg-25", "world": 5, "type": "mastery", "title": "Navigate Through Maze", "shape": "maze", "targetValue": 0, "concept": "Multi-stage coordinate puzzle solving" },
+  { "id": "lvl-cg-26", "world": 5, "type": "mastery", "title": "Equidistant Defense Line", "shape": "mastery_equidistant", "targetValue": 0, "concept": "Equidistant relations: AP = BP" },
+  { "id": "lvl-cg-27", "world": 5, "type": "mastery", "title": "4th Vertex of Parallelogram", "shape": "parallelogram", "targetValue": 0, "concept": "Diagonals of parallelogram bisect each other" },
+  { "id": "lvl-cg-28", "world": 5, "type": "mastery", "title": "Minimal Coordinate Mesh", "shape": "mesh", "targetValue": 0, "concept": "Section formula with negative division ratios" },
+  { "id": "lvl-cg-29", "world": 5, "type": "mastery", "title": "Centroid of Core Triangle", "shape": "centroid", "targetValue": 0, "concept": "Centroid: ((x₁+x₂+x₃)/3, (y₁+y₂+y₃)/3)" },
+  { "id": "lvl-cg-30", "world": 5, "type": "boss", "title": "FINAL BOSS: Reactor Alignment", "shape": "boss_cg", "targetValue": 0, "concept": "Comprehensive coordinate geometry master challenge" }
+]
