@@ -26,6 +26,20 @@ export const CHAPTER_WORLD_NAMES: Record<string, Record<number, string>> = {
     3: "World 3: Volume Factory",
     4: "World 4: Combination Forge",
     5: "World 5: Conversion Reactor"
+  },
+  'ch-5': {
+    1: "World 1: Pattern Discovery",
+    2: "World 2: Common Difference Mechanics",
+    3: "World 3: Nth Term Engine",
+    4: "World 4: Sum of AP Factory",
+    5: "World 5: Real World Simulation"
+  },
+  'ch-14': {
+    1: "World 1: Random Experiment Basics",
+    2: "World 2: Sample Space Construction",
+    3: "World 3: Events & Probability Intuition",
+    4: "World 4: Probability Formula Engine",
+    5: "World 5: Real-World Probability Systems"
   }
 };
 
@@ -45,8 +59,14 @@ export const LevelGrid: React.FC<LevelGridProps> = ({ chapterId }) => {
     if (chapterId === 'ch-8') {
       return level.id.startsWith('lvl-trig-');
     }
+    if (chapterId === 'ch-5') {
+      return level.id.startsWith('lvl-ap-');
+    }
+    if (chapterId === 'ch-14') {
+      return level.id.startsWith('lvl-prob-');
+    }
     if (chapterId === 'ch-12') {
-      return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-');
+      return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-');
     }
     return false;
   });

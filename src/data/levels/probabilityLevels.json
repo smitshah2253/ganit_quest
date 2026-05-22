@@ -1,0 +1,36 @@
+[
+  { "id": "lvl-prob-01", "world": 1, "type": "probability", "title": "Coin Flip Simulator", "concept": "Sample Space", "targetValue": 0 },
+  { "id": "lvl-prob-02", "world": 1, "type": "probability", "title": "P(Heads) Chamber", "concept": "Favorable Outcomes", "targetValue": 0 },
+  { "id": "lvl-prob-03", "world": 1, "type": "probability", "title": "Double Coin Reactor", "concept": "Sample Space", "targetValue": 0 },
+  { "id": "lvl-prob-04", "world": 1, "type": "probability", "title": "Die Outcome Scanner", "concept": "Sample Space", "targetValue": 0 },
+  { "id": "lvl-prob-05", "world": 1, "type": "probability", "title": "Single Outcome Detector", "concept": "Favorable Outcomes", "targetValue": 0 },
+  { "id": "lvl-prob-06", "world": 1, "type": "probability", "title": "Even Number Filter", "concept": "Favorable Outcomes", "targetValue": 0 },
+
+  { "id": "lvl-prob-07", "world": 2, "type": "probability", "title": "Twin Dice Grid Builder", "concept": "Sample Space", "targetValue": 0 },
+  { "id": "lvl-prob-08", "world": 2, "type": "probability", "title": "Sum-7 Probability Engine", "concept": "Favorable Outcomes", "targetValue": 0 },
+  { "id": "lvl-prob-09", "world": 2, "type": "probability", "title": "Card Deck Scanner", "concept": "Sample Space", "targetValue": 0 },
+  { "id": "lvl-prob-10", "world": 2, "type": "probability", "title": "Ace Detector Module", "concept": "Favorable Outcomes", "targetValue": 0 },
+  { "id": "lvl-prob-11", "world": 2, "type": "probability", "title": "Suit Filter: Hearts", "concept": "Favorable Outcomes", "targetValue": 0 },
+  { "id": "lvl-prob-12", "world": 2, "type": "probability", "title": "Face Card Counter", "concept": "Favorable Outcomes", "targetValue": 0 },
+
+  { "id": "lvl-prob-13", "world": 3, "type": "probability", "title": "Prime Outcome Selector", "concept": "Events", "targetValue": 0 },
+  { "id": "lvl-prob-14", "world": 3, "type": "probability", "title": "Greater-Than Gate", "concept": "Events", "targetValue": 0 },
+  { "id": "lvl-prob-15", "world": 3, "type": "probability", "title": "Complement Reactor", "concept": "Complementary Events", "targetValue": 0 },
+  { "id": "lvl-prob-16", "world": 3, "type": "probability", "title": "Probability Bag — Total", "concept": "Sample Space", "targetValue": 0 },
+  { "id": "lvl-prob-17", "world": 3, "type": "probability", "title": "Red Ball Probability", "concept": "Favorable Outcomes", "targetValue": 0 },
+  { "id": "lvl-prob-18", "world": 3, "type": "probability", "title": "Non-Green Probability", "concept": "Complementary Events", "targetValue": 0 },
+
+  { "id": "lvl-prob-19", "world": 4, "type": "probability", "title": "Decimal Probability Output", "concept": "P(E) Formula", "targetValue": 0 },
+  { "id": "lvl-prob-20", "world": 4, "type": "probability", "title": "Bag Formula Solver", "concept": "P(E) Formula", "targetValue": 0 },
+  { "id": "lvl-prob-21", "world": 4, "type": "probability", "title": "Black Card Probability", "concept": "P(E) Formula", "targetValue": 0 },
+  { "id": "lvl-prob-22", "world": 4, "type": "probability", "title": "Multiple-of-3 Engine", "concept": "P(E) Formula", "targetValue": 0 },
+  { "id": "lvl-prob-23", "world": 4, "type": "probability", "title": "Complementary P(E) Reactor", "concept": "Complementary Events", "targetValue": 0 },
+  { "id": "lvl-prob-24", "world": 4, "type": "probability", "title": "Experimental Probability Lab", "concept": "Experimental Probability", "targetValue": 0 },
+
+  { "id": "lvl-prob-25", "world": 5, "type": "probability", "title": "At-Least-One-Head System", "concept": "Real World Probability", "targetValue": 0 },
+  { "id": "lvl-prob-26", "world": 5, "type": "probability", "title": "Die Game Fairness Analyzer", "concept": "Real World Probability", "targetValue": 0 },
+  { "id": "lvl-prob-27", "world": 5, "type": "probability", "title": "Queen Card Probability", "concept": "Real World Probability", "targetValue": 0 },
+  { "id": "lvl-prob-28", "world": 5, "type": "probability", "title": "Non-Red Ball Simulator", "concept": "Real World Probability", "targetValue": 0 },
+  { "id": "lvl-prob-29", "world": 5, "type": "probability", "title": "Doublet Probability Engine", "concept": "Real World Probability", "targetValue": 0 },
+  { "id": "lvl-prob-30", "world": 5, "type": "probability", "title": "BOSS: Quantum Probability Reactor", "concept": "Full Probability Mastery", "targetValue": 0 }
+]

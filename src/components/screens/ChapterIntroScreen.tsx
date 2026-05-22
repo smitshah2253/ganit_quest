@@ -12,6 +12,33 @@ interface ChapterIntro {
 }
 
 const CHAPTER_INTROS: Record<string, ChapterIntro> = {
+  'ch-14': {
+    title: 'Probability',
+    subtitle: 'Chapter 14 • CBSE Class X Mathematics',
+    description: 'Enter the Probability Simulation Lab — a futuristic RNG facility where randomness meets mathematics. From coin flips and dice rolls to card draws and real-world risk, learn to quantify uncertainty using the elegant formula P(E) = n(E) / n(S).',
+    objectives: [
+      'Understand random experiments, outcomes, and sample spaces',
+      'Identify events and count favorable outcomes accurately',
+      'Apply P(E) = n(E) / n(S) for theoretical probability',
+      'Use complementary events: P(Ē) = 1 − P(E)',
+      'Distinguish experimental from theoretical probability'
+    ],
+    cbseWeightage: '8 Marks (Standard & Basic)',
+    difficulty: 'Beginner'
+  },
+  'ch-5': {
+    title: 'Arithmetic Progressions',
+    subtitle: 'Chapter 5 • CBSE Class X Mathematics',
+    description: 'Explore the elegant world of number sequences where every term follows a predictable pattern. From salary increments to staircase bricks, Arithmetic Progressions model the real world with two powerful formulas — the nth term and the sum of n terms.',
+    objectives: [
+      'Recognise and define an Arithmetic Progression (AP)',
+      'Find the Common Difference (d) and any term using aₙ = a + (n−1)d',
+      'Calculate the Sum of n terms using Sₙ = n/2 [2a + (n−1)d]',
+      'Apply AP to real-world problems: salaries, population, staircases'
+    ],
+    cbseWeightage: '8 Marks (Standard & Basic)',
+    difficulty: 'Intermediate'
+  },
   'ch-7': {
     title: 'Coordinate Geometry',
     subtitle: 'Chapter 7 • CBSE Class X Mathematics',

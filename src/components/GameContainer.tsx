@@ -32,7 +32,9 @@ export const GameContainer: React.FC = () => {
   const chapterLevels = levels.filter(level => {
     if (chapterId === 'ch-7') return level.id.startsWith('lvl-cg-');
     if (chapterId === 'ch-8') return level.id.startsWith('lvl-trig-');
-    return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-');
+    if (chapterId === 'ch-5') return level.id.startsWith('lvl-ap-');
+    if (chapterId === 'ch-14') return level.id.startsWith('lvl-prob-');
+    return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-');
   });
 
   useEffect(() => {

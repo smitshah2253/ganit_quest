@@ -121,6 +121,16 @@ export class LevelScene extends Scene {
                 this.scene.start('TrigonometryScene');
                 return;
             }
+            if (levelData.id.startsWith('lvl-ap-')) {
+                this.isLevelActive = false;
+                this.scene.start('APScene');
+                return;
+            }
+            if (levelData.id.startsWith('lvl-prob-')) {
+                this.isLevelActive = false;
+                this.scene.start('ProbabilityScene');
+                return;
+            }
             this.currentLevelData = levelData;
             this.levelSpec = getLevelSpec(levelData.id, levelData);
             this.currentValue = 0;

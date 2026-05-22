@@ -4,6 +4,16 @@ import { ArrowLeft, BookOpen } from 'lucide-react';
 import LevelGrid from '../chapter/LevelGrid';
 
 const CHAPTER_METADATA: Record<string, { title: string; syllabus: string; fullName: string }> = {
+  'ch-14': {
+    title: 'Probability',
+    fullName: 'Chapter 14: Probability',
+    syllabus: 'Syllabus: Random experiments, sample spaces, events, favorable outcomes, P(E) = n(E)/n(S), complementary events P(Ē) = 1 − P(E), and experimental probability. Select a level to begin.'
+  },
+  'ch-5': {
+    title: 'Arithmetic Progressions',
+    fullName: 'Chapter 5: Arithmetic Progressions',
+    syllabus: 'Syllabus: Sequences and series, common difference, nth term formula aₙ = a + (n−1)d, sum of n terms Sₙ = n/2[2a + (n−1)d], and real-world applications. Select a level to begin.'
+  },
   'ch-7': {
     title: 'Coordinate Geometry',
     fullName: 'Chapter 7: Coordinate Geometry',
@@ -25,7 +35,7 @@ export const LevelGridScreen: React.FC = () => {
   const { chapterId } = useParams<{ chapterId: string }>();
   const navigate = useNavigate();
 
-  const metadata = CHAPTER_METADATA[chapterId || 'ch-12'] || CHAPTER_METADATA['ch-12'];
+  const metadata = CHAPTER_METADATA[chapterId || 'ch-5'] || CHAPTER_METADATA['ch-5'];
 
   return (
     <div className="h-screen bg-[var(--color-bg)] text-slate-800 p-4 sm:p-6 md:p-10 overflow-y-auto relative select-none">

@@ -86,13 +86,15 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
 
     const isCG = currentLevelData.id.startsWith('lvl-cg-');
     const isTrig = currentLevelData.id.startsWith('lvl-trig-');
+    const isAP   = currentLevelData.id.startsWith('lvl-ap-');
+    const isProb  = currentLevelData.id.startsWith('lvl-prob-');
 
     let calculatedVal = 0;
     let targetVal = currentLevelData.targetValue;
     let matchStatus = 'awaiting_input';
     let accuracy = 0;
 
-    if (isCG || isTrig) {
+    if (isCG || isTrig || isAP || isProb) {
         let activeVal: number | null = null;
         if (spec.boardExamLines) {
             const val = parseFloat(boardExamInputs[0]);
@@ -256,7 +258,7 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                         {/* Live Calculated Display */}
                         <div>
                             <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
-                                {isCG ? "Live Answer" : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "Live Angle" : "Live Ratio") : "Live Volume"}
+                                {isCG ? "Live Answer" : isTrig ? (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity' ? "Live Angle" : "Live Ratio") : isAP ? "Live Answer" : isProb ? "Live Answer" : "Live Volume"}
                             </span>
                             <span className={`text-sm sm:text-base md:text-xl font-bold transition-colors duration-200 ${
                                 matchStatus === 'correct' 

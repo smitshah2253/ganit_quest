@@ -1,6 +1,8 @@
 import surfaceAreaVolumeSpecs from './specs/surfaceAreaVolumeSpecs';
 import coordinateGeometrySpecs from './specs/coordinateGeometrySpecs';
 import trigonometrySpecs from './specs/trigonometrySpecs';
+import arithmeticProgressionSpecs from './specs/arithmeticProgressionSpecs';
+import probabilitySpecs from './specs/probabilitySpecs';
 
 export interface BookPage {
   title: string;
@@ -47,6 +49,21 @@ export interface LevelSpecification {
   trigOpposite?: number;
   trigHypotenuse?: number;
   trigFormulaType?: 'sin' | 'cos' | 'tan' | 'cosec' | 'sec' | 'cot' | 'identity' | 'complementary' | 'heights';
+  // Extended Arithmetic Progression properties
+  apMode?: 'pattern' | 'difference' | 'nth_term' | 'sum' | 'realworld' | 'boss';
+  apFirstTerm?: number;
+  apCommonDiff?: number;
+  apN?: number;
+  apSequence?: (number | null)[];
+  apAnswerType?: 'term' | 'difference' | 'sum' | 'position';
+  // Extended Probability properties
+  probMode?: 'coin' | 'two_coin' | 'dice' | 'two_dice' | 'card' | 'bag' | 'formula' | 'boss';
+  probSampleSpace?: string[];
+  probFavorable?: string[];
+  probTotalOutcomes?: number;
+  probFavorableCount?: number;
+  probAnswerType?: 'favorable_count' | 'total_count' | 'decimal';
+  probBagColors?: { color: string; count: number; hex: number }[];
 }
 
 const defaultBookPage = (title: string, shape: string, formula: string, inputName: string): BookPage => ({
@@ -67,6 +84,8 @@ const specs: Record<string, LevelSpecification> = {
   ...surfaceAreaVolumeSpecs,
   ...coordinateGeometrySpecs,
   ...trigonometrySpecs,
+  ...arithmeticProgressionSpecs,
+  ...probabilitySpecs,
 };
 
 export const getLevelSpec = (levelId: string, levelData?: any): LevelSpecification => {

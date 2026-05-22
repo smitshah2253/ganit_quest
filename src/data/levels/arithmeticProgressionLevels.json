@@ -1,0 +1,36 @@
+[
+  { "id": "lvl-ap-01", "world": 1, "type": "ap_pattern", "title": "Glowing Sequence Belt", "shape": "ap_sequence", "targetValue": 4, "concept": "Identify the common difference of an Arithmetic Progression" },
+  { "id": "lvl-ap-02", "world": 1, "type": "ap_pattern", "title": "Missing Term Conveyor", "shape": "ap_sequence", "targetValue": 11, "concept": "Find the missing term in a known AP" },
+  { "id": "lvl-ap-03", "world": 1, "type": "ap_pattern", "title": "Constant Difference Detector", "shape": "ap_sequence", "targetValue": 13, "concept": "Detect and extend the constant-difference rule" },
+  { "id": "lvl-ap-04", "world": 1, "type": "ap_pattern", "title": "Broken Sequence Generator", "shape": "ap_sequence", "targetValue": 18, "concept": "Repair and extend a known AP" },
+  { "id": "lvl-ap-05", "world": 1, "type": "ap_pattern", "title": "AP Builder Start Engine", "shape": "ap_sequence", "targetValue": 23, "concept": "Build an AP from a first term and common difference" },
+  { "id": "lvl-ap-06", "world": 1, "type": "ap_pattern", "title": "Output Sequence Predictor", "shape": "ap_sequence", "targetValue": 38, "concept": "Predict a future term from a running sequence" },
+
+  { "id": "lvl-ap-07", "world": 2, "type": "ap_difference", "title": "Constant Difference Machine", "shape": "ap_sequence", "targetValue": 4, "concept": "Derive d when first and a specific term are known" },
+  { "id": "lvl-ap-08", "world": 2, "type": "ap_difference", "title": "Energy Flow Balancer", "shape": "ap_sequence", "targetValue": 4, "concept": "Find d using two known positions in an AP" },
+  { "id": "lvl-ap-09", "world": 2, "type": "ap_difference", "title": "Corrupted Sequence Repair", "shape": "ap_sequence", "targetValue": 21, "concept": "Calculate the exact missing interior term" },
+  { "id": "lvl-ap-10", "world": 2, "type": "ap_difference", "title": "Wrong Injection Detector", "shape": "ap_sequence", "targetValue": 12, "concept": "Identify and correct an invalid AP term" },
+  { "id": "lvl-ap-11", "world": 2, "type": "ap_difference", "title": "Stable AP Chain Builder", "shape": "ap_sequence", "targetValue": 67, "concept": "Apply d repeatedly to reach a high-position term" },
+  { "id": "lvl-ap-12", "world": 2, "type": "ap_difference", "title": "Decrement Sequence Challenge", "shape": "ap_sequence", "targetValue": 14, "concept": "Handle negative common difference in an AP" },
+
+  { "id": "lvl-ap-13", "world": 3, "type": "ap_nth_term", "title": "Sequence Reactor: Find 10th", "shape": "ap_nth", "targetValue": 32, "concept": "Apply aₙ = a + (n−1)d to find a specific term" },
+  { "id": "lvl-ap-14", "world": 3, "type": "ap_nth_term", "title": "Position-Value Calculator", "shape": "ap_nth", "targetValue": 63, "concept": "Use the nth-term formula for a high position" },
+  { "id": "lvl-ap-15", "world": 3, "type": "ap_nth_term", "title": "Decimal AP Predictor", "shape": "ap_nth", "targetValue": 29.5, "concept": "nth term formula with decimal common difference" },
+  { "id": "lvl-ap-16", "world": 3, "type": "ap_nth_term", "title": "Door Unlock: Find Position n", "shape": "ap_nth", "targetValue": 8, "concept": "Reverse-apply the nth term formula to find n" },
+  { "id": "lvl-ap-17", "world": 3, "type": "ap_nth_term", "title": "Reverse Sequence Engine", "shape": "ap_nth", "targetValue": 13, "concept": "Find n given aₙ, a and d" },
+  { "id": "lvl-ap-18", "world": 3, "type": "ap_nth_term", "title": "Descending AP Puzzle Grid", "shape": "ap_nth", "targetValue": 24, "concept": "nth term formula with large negative d" },
+
+  { "id": "lvl-ap-19", "world": 4, "type": "ap_sum", "title": "Total Energy Output", "shape": "ap_sum", "targetValue": 100, "concept": "Sum of n terms: Sₙ = n/2 × [2a + (n−1)d]" },
+  { "id": "lvl-ap-20", "world": 4, "type": "ap_sum", "title": "Production Line Sum System", "shape": "ap_sum", "targetValue": 136, "concept": "Apply the Sₙ formula to a higher-d sequence" },
+  { "id": "lvl-ap-21", "world": 4, "type": "ap_sum", "title": "Resource Accumulation Machine", "shape": "ap_sum", "targetValue": 258, "concept": "Sum of 12 terms with a=5, d=3" },
+  { "id": "lvl-ap-22", "world": 4, "type": "ap_sum", "title": "Block Structure Counter", "shape": "ap_sum", "targetValue": 240, "concept": "Sum of an AP with equal first term and common difference" },
+  { "id": "lvl-ap-23", "world": 4, "type": "ap_sum", "title": "Reverse Sum Puzzle", "shape": "ap_sum", "targetValue": 2, "concept": "Find d given Sₙ, a and n" },
+  { "id": "lvl-ap-24", "world": 4, "type": "ap_sum", "title": "Large Sum Optimization", "shape": "ap_sum", "targetValue": 480, "concept": "Sum of 20 terms with a=5, d=2" },
+
+  { "id": "lvl-ap-25", "world": 5, "type": "ap_realworld", "title": "Population Growth Simulator", "shape": "ap_real", "targetValue": 6200, "concept": "Model population as an AP and find a future value" },
+  { "id": "lvl-ap-26", "world": 5, "type": "ap_realworld", "title": "Salary Increment Engine", "shape": "ap_real", "targetValue": 28500, "concept": "Apply AP to annual salary progression" },
+  { "id": "lvl-ap-27", "world": 5, "type": "ap_realworld", "title": "Staircase Construction Pattern", "shape": "ap_real", "targetValue": 120, "concept": "Total bricks in a staircase using sum of AP" },
+  { "id": "lvl-ap-28", "world": 5, "type": "ap_realworld", "title": "Digital Scoring Progression", "shape": "ap_real", "targetValue": 675, "concept": "Total score across game levels modelled as AP" },
+  { "id": "lvl-ap-29", "world": 5, "type": "ap_realworld", "title": "Running Distance Accumulator", "shape": "ap_real", "targetValue": 16100, "concept": "Total distance run in a training program as an AP sum" },
+  { "id": "lvl-ap-30", "world": 5, "type": "ap_boss", "title": "BOSS: Sequence Master Reactor", "shape": "ap_boss", "targetValue": 3, "concept": "Reverse-engineer d from a known sum of AP" }
+]

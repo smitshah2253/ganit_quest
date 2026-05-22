@@ -3,6 +3,8 @@ import { BootScene } from './scenes/BootScene';
 import { LevelScene } from './scenes/LevelScene';
 import { CoordinateScene } from './scenes/CoordinateScene';
 import { TrigonometryScene } from './scenes/TrigonometryScene';
+import { APScene } from './scenes/APScene';
+import { ProbabilityScene } from './scenes/ProbabilityScene';
 
 export const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -19,6 +21,8 @@ export const config: Phaser.Types.Core.GameConfig = {
         BootScene,
         LevelScene,
         CoordinateScene,
-        TrigonometryScene
+        TrigonometryScene,
+        APScene,
+        ProbabilityScene
     ]
 };
