@@ -47,9 +47,11 @@ export const LoginScreen = () => {
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        console.warn('Google Login placeholder', tokenResponse);
-      } catch (err) {
-        setError('Google login failed');
+        const res = await axios.post(`${API_URL}/auth/google`, { credential: tokenResponse.access_token });
+        setAuth(res.data.token, res.data.user);
+        navigate('/home');
+      } catch (err: any) {
+        setError(err.response?.data?.error || 'Google login failed');
       }
     },
     onError: () => setError('Google login failed'),

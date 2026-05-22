@@ -80,9 +80,9 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onNext, onRetry, sta
   };
 
   const getMessage = () => {
-    if (starsEarned === 3) return { title: 'Perfect!', subtitle: 'You nailed it! Flawless victory!' };
-    if (starsEarned === 2) return { title: 'Great Job!', subtitle: 'Almost perfect — keep going!' };
-    return { title: 'Good Try!', subtitle: 'You can do even better next time!' };
+    if (starsEarned === 3) return { title: 'Perfect!', subtitle: 'Solved on first try with no hints! 🏆' };
+    if (starsEarned === 2) return { title: 'Great Job!', subtitle: 'Try solving without hints for 3 stars! 💪' };
+    return { title: 'Good Try!', subtitle: 'No hints & first-try attempt earns 3 stars! 🎯' };
   };
 
   const { title, subtitle } = getMessage();

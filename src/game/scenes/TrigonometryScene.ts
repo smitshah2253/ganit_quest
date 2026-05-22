@@ -356,14 +356,14 @@ export class TrigonometryScene extends Scene {
         this.backgroundGraphics.arc(cx, cy, radius, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(360), false);
         this.backgroundGraphics.strokePath();
 
-        // Target angle beam (dashed amber line)
-        const targetAngle = this.levelSpec?.trigTargetAngle || 45;
-        const targetRad = Phaser.Math.DegToRad(targetAngle);
-        const tx = cx + radius * Math.cos(targetRad);
-        const ty = cy - radius * Math.sin(targetRad); // invert Y
+        // Target angle beam (dashed amber line) - hidden to prevent answer leakage
+        // const targetAngle = this.levelSpec?.trigTargetAngle || 45;
+        // const targetRad = Phaser.Math.DegToRad(targetAngle);
+        // const tx = cx + radius * Math.cos(targetRad);
+        // const ty = cy - radius * Math.sin(targetRad); // invert Y
 
-        this.backgroundGraphics.lineStyle(2, 0xf59e0b, 0.4);
-        this.drawDashedLine(this.backgroundGraphics, cx, cy, tx, ty, 5, 5);
+        // this.backgroundGraphics.lineStyle(2, 0xf59e0b, 0.4);
+        // this.drawDashedLine(this.backgroundGraphics, cx, cy, tx, ty, 5, 5);
 
         // Draw sweeping sector arc
         const currentRad = Phaser.Math.DegToRad(this.currentAngle);
@@ -383,7 +383,7 @@ export class TrigonometryScene extends Scene {
 
         // Dynamic Angle Text labels
         this.drawOrUpdateLabel('angle_label', `${this.currentAngle}°`, cx + 45 * Math.cos(currentRad / 2), cy - 45 * Math.sin(currentRad / 2), '#0891b2', '14px', '800');
-        this.drawOrUpdateLabel('target_label', `TARGET: ${targetAngle}°`, tx + 20, ty - 10, '#d97706', '11px', '700');
+        // this.drawOrUpdateLabel('target_label', `TARGET: ${targetAngle}°`, tx + 20, ty - 10, '#d97706', '11px', '700');
     }
 
     // ==========================================

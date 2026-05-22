@@ -18,13 +18,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "For any point P(x, y), its perpendicular distance from the y-axis is its x-coordinate (abscissa), and its perpendicular distance from the x-axis is its y-coordinate (ordinate).",
       formulaBreakdown: "Distance from Y-axis = x, Distance from X-axis = y",
       stepByStep: [
-        "Find the point on the grid: (4, 3).",
-        "The horizontal displacement from the origin along the X-axis is 4.",
-        "The vertical displacement along the Y-axis is 3.",
-        "The perpendicular distance to the Y-axis is the horizontal offset, which is 4.",
-        "Therefore, x-coordinate = 4."
+        "Find the point on the grid from the question.",
+        "The horizontal displacement from the origin along the X-axis is the x-coordinate.",
+        "The vertical displacement along the Y-axis is the y-coordinate.",
+        "The perpendicular distance to the Y-axis is the horizontal offset."
       ],
-      visualTip: "Drag the Robot node on the screen to A(4, 3) and watch it snap! The input will auto-update to 4!"
+      visualTip: "Drag the Robot node on the screen to the target point and watch it snap! The input will auto-update!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given point: P(4, 3)" },
@@ -52,12 +51,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "The y-coordinate represents a point's vertical offset. The perpendicular distance from the X-axis is always the absolute value of the y-coordinate.",
       formulaBreakdown: "Distance from X-axis = |y|",
       stepByStep: [
-        "Plot B(-5, 6) in the second quadrant.",
-        "The y-coordinate of B(-5, 6) is 6.",
-        "The absolute value of its y-coordinate is |6| = 6.",
+        "Plot the point in the appropriate quadrant.",
+        "The y-coordinate of the point is the vertical coordinate.",
+        "The absolute value of the y-coordinate represents vertical displacement.",
         "This represents its vertical displacement from the horizontal x-axis."
       ],
-      visualTip: "Drag the probe to (-5, 6). Notice how the projection drops down 6 units to the x-axis!"
+      visualTip: "Drag the probe to the target point. Notice how the projection drops down to the x-axis!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given point: B(-5, 6)" },
@@ -83,12 +82,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "An ordered pair is written as (x, y). The first number, x, is called the abscissa, representing horizontal location.",
       formulaBreakdown: "Abscissa = x-value of (x, y)",
       stepByStep: [
-        "Plot C(6, -2) in Quadrant IV.",
-        "The ordered pair is (6, -2).",
-        "The first coordinate, representing the x-value, is 6.",
+        "Plot the point in the appropriate quadrant.",
+        "The ordered pair has two coordinates.",
+        "The first coordinate represents the x-value.",
         "This is the abscissa."
       ],
-      visualTip: "Move the drone to (6, -2). Abscissa is 6, indicating 6 units to the right of the Y-axis."
+      visualTip: "Move the drone to the target point. Abscissa indicates horizontal distance from the Y-axis."
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given point C(6, -2)" },
@@ -113,12 +112,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "The second number in the ordered pair, y, is called the ordinate, representing vertical location.",
       formulaBreakdown: "Ordinate = y-value of (x, y)",
       stepByStep: [
-        "Plot D(-3, -7) in Quadrant III.",
-        "The ordered pair is (-3, -7).",
-        "The second coordinate, representing the y-value, is -7.",
+        "Plot the point in the appropriate quadrant.",
+        "The ordered pair has two coordinates.",
+        "The second coordinate represents the y-value.",
         "This is the ordinate."
       ],
-      visualTip: "Slide the treasure chest into Quadrant III at (-3, -7). Ordinate is -7."
+      visualTip: "Slide the treasure chest into the appropriate quadrant. Ordinate indicates vertical position."
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given point D(-3, -7)" },
@@ -144,8 +143,8 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       formulaBreakdown: "(-x) × (-y) = +xy",
       stepByStep: [
         "Quadrant III is characterized by x < 0 and y < 0.",
-        "Plot E(-4, -4) which resides in Quadrant III.",
-        "Multiply the coordinates: -4 × -4 = 16."
+        "Plot the point which resides in Quadrant III.",
+        "Multiply the coordinates to find the product."
       ],
       visualTip: "Position the probe in the lower-left Quadrant III. Notice both coordinates are negative."
     },
@@ -173,12 +172,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "The distance of any point P(x, y) from the origin O(0, 0) is derived from the Pythagorean theorem: √(x² + y²).",
       formulaBreakdown: "d = √(x² + y²)",
       stepByStep: [
-        "Identify the coordinates: A(3, 4).",
-        "Square each coordinate: 3² = 9 and 4² = 16.",
-        "Sum the squares: 9 + 16 = 25.",
-        "Take the square root: √25 = 5."
+        "Identify the coordinates from the question.",
+        "Square each coordinate.",
+        "Sum the squares.",
+        "Take the square root to find the distance."
       ],
-      visualTip: "Move the checkpoint to A(3, 4). A green laser segment will stretch back to (0,0) with length 5!"
+      visualTip: "Move the checkpoint to the target point. A green laser segment will stretch back to (0,0)!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given point A(3, 4) and Origin O(0, 0)" },
@@ -205,11 +204,11 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "To plot a point P(2, 3), move 2 units right on the X-axis and 3 units up on the Y-axis.",
       formulaBreakdown: "Sum = 2 + 3 = 5",
       stepByStep: [
-        "Locate 2 on the X-axis and 3 on the Y-axis.",
-        "The intersection point is P(2, 3).",
-        "Add the x and y coordinates: 2 + 3 = 5."
+        "Locate the x-coordinate on the X-axis and y-coordinate on the Y-axis.",
+        "The intersection point is the target point.",
+        "Add the x and y coordinates to find the sum."
       ],
-      visualTip: "Snap the node to (2, 3). The sum of coordinates is exactly 5!"
+      visualTip: "Snap the node to the target point. The sum of coordinates will be displayed!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Point to plot: (2, 3)" },
@@ -238,11 +237,11 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "When two points share the same x-coordinate, the segment between them is vertical. Its length is the difference between their y-coordinates.",
       formulaBreakdown: "Distance = |y₂ - y₁| since x₁ = x₂",
       stepByStep: [
-        "Point A is (1, 2) and Point B is (1, 8).",
-        "Since the x-coordinates are equal, calculate: |8 - 2|.",
-        "Length = 6 units."
+        "Identify the coordinates of both points.",
+        "Since the x-coordinates are equal, calculate the difference in y-coordinates.",
+        "The absolute difference gives the length."
       ],
-      visualTip: "Position A at (1, 2) and B at (1, 8). A vertical energy line of length 6 will be established!"
+      visualTip: "Position the points as specified. A vertical energy line will be established!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given: A(1, 2) and B(1, 8)" },
@@ -269,10 +268,10 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       formulaBreakdown: "x-coordinate on Y-axis = 0",
       stepByStep: [
         "A point lying on the Y-axis has zero horizontal offset.",
-        "The coordinate is specified as (0, 5).",
+        "The coordinate is specified with x = 0.",
         "Its x-coordinate is 0."
       ],
-      visualTip: "Place the node exactly on the Y-axis at height 5. Notice how its horizontal position becomes 0!"
+      visualTip: "Place the node exactly on the Y-axis at the specified height. Notice how its horizontal position becomes 0!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "For any point lying on the Y-axis, the abscissa is 0." },
@@ -297,13 +296,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "Reflecting a point across the Y-axis flips the sign of its x-coordinate, while the y-coordinate remains unchanged.",
       formulaBreakdown: "P(x, y) → P'(-x, y)",
       stepByStep: [
-        "Start with original point P(3, 4).",
+        "Start with the original point from the question.",
         "Reflect across the vertical Y-axis.",
-        "The new x-coordinate becomes -3.",
-        "The y-coordinate remains 4.",
-        "Thus, P' is (-3, 4)."
+        "The new x-coordinate becomes the negative of the original.",
+        "The y-coordinate remains the same."
       ],
-      visualTip: "Drag P' to (-3, 4), which is exactly opposite P(3, 4) across the center line!"
+      visualTip: "Drag the reflected point to the opposite position across the center line!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Original point: P(3, 4)" },
@@ -334,11 +332,11 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "A rectangle on a coordinate grid has horizontal sides along constant y, and vertical sides along constant x.",
       formulaBreakdown: "Length = |x₂ - x₁|, Width = |y₂ - y₁|",
       stepByStep: [
-        "Calculate length AB: |7 - 1| = 6 units.",
-        "Calculate width BC: |5 - 1| = 4 units.",
-        "Apply perimeter formula: 2 × (Length + Width) = 2 × (6 + 4) = 20."
+        "Calculate the length using the difference in x-coordinates.",
+        "Calculate the width using the difference in y-coordinates.",
+        "Apply perimeter formula: 2 × (Length + Width)."
       ],
-      visualTip: "Plot the 4 points to form a 6x4 rectangle. A neon rectangle will light up!"
+      visualTip: "Plot the 4 points to form a rectangle. A neon rectangle will light up!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Vertices: A(1, 1), B(7, 1), C(7, 5), D(1, 5)" },
@@ -365,11 +363,11 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "Calculating coordinate relationships represents an essential grid mastery skill.",
       formulaBreakdown: "Difference = |x - y| = |4 - (-5)| = 9",
       stepByStep: [
-        "Plot target at (4, -5).",
-        "Subtract coordinates: 4 - (-5) = 4 + 5 = 9.",
-        "The absolute value is |9| = 9."
+        "Plot the target at the specified coordinates.",
+        "Subtract the coordinates as specified.",
+        "Calculate the absolute value of the result."
       ],
-      visualTip: "Move the node to (4, -5). The distance difference value is exactly 9."
+      visualTip: "Move the node to the target point. The distance difference value will be displayed."
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Coordinates: x = 4, y = -5" },
@@ -397,11 +395,9 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "The Distance Formula calculates the straight-line segment length between any two points in the Cartesian plane.",
       formulaBreakdown: "d = √((x₂ - x₁)² + (y₂ - y₁)²)",
       stepByStep: [
-        "Identify points: A(1, 2) and B(4, 6).",
-        "Subtract coordinates: x₂ - x₁ = 4 - 1 = 3; y₂ - y₁ = 6 - 2 = 4.",
-        "Square the offsets: 3² = 9, 4² = 16.",
-        "Add: 9 + 16 = 25.",
-        "Take square root: √25 = 5."
+        "Identify the coordinates of both points.",
+        "Subtract coordinates to find the offsets.",
+        "Square the offsets, add them, and take the square root."
       ],
       visualTip: "Observe the green connection line forming a right-angled triangle on the graph!"
     },
@@ -434,12 +430,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "When subtracting negative values, be careful with signs: x₂ - x₁ = 4 - (-2) = 4 + 2 = 6.",
       formulaBreakdown: "d = √((4 - (-2))² + (-5 - 3)²)",
       stepByStep: [
-        "Offsets: x-offset = 4 - (-2) = 6; y-offset = -5 - 3 = -8.",
-        "Square the values: 6² = 36, (-8)² = 64.",
-        "Sum: 36 + 64 = 100.",
-        "Square root: √100 = 10."
+        "Calculate the x-offset and y-offset between the points.",
+        "Square the offset values.",
+        "Sum the squared values.",
+        "Take the square root to find the distance."
       ],
-      visualTip: "The line crosses between quadrants. The total distance is exactly 10."
+      visualTip: "The line crosses between quadrants. The total distance will be displayed."
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Points: A(-2, 3) and B(4, -5)" },
@@ -469,10 +465,10 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "If points lie on the axes, their distance is simple to find via Pythagorean theorem: √(x² + y²).",
       formulaBreakdown: "d = √(8² + (-6)²) = 10",
       stepByStep: [
-        "Offsets: 8 - 0 = 8 and 0 - 6 = -6.",
-        "Square: 8² = 64 and (-6)² = 36.",
-        "Sum: 64 + 36 = 100.",
-        "Root: √100 = 10."
+        "Calculate the x-offset and y-offset between the points.",
+        "Square the offset values.",
+        "Sum the squared values.",
+        "Take the square root to find the distance."
       ],
       visualTip: "A connects the y-axis intercept to the x-axis intercept B."
     },
@@ -504,13 +500,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "A point equidistant from two vertices has equal distance segments. A point on X-axis is written as P(x, 0).",
       formulaBreakdown: "AP² = BP² → (x-2)² + (0+5)² = (x+2)² + (0-9)²",
       stepByStep: [
-        "Let the point be P(x, 0).",
-        "AP² = (x - 2)² + (0 - (-5))² = x² - 4x + 29.",
-        "BP² = (x - (-2))² + (0 - 9)² = x² + 4x + 85.",
-        "Equating both: x² - 4x + 29 = x² + 4x + 85.",
-        "Simplify: -8x = 56 → x = -7."
+        "Let the point be P(x, 0) on the X-axis.",
+        "Calculate AP² using the distance formula.",
+        "Calculate BP² using the distance formula.",
+        "Equate both expressions and solve for x."
       ],
-      visualTip: "Move P along the X-axis to (-7, 0). The two laser links to A and B will become equal!"
+      visualTip: "Move P along the X-axis to the calculated position. The two laser links to A and B will become equal!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Let the point on X-axis be P(x, 0)." },
@@ -543,12 +538,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "Points are collinear if they lie on a single line. The slope between any two pairs must be equal.",
       formulaBreakdown: "(y₂-y₁)/(x₂-x₁) = (y₃-y₂)/(x₃-x₂)",
       stepByStep: [
-        "Slope of AB = (k - 3)/(4 - 2) = (k - 3)/2.",
-        "Slope of BC = (-3 - k)/(6 - 4) = (-3 - k)/2.",
-        "Equating slopes: (k - 3)/2 = (-3 - k)/2.",
-        "Simplify: k - 3 = -3 - k → 2k = 0 → k = 0."
+        "Calculate the slope of AB using the formula.",
+        "Calculate the slope of BC using the formula.",
+        "Equate the slopes since points are collinear.",
+        "Solve for the unknown k."
       ],
-      visualTip: "Move B to (4, 0). The segments AB and BC will merge into a single straight line!"
+      visualTip: "Move B to the calculated position. The segments AB and BC will merge into a single straight line!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Points: A(2, 3), B(4, k), C(6, -3)" },
@@ -581,12 +576,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "A triangle is isosceles if at least two of its sides are equal in length.",
       formulaBreakdown: "Calculate AB, BC, AC using Distance Formula",
       stepByStep: [
-        "AB = √((6-5)² + (4 - (-2))²) = √(1 + 36) = √37 ≈ 6.08.",
-        "BC = √((7-6)² + (-2-4)²) = √(1 + 36) = √37 ≈ 6.08.",
-        "AC = √((7-5)² + (-2 - (-2))²) = √(4 + 0) = 2.",
-        "Since AB = BC, it is isosceles."
+        "Calculate AB using the distance formula.",
+        "Calculate BC using the distance formula.",
+        "Calculate AC using the distance formula.",
+        "Compare the sides to determine if the triangle is isosceles."
       ],
-      visualTip: "A triangle will be drawn on the grid. Notice how AB and BC are symmetrical!"
+      visualTip: "A triangle will be drawn on the grid. Notice how the sides compare!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Vertices: A(5, -2), B(6, 4), C(7, -2)" },
@@ -618,12 +613,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "The midpoint of a segment is the average of its endpoints' coordinates.",
       formulaBreakdown: "Midpoint = ((x₁ + x₂)/2, (y₁ + y₂)/2)",
       stepByStep: [
-        "A is (2, 4) and B is (6, 8).",
-        "Average x: (2 + 6)/2 = 8/2 = 4.",
-        "Average y: (4 + 8)/2 = 12/2 = 6.",
-        "Midpoint is M(4, 6)."
+        "Identify the coordinates of both endpoints.",
+        "Calculate the average of the x-coordinates.",
+        "Calculate the average of the y-coordinates.",
+        "The midpoint is at these averaged coordinates."
       ],
-      visualTip: "Drag the Midpoint handle. It snaps exactly at the center of segment AB!"
+      visualTip: "Drag the Midpoint handle. It snaps exactly at the center of the segment!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Points: A(2, 4) and B(6, 8)" },
@@ -654,12 +649,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "Calculating midpoints follows the same averaging rule when dealing with negative coordinate ranges.",
       formulaBreakdown: "y_mid = (-4 + 6) / 2 = 1",
       stepByStep: [
-        "Endpoints: A(-6, -4) and B(2, 6).",
-        "x-midpoint: (-6 + 2)/2 = -4/2 = -2.",
-        "y-midpoint: (-4 + 6)/2 = 2/2 = 1.",
-        "Midpoint is (-2, 1)."
+        "Identify the coordinates of both endpoints.",
+        "Calculate the x-midpoint using the formula.",
+        "Calculate the y-midpoint using the formula.",
+        "The midpoint is at these calculated coordinates."
       ],
-      visualTip: "Place the Midpoint handle in the center. Notice its height is y = 1."
+      visualTip: "Place the Midpoint handle in the center. Notice its position!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Points: A(-6, -4) and B(2, 6)" },
@@ -689,12 +684,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "The Section Formula finds the coordinates of a point dividing a line segment in a given ratio.",
       formulaBreakdown: "x = (mx₂ + nx₁) / (m + n)",
       stepByStep: [
-        "Endpoints A(1, 3), B(4, 6). Ratio m:n = 2:1.",
-        "x = (2 × 4 + 1 × 1) / (2 + 1) = (8 + 1)/3 = 3.",
-        "y = (2 × 6 + 1 × 3) / (2 + 1) = (12 + 3)/3 = 5.",
-        "Dividing point is P(3, 5)."
+        "Identify the endpoints and the ratio.",
+        "Apply the section formula for x-coordinate.",
+        "Apply the section formula for y-coordinate.",
+        "The dividing point is at these calculated coordinates."
       ],
-      visualTip: "Observe how P is closer to B, dividing the segment into a 2:1 ratio segment."
+      visualTip: "Observe how the dividing point splits the segment in the specified ratio."
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Endpoints: A(1, 3), B(4, 6); Ratio m₁:m₂ = 2:1" },
@@ -726,12 +721,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "Applying the section formula with positive and negative y coordinates requires careful arithmetic.",
       formulaBreakdown: "y = (2 × (-3) + 3 × 7) / (2 + 3) = 3",
       stepByStep: [
-        "Endpoints A(-1, 7), B(4, -3). Ratio = 2:3.",
-        "x = (2 × 4 + 3 × (-1)) / 5 = (8 - 3)/5 = 1.",
-        "y = (2 × (-3) + 3 × 7) / 5 = (-6 + 21)/5 = 15/5 = 3.",
-        "Dividing point is P(1, 3)."
+        "Identify the endpoints and the ratio.",
+        "Apply the section formula for x-coordinate.",
+        "Apply the section formula for y-coordinate.",
+        "The dividing point is at these calculated coordinates."
       ],
-      visualTip: "Place the handle at (1, 3). Notice the segment splits in ratio 2:3."
+      visualTip: "Place the handle at the calculated position. Notice the segment splits in the specified ratio."
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Endpoints: A(-1, 7), B(4, -3); Ratio = 2:3" },
@@ -763,11 +758,11 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "A key property of a parallelogram is that its diagonals bisect each other, meaning they share the same midpoint.",
       formulaBreakdown: "Midpoint AC = Midpoint BD",
       stepByStep: [
-        "Calculate midpoint AC: ((6 + 9)/2, (1 + 4)/2) = (7.5, 2.5).",
-        "Calculate midpoint BD: ((8 + p)/2, (2 + 3)/2) = ((8 + p)/2, 2.5).",
-        "Equate x-parts: 7.5 = (8 + p)/2 → 15 = 8 + p → p = 7."
+        "Calculate the midpoint of diagonal AC.",
+        "Calculate the midpoint of diagonal BD.",
+        "Equate the x-parts to find the unknown p."
       ],
-      visualTip: "Move D to (7, 3) to form a perfect parallel grid quadrilateral!"
+      visualTip: "Move D to the calculated position to form a perfect parallel grid quadrilateral!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Vertices: A(6,1), B(8,2), C(9,4), D(p,3)" },
@@ -800,12 +795,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "Trisection points divide a line segment into three equal parts, in ratios 1:2 and 2:1.",
       formulaBreakdown: "P divides AB in ratio 1:2",
       stepByStep: [
-        "To find P closer to A, use ratio m:n = 1:2.",
-        "x = (1 × (-7) + 2 × 2) / (1 + 2) = (-7 + 4)/3 = -1.",
-        "y = (1 × 4 + 2 × (-2)) / (1 + 2) = (4 - 4)/3 = 0.",
-        "Point P is (-1, 0)."
+        "To find P closer to A, use the appropriate ratio.",
+        "Apply the section formula for x-coordinate.",
+        "Apply the section formula for y-coordinate.",
+        "Point P is at these calculated coordinates."
       ],
-      visualTip: "Place the node at (-1, 0) to split segment AB into exactly one-third of its length!"
+      visualTip: "Place the node at the calculated position to split segment AB into the specified fraction of its length!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given: A(2, -2) and B(-7, 4)" },
@@ -837,9 +832,9 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "The area of a triangle formed by three points can be found using their coordinates.",
       formulaBreakdown: "Area = 0.5 × |x₁(y₂-y₃) + x₂(y₃-y₁) + x₃(y₁-y₂)|",
       stepByStep: [
-        "Substitute coordinates: A(2, 3), B(-1, 0), C(2, -4).",
-        "Substitute in formula: 0.5 × |2(0 - (-4)) + (-1)(-4 - 3) + 2(3 - 0)|.",
-        "Simplify: 0.5 × |8 + 7 + 6| = 0.5 × 21 = 10.5."
+        "Substitute the coordinates into the area formula.",
+        "Simplify the expression step by step.",
+        "Calculate the final area value."
       ],
       visualTip: "Observe the bounded triangular zone formed by the nodes."
     },
@@ -871,12 +866,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "All points equidistant from two points lie on their perpendicular bisector line.",
       formulaBreakdown: "(x-3)² + (y-6)² = (x+3)² + (y-4)² → 3x + y = 5",
       stepByStep: [
-        "Equation: AP² = BP².",
-        "Expand: (x-3)² + (y-6)² = (x+3)² + (y-4)².",
-        "Simplify: -6x - 12y + 45 = 6x - 8y + 25.",
-        "Reduce: 12x + 4y = 20 → 3x + y = 5."
+        "Set up the equation AP² = BP².",
+        "Expand both sides using the distance formula.",
+        "Simplify the equation by canceling terms.",
+        "Reduce to the final linear equation."
       ],
-      visualTip: "Moving P along the line 3x + y = 5 maintains exact equidistant branches!"
+      visualTip: "Moving P along the calculated line maintains exact equidistant branches!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Let point be P(x, y) equidistant from A(3, 6) and B(-3, 4)." },
@@ -909,12 +904,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "The center P(x, y) of a circle passing through three points has equal distance to each of them (radii).",
       formulaBreakdown: "PA² = PB² = PC²",
       stepByStep: [
-        "Let center be P(x, y). PB² = PC² → (y + 7)² = (y - 3)² → y = -2.",
-        "Use PA² = PC² with y = -2: (x - 6)² + (-2 + 6)² = (x - 3)² + (-2 - 3)².",
-        "Expand: x² - 12x + 52 = x² - 6x + 34 → -6x = -18 → x = 3.",
-        "Center is P(3, -2)."
+        "Let center be P(x, y). Use PB² = PC² to find y.",
+        "Use PA² = PC² with the calculated y to find x.",
+        "Solve for x by expanding and simplifying.",
+        "The center is at the calculated coordinates."
       ],
-      visualTip: "Place Center at (3, -2). Watch the circular laser overlay align with A, B, and C!"
+      visualTip: "Place Center at the calculated position. Watch the circular laser overlay align with all three points!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Let Center be P(x, y). PA = PB = PC" },
@@ -946,12 +941,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "Internal division section formulas find segments dividing ratios.",
       formulaBreakdown: "x = (1 × (-1) + 3 × (-5)) / 4 = -4",
       stepByStep: [
-        "A is (-5, 7), B is (-1, 3). Ratio 1:3.",
-        "x = (1 × (-1) + 3 × (-5)) / (1 + 3) = -16/4 = -4.",
-        "y = (1 × 3 + 3 × 7) / (1 + 3) = 24/4 = 6.",
-        "P is (-4, 6)."
+        "Identify the endpoints and the ratio.",
+        "Apply the section formula for x-coordinate.",
+        "Apply the section formula for y-coordinate.",
+        "Point P is at these calculated coordinates."
       ],
-      visualTip: "Position P at (-4, 6). The segment is cleanly divided in ratio 1:3."
+      visualTip: "Position P at the calculated position. The segment is cleanly divided in the specified ratio."
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given: A(-5, 7), B(-1, 3); Ratio = 1:3" },
@@ -983,12 +978,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "The centroid of a triangle is the point of intersection of its medians, found by averaging all three vertices' coordinates.",
       formulaBreakdown: "Centroid = ((x₁+x₂+x₃)/3, (y₁+y₂+y₃)/3)",
       stepByStep: [
-        "Vertices: A(1, 4), B(3, -2), C(5, 7).",
-        "Average x: (1 + 3 + 5)/3 = 9/3 = 3.",
-        "Average y: (4 + (-2) + 7)/3 = 9/3 = 3.",
-        "Centroid is (3, 3)."
+        "Identify the vertices of the triangle.",
+        "Calculate the average of the x-coordinates.",
+        "Calculate the average of the y-coordinates.",
+        "The centroid is at these averaged coordinates."
       ],
-      visualTip: "Move the Centroid handle to (3, 3) to place it exactly at the center of the triangle's mass!"
+      visualTip: "Move the Centroid handle to the calculated position to place it exactly at the center of the triangle's mass!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Vertices: A(1, 4), B(3, -2), C(5, 7)" },
@@ -1019,12 +1014,12 @@ const coordinateGeometrySpecs: Record<string, LevelSpecification> = {
       concept: "Stabilize the primary fusion lines by finding the exact midpoint, drawing distance lines, and calculating core balances.",
       formulaBreakdown: "AP = AB / 2",
       stepByStep: [
-        "Primary cores are A(-4, -6) and B(6, 9).",
-        "AB = √((6 - (-4))² + (9 - (-6))²) = √(10² + 15²) = √325 ≈ 18.03.",
+        "Identify the primary cores from the question.",
+        "Calculate AB using the distance formula.",
         "The stabilizer P lies at the midpoint, splitting the segment into equal halves.",
-        "AP = AB / 2 ≈ 9.01 → nearest integer is 9."
+        "AP = AB / 2, round to the nearest integer."
       ],
-      visualTip: "Stabilize the core by placing the node exactly at (1, 1.5). Watch the reactor hum into full active operation!"
+      visualTip: "Stabilize the core by placing the node at the calculated position. Watch the reactor hum into full active operation!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Primary reactor cores: A(-4, -6) and B(6, 9)" },

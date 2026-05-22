@@ -1,11 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, GraduationCap, Award } from 'lucide-react';
+import { Play, GraduationCap, Award, LogOut } from 'lucide-react';
 import { useGameStore } from '../../store/gameStore';
+import { useAuthStore } from '../../store/authStore';
 
 export const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
   const { xp, stars } = useGameStore();
+  const { logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] p-3 sm:p-4 relative overflow-hidden select-none">
@@ -25,6 +32,15 @@ export const HomeScreen: React.FC = () => {
           <span className="text-yellow-500 text-xs sm:text-sm">⭐</span>
           <span className="font-bold text-slate-800 text-sm sm:text-base">{stars}</span>
         </div>
+        <div className="w-px h-3 sm:h-4 bg-slate-200 self-center" />
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-1.5 sm:gap-2 text-slate-600 hover:text-red-600 transition-colors"
+          title="Logout"
+        >
+          <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          <span className="text-[10px] sm:text-xs font-semibold hidden sm:inline">Logout</span>
+        </button>
       </div>
       
       <div className="text-center space-y-6 sm:space-y-10 max-w-xl p-5 sm:p-8 rounded-2xl sm:rounded-3xl relative z-10">

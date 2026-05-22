@@ -8,6 +8,7 @@ export interface BookPage {
   formulaBreakdown: string;
   stepByStep: string[];
   visualTip: string;
+  analogy?: string;
 }
 
 export interface BoardExamLine {
@@ -48,18 +49,18 @@ export interface LevelSpecification {
   trigFormulaType?: 'sin' | 'cos' | 'tan' | 'cosec' | 'sec' | 'cot' | 'identity' | 'complementary' | 'heights';
 }
 
-const defaultBookPage = (title: string, shape: string, formula: string, target: number, correctAns: number, inputName: string): BookPage => ({
+const defaultBookPage = (title: string, shape: string, formula: string, inputName: string): BookPage => ({
   title: title,
   concept: `Volume / Surface Area of a ${shape} measures its three-dimensional capacity or outer boundary. In this challenge, your goal is to find the exact ${inputName} that achieves our target.`,
   formulaBreakdown: `Formula: ${formula}`,
   stepByStep: [
-    `Identify the target value required: ${target}.`,
+    `Identify the target value required from the question.`,
     `Apply the mathematical formula for the shape.`,
     `Substitute the given values into the equation.`,
     `Solve the equation to find the unknown ${inputName}.`,
-    `Hint: The correct ${inputName} is exactly ${correctAns}!`,
+    `Use your interactive model to verify your answer matches the target.`,
   ],
-  visualTip: `Type ${correctAns} into the input to see the shape perfectly fit the target size!`,
+  visualTip: `Adjust the ${inputName} in the interactive model until the calculated value matches the target.`,
 });
 
 const specs: Record<string, LevelSpecification> = {
@@ -137,8 +138,6 @@ export const getLevelSpec = (levelId: string, levelData?: any): LevelSpecificati
       `📖 Chapter: ${levelData?.title || 'Advanced Masterclass'}`,
       shape,
       formula,
-      target,
-      correctAns,
       inputLabel
     )
   };

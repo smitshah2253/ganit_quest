@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Unlock } from 'lucide-react';
+import { Lock, Unlock, CheckCircle2 } from 'lucide-react';
 import levels from '../../data/levels';
 import type { LevelData } from '../../data/levels';
 import { useGameStore } from '../../store/gameStore';
@@ -35,7 +35,7 @@ interface LevelGridProps {
 
 export const LevelGrid: React.FC<LevelGridProps> = ({ chapterId }) => {
   const navigate = useNavigate();
-  const { unlockedLevels } = useGameStore();
+  const { unlockedLevels, completedLevels } = useGameStore();
 
   // Filter levels by selected chapter
   const selectedLevels = levels.filter(level => {
@@ -77,6 +77,7 @@ export const LevelGrid: React.FC<LevelGridProps> = ({ chapterId }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {worldLevels.map((level) => {
                 const isUnlocked = unlockedLevels.includes(level.id);
+                const isCompleted = completedLevels.includes(level.id);
                 
                 return (
                   <button
@@ -84,20 +85,26 @@ export const LevelGrid: React.FC<LevelGridProps> = ({ chapterId }) => {
                     disabled={!isUnlocked}
                     onClick={() => handleLevelClick(level.id)}
                     className={`relative p-4 sm:p-5 rounded-2xl border text-left transition-all duration-300 overflow-hidden ${
-                      isUnlocked 
+                      isCompleted
+                        ? 'border-emerald-300 bg-emerald-50/60 hover:border-emerald-400 hover:shadow-md cursor-pointer hover:-translate-y-0.5'
+                        : isUnlocked 
                         ? 'border-slate-200 bg-white/80 hover:border-orange-400 hover:shadow-md cursor-pointer hover:-translate-y-0.5' 
                         : 'border-slate-200/60 bg-slate-100/50 opacity-40 cursor-not-allowed'
                     }`}
                   >
                     {/* Level stripe */}
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500/20 to-indigo-500/20" />
+                    <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${
+                      isCompleted ? 'from-emerald-400 to-teal-400' : 'from-orange-500/20 to-indigo-500/20'
+                    }`} />
                     
                     <div className="flex justify-between items-start mb-2.5 sm:mb-3 mt-1">
                       <span className="text-[9px] sm:text-[10px] font-bold text-slate-500 bg-slate-50 px-2 sm:px-2.5 py-1 rounded-md border border-slate-200/60">
                         LEVEL {worldLevels.indexOf(level) + 1}
                       </span>
-                      {isUnlocked ? (
-                        <Unlock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-600" />
+                      {isCompleted ? (
+                        <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500" />
+                      ) : isUnlocked ? (
+                        <Unlock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-500" />
                       ) : (
                         <Lock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400" />
                       )}

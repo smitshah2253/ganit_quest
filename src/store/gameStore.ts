@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import levels from '../data/levels'
 
 interface GameState {
   xp: number
@@ -21,10 +20,10 @@ export const useGameStore = create<GameState>()(
       xp: 0,
       stars: 0,
       currentLevelId: null,
-      unlockedLevels: levels.map(l => l.id), // All levels unlocked for all 3 chapters
+      unlockedLevels: ['lvl-01', 'lvl-cg-01', 'lvl-trig-01'], // Only first level per chapter unlocked initially
       completedLevels: [],
       
-      addXp: (amount) => set((state) => ({ xp: state.xp + amount })),
+      addXp: (amount) => set((state) => ({ xp: Math.max(0, state.xp + amount) })),
       addStars: (amount) => set((state) => ({ stars: state.stars + amount })),
       setCurrentLevel: (levelId) => set({ currentLevelId: levelId }),
       unlockLevel: (levelId) => set((state) => {

@@ -249,26 +249,10 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                     </div>
                 </div>
 
-                {/* Target vs Current Live board - hidden on very small screens */}
+                {/* Live Answer Display - hidden on very small screens */}
                 <div className="flex flex-col gap-1.5 sm:gap-2 md:gap-3 items-end">
-                    <div className="hidden sm:flex bg-white/80 backdrop-blur-md px-3 py-2.5 sm:px-4 sm:py-3 md:px-5 md:py-4.5 rounded-xl md:rounded-2xl border border-slate-200/80 shadow-md gap-3 sm:gap-4 md:gap-6">
+                    <div className="hidden sm:flex bg-white/80 backdrop-blur-md px-3 py-2.5 sm:px-4 sm:py-3 md:px-5 md:py-4.5 rounded-xl md:rounded-2xl border border-slate-200/80 shadow-md">
                         
-                        {/* Target Display */}
-                        <div className="text-right">
-                            <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
-                                {isCG ? "Target Answer" : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "Target Angle" : "Target Ratio") : "Target Size"}
-                            </span>
-                            <span className="text-sm sm:text-base md:text-xl font-bold text-emerald-600">
-                                {targetVal.toLocaleString(undefined, {maximumFractionDigits: 3})}
-                            </span>
-                            <span className="text-[7px] sm:text-[8px] md:text-[9px] font-semibold text-slate-400 block uppercase">
-                                {isCG ? "units" : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "degrees" : "ratio") : "units³"}
-                            </span>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="w-px h-8 md:h-10 bg-slate-200 self-center" />
-
                         {/* Live Calculated Display */}
                         <div>
                             <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
@@ -295,7 +279,7 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                     <div className={`sm:hidden bg-white/80 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200/80 shadow-sm text-[9px] font-bold uppercase tracking-wider ${
                         matchStatus === 'correct' ? 'text-emerald-600' : matchStatus === 'too_big' ? 'text-rose-600' : matchStatus === 'too_small' ? 'text-amber-600' : 'text-slate-400'
                     }`}>
-                        {matchStatus !== 'awaiting_input' ? calculatedVal.toLocaleString(undefined, {maximumFractionDigits: 2}) : '---'} / {targetVal.toLocaleString(undefined, {maximumFractionDigits: 2})}
+                        {matchStatus !== 'awaiting_input' ? calculatedVal.toLocaleString(undefined, {maximumFractionDigits: 2}) : '---'}
                     </div>
 
                     {/* Live Match State Badge - hidden on mobile */}

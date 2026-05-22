@@ -127,17 +127,19 @@ export const ConceptBook: React.FC<ConceptBookProps> = ({ spec, onClose }) => {
               </div>
 
               {/* Conceptual Analogy */}
-              <div className="bg-white rounded-xl p-3 sm:p-4.5 border border-slate-200 flex gap-3 sm:gap-4 items-start shadow-sm">
-                <div className="p-1.5 sm:p-2 bg-slate-50 border border-slate-200 text-slate-500 rounded-lg shrink-0">
-                  <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              {page.analogy && (
+                <div className="bg-white rounded-xl p-3 sm:p-4.5 border border-slate-200 flex gap-3 sm:gap-4 items-start shadow-sm">
+                  <div className="p-1.5 sm:p-2 bg-slate-50 border border-slate-200 text-slate-500 rounded-lg shrink-0">
+                    <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-700 text-[11px] sm:text-xs mb-1">Visual Analogy</h4>
+                    <p className="text-[11px] sm:text-xs text-slate-500 leading-relaxed font-medium">
+                      {page.analogy}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-slate-700 text-[11px] sm:text-xs mb-1">Visual Analogy</h4>
-                  <p className="text-[11px] sm:text-xs text-slate-500 leading-relaxed font-medium">
-                    Think of volume as the amount of sand or fluid needed to fill a solid. Surface area represents the precise size of outer sheets enclosing it.
-                  </p>
-                </div>
-              </div>
+              )}
             </motion.div>
 
             {/* Practical tips */}

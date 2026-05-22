@@ -49,8 +49,14 @@ export const RegisterScreen = () => {
   };
 
   const googleLogin = useGoogleLogin({
-    onSuccess: async () => {
-      console.warn('Google Signup via OAuth placeholder');
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await axios.post(`${API_URL}/auth/google`, { credential: tokenResponse.access_token });
+        setAuth(res.data.token, res.data.user);
+        navigate('/home');
+      } catch (err: any) {
+        setError(err.response?.data?.error || 'Google signup failed');
+      }
     },
     onError: () => setError('Google signup failed'),
   });

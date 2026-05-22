@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { EventBus } from '../../game/EventBus';
 import { getLevelSpec } from '../../data/levelSpecs';
-import { HelpCircle, Lightbulb, ArrowRight } from 'lucide-react';
+import { useGameStore } from '../../store/gameStore';
+import { HelpCircle, Lightbulb, ArrowRight, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ConceptPanelHeader from './ConceptPanelHeader';
 import FormulaDisplayBox from './FormulaDisplayBox';
@@ -78,10 +79,13 @@ function getLiveAnswerForLevel(levelId: string, points: Array<{x: number, y: num
   }
 }
 
+const HINT_COST = 20;
+
 interface ConceptPanelProps {
   levelData: any;
   onCheckAnswer: (isCorrect: boolean) => void;
   onOpenBook: () => void;
+  onHintUsed: () => void;
   isSolved: boolean;
   onNextLevel: () => void;
 }
@@ -89,10 +93,12 @@ interface ConceptPanelProps {
 export const ConceptPanel: React.FC<ConceptPanelProps> = ({ 
   levelData, 
   onCheckAnswer, 
-  onOpenBook, 
+  onOpenBook,
+  onHintUsed,
   isSolved, 
   onNextLevel 
 }) => {
+  const { xp, addXp } = useGameStore();
   const [inputValue, setInputValue] = useState<string>('');
   const [showHint, setShowHint] = useState<boolean>(false);
   const [showSimpleHint, setShowSimpleHint] = useState<boolean>(false);
@@ -391,11 +397,37 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
                 {spec.boardExamLines ? (
                   <button
                     type="button"
-                    onClick={() => setShowHint(true)}
-                    className="w-full flex items-center justify-center gap-2 py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl border border-dashed border-orange-300 bg-orange-50/50 hover:bg-orange-50 text-orange-800 font-bold text-[11px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer hover:border-orange-400 shadow-sm"
+                    disabled={xp < HINT_COST}
+                    onClick={() => {
+                      if (xp < HINT_COST) return;
+                      addXp(-HINT_COST);
+                      onHintUsed();
+                      setShowHint(true);
+                    }}
+                    className={`w-full flex items-center justify-center gap-2 py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl border border-dashed font-bold text-[11px] sm:text-xs uppercase tracking-wider transition-all shadow-sm ${
+                      xp >= HINT_COST
+                        ? 'border-orange-300 bg-orange-50/50 hover:bg-orange-50 text-orange-800 cursor-pointer hover:border-orange-400'
+                        : 'border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed opacity-60'
+                    }`}
                   >
-                    <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500" />
-                    <span>💡 Do you want a Hint?</span>
+                    <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    {xp >= HINT_COST ? (
+                      <span className="flex items-center gap-1.5">
+                        💡 Hint
+                        <span className="flex items-center gap-0.5 text-orange-600 bg-orange-100 px-1.5 py-0.5 rounded-md border border-orange-200">
+                          <Zap className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />
+                          -{HINT_COST} XP
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1.5">
+                        🔒 Hint — Need {HINT_COST} XP
+                        <span className="flex items-center gap-0.5">
+                          <Zap className="w-2.5 h-2.5" />
+                          {xp}/{HINT_COST}
+                        </span>
+                      </span>
+                    )}
                   </button>
                 ) : (
                   <button

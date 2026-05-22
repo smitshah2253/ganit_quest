@@ -20,10 +20,10 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       stepByStep: [
         "Rotate the slider or direct dial to align the laser beam.",
         "Observe the current angle value sweeping from 0°.",
-        "Stop exactly when the angle indicator displays 45°.",
-        "Submit the value 45 to proceed."
+        "Stop exactly when the angle indicator displays the target angle.",
+        "Submit the target angle value to proceed."
       ],
-      visualTip: "Drag the laser cannon handle or adjust the slider to 45°! The input will sync to 45!"
+      visualTip: "Drag the laser cannon handle or adjust the slider to the target angle! The input will sync automatically!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given Target Angle = 45°" },
@@ -49,10 +49,10 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       stepByStep: [
         "Select the path rotator.",
         "Align the active tracking laser to target the second robot path.",
-        "Ensure the angle measures exactly 60°.",
-        "Submit 60 in the notebook."
+        "Ensure the angle measures exactly the target value.",
+        "Submit the target angle in the notebook."
       ],
-      visualTip: "Rotate the second path until the interior laser beam shows exactly 60°!"
+      visualTip: "Rotate the second path until the interior laser beam shows the target angle!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Path 1 horizontal baseline = 0°" },
@@ -79,10 +79,10 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       stepByStep: [
         "Observe the drone scanner hovering in space.",
         "Slide the pitch control handle to adjust the vector beam.",
-        "Stop at exactly 30° relative to the horizontal flight line.",
-        "Submit the value 30."
+        "Stop at the target angle relative to the horizontal flight line.",
+        "Submit the target angle value."
       ],
-      visualTip: "Calibrate the drone slider to 30° to align the navigation grid!"
+      visualTip: "Calibrate the drone slider to the target angle to align the navigation grid!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Horizontal baseline flight line = 0°" },
@@ -108,10 +108,10 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       stepByStep: [
         "Locate the horizontal baseline of the viewing tower.",
         "Rotate the camera tracker downwards.",
-        "Match the depression sweep arc to 30°.",
-        "Verify that alternate elevation angle is also 30°."
+        "Match the depression sweep arc to the target angle.",
+        "Verify that alternate elevation angle matches the target."
       ],
-      visualTip: "Pivot the observer camera downward until the neon depression line is 30°!"
+      visualTip: "Pivot the observer camera downward until the neon depression line shows the target angle!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Tower horizontal line of sight = 0°" },
@@ -136,11 +136,11 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       formulaBreakdown: "tan θ = Rise / Run. If θ = 45°, Rise = Run (1:1 ratio)",
       stepByStep: [
         "Drag the slope ramp joint vertex.",
-        "Resize the ramp until the incline slope makes a 45° angle with the ground.",
+        "Resize the ramp until the incline slope makes the target angle with the ground.",
         "Ensure the vertical rise matches horizontal width.",
-        "Enter 45 as your answer."
+        "Enter the target angle as your answer."
       ],
-      visualTip: "Align the ramp joint to 45°. Notice how rise and run become perfectly equal!"
+      visualTip: "Align the ramp joint to the target angle. Notice how rise and run become perfectly equal!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Horizontal ramp run = x units" },
@@ -169,10 +169,10 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       stepByStep: [
         "Observe the sweeping neon targeting line.",
         "Wait for the beam to align vertically with the Y-axis.",
-        "Lock the angle when it indicates exactly 90°.",
-        "Enter 90 to complete the foundations world."
+        "Lock the angle when it indicates a right angle.",
+        "Enter the right angle value to complete the foundations world."
       ],
-      visualTip: "Press stop or drag the angle sweep handle to exactly 90° to activate perpendicular mode!"
+      visualTip: "Press stop or drag the angle sweep handle to the right angle to activate perpendicular mode!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Perpendicular line of sweep relative to X-axis:" },
@@ -198,12 +198,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "In a right-angled triangle, the square of the hypotenuse is equal to the sum of the squares of the other two sides: AC² = AB² + BC².",
       formulaBreakdown: "AC = √(AB² + BC²)",
       stepByStep: [
-        "Identify sides: AB = 3 (Opposite), BC = 4 (Adjacent).",
-        "Apply theorem: AC² = 3² + 4² = 9 + 16 = 25.",
-        "Take square root: AC = √25 = 5.",
-        "Verify on the interactive screen by scaling the triangle."
+        "Identify the given opposite and adjacent sides.",
+        "Apply Pythagoras theorem: Hypotenuse² = Opposite² + Adjacent².",
+        "Calculate the squares and sum them.",
+        "Take the square root to find the hypotenuse."
       ],
-      visualTip: "Drag the triangle vertex to AB=3, BC=4, and notice the hypotenuse measures exactly 5!"
+      visualTip: "Drag the triangle vertex to match the given side lengths and observe the hypotenuse!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "In right triangle ABC, ∠B = 90°" },
@@ -232,12 +232,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "The sine of an angle θ in a right triangle is the ratio of the length of the opposite side to the length of the hypotenuse.",
       formulaBreakdown: "sin θ = Opposite / Hypotenuse",
       stepByStep: [
-        "Locate the opposite side of length 5.",
-        "Locate the hypotenuse of length 10.",
-        "Calculate sine: sin θ = 5 / 10 = 0.5.",
-        "Observe how sin θ matches 0.5 when θ = 30°."
+        "Locate the opposite side and hypotenuse lengths.",
+        "Apply the sine formula: sin θ = Opposite / Hypotenuse.",
+        "Divide the opposite by the hypotenuse.",
+        "Observe the ratio on the display."
       ],
-      visualTip: "Drag the hypotenuse or adjust sliders to see sin θ = 5/10 = 0.5 on the display!"
+      visualTip: "Drag the hypotenuse or adjust sliders to see the sine ratio update on the display!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "In right triangle, Opposite side = 5, Hypotenuse = 10" },
@@ -265,11 +265,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "The cosine of an angle θ is the ratio of the length of the adjacent side (horizontal baseline projection shadow) to the length of the hypotenuse.",
       formulaBreakdown: "cos θ = Adjacent / Hypotenuse",
       stepByStep: [
-        "Identify Adjacent side = 8.66, Hypotenuse = 10.",
-        "Compute cos θ = 8.66 / 10 = 0.866.",
-        "Notice that cos 30° is exactly √3/2 ≈ 0.866."
+        "Identify the adjacent side and hypotenuse lengths.",
+        "Apply the cosine formula: cos θ = Adjacent / Hypotenuse.",
+        "Divide the adjacent by the hypotenuse.",
+        "Observe the ratio on the display."
       ],
-      visualTip: "Scale the horizontal shadow vector to 8.66 and watch the cosine ratio update to 0.866!"
+      visualTip: "Scale the horizontal shadow vector to the given value and watch the cosine ratio update!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "In right triangle, Adjacent side = 8.66, Hypotenuse = 10" },
@@ -297,11 +298,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "The tangent of θ is the ratio of the opposite side (vertical rise) to the adjacent side (horizontal run).",
       formulaBreakdown: "tan θ = Opposite / Adjacent = Rise / Run",
       stepByStep: [
-        "Identify Opposite side = 3, Adjacent side = 4.",
-        "Calculate tangent ratio: tan θ = 3 / 4 = 0.75.",
-        "This describes a slope grade of 75%."
+        "Identify the opposite side (vertical rise) and adjacent side (horizontal run).",
+        "Apply the tangent formula: tan θ = Opposite / Adjacent.",
+        "Divide the opposite by the adjacent.",
+        "Observe the slope ratio on the display."
       ],
-      visualTip: "Observe the climb angle: tan θ = 3/4 = 0.75!"
+      visualTip: "Observe the climb angle ratio as you adjust the triangle sides!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "In right triangle, Opposite side = 3, Adjacent side = 4" },
@@ -327,12 +329,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "Cosecant, Secant, and Cotangent are the reciprocals of Sine, Cosine, and Tangent respectively.",
       formulaBreakdown: "cosec θ = 1 / sin θ, sec θ = 1 / cos θ, cot θ = 1 / tan θ",
       stepByStep: [
-        "Identify given ratio: sin θ = 0.5.",
-        "Apply reciprocal definition: cosec θ = 1 / sin θ.",
-        "Calculate: cosec θ = 1 / 0.5 = 2.",
-        "Submit 2 to complete this step."
+        "Identify the given sine ratio.",
+        "Apply the reciprocal definition: cosec θ = 1 / sin θ.",
+        "Calculate the reciprocal value.",
+        "Submit the calculated value."
       ],
-      visualTip: "Cosec θ is the reciprocal of sin θ. If sin θ is 1/2, then cosec θ must be exactly 2!"
+      visualTip: "Cosec θ is the reciprocal of sin θ. Observe how the values relate!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given: sin θ = 0.5" },
@@ -359,12 +361,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "By rearranging the tangent formula, we can solve for any unknown side: Adjacent = Opposite / tan θ.",
       formulaBreakdown: "Adjacent = Opposite / tan θ",
       stepByStep: [
-        "We are given Opposite side = 6, and target ratio tan θ = 0.75.",
-        "Substitute into formula: Adjacent = 6 / 0.75.",
-        "Calculate: Adjacent = 8.",
-        "Verify on screen: when Adjacent side is 8, the slope tangent ratio displays exactly 0.75."
+        "We are given the opposite side and target tangent ratio.",
+        "Rearrange the formula: Adjacent = Opposite / tan θ.",
+        "Substitute the given values.",
+        "Calculate the required adjacent side length."
       ],
-      visualTip: "Drag the triangle base vertex to width 8, keeping height at 6, to match the target!"
+      visualTip: "Drag the triangle base vertex to match the target ratio while keeping the height constant!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given: Opposite side = 6, Target tan θ = 0.75" },
@@ -390,10 +392,10 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "For any angle θ, the sum of the squares of sine and cosine is always exactly equal to 1. This is the cornerstone of trigonometric identities.",
       formulaBreakdown: "sin²θ + cos²θ = 1",
       stepByStep: [
-        "We are given sin θ = 0.6.",
-        "Let's compute cos θ = √(1 - sin²θ) = √(1 - 0.36) = √0.64 = 0.8.",
-        "Square and sum them: sin²θ + cos²θ = 0.6² + 0.8² = 0.36 + 0.64 = 1.00.",
-        "Submit 1.00."
+        "We are given a sine ratio value.",
+        "Use the identity: cos²θ = 1 - sin²θ to find cos θ.",
+        "Square and sum sin²θ + cos²θ.",
+        "Submit the identity sum value."
       ],
       visualTip: "No matter how you rotate the vector beam, the squared sum sin²θ + cos²θ is always exactly 1!"
     },
@@ -421,12 +423,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "Using basic factoring, we can pull out constants from trigonometric sum terms. Since sin²θ + cos²θ = 1, k sin²θ + k cos²θ = k.",
       formulaBreakdown: "k sin²θ + k cos²θ = k(sin²θ + cos²θ) = k(1) = k",
       stepByStep: [
-        "Identify expression: 5 sin²θ + 5 cos²θ.",
-        "Factor out the common coefficient 5: 5(sin²θ + cos²θ).",
+        "Identify the expression with common coefficients.",
+        "Factor out the common coefficient from both terms.",
         "Substitute the identity sin²θ + cos²θ = 1.",
-        "Calculate: 5(1) = 5."
+        "Calculate the simplified value."
       ],
-      visualTip: "Factor out the common 5 to simplify! The system values will scale and stabilize at 5!"
+      visualTip: "Factor out the common coefficient to simplify! The system values will scale and stabilize!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Expression: 5 sin²θ + 5 cos²θ" },
@@ -452,12 +454,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "Tangent represents the ratio of the vertical sine projection to the horizontal cosine projection.",
       formulaBreakdown: "tan θ = sin θ / cos θ",
       stepByStep: [
-        "We are given sin θ = 0.6, cos θ = 0.8.",
-        "Substitute: tan θ = 0.6 / 0.8.",
-        "Simplify the fraction: tan θ = 3 / 4 = 0.75.",
-        "Submit 0.75."
+        "We are given sine and cosine ratio values.",
+        "Substitute into the tangent formula: tan θ = sin θ / cos θ.",
+        "Simplify the fraction.",
+        "Submit the calculated tangent value."
       ],
-      visualTip: "タンジェント is exactly sin/cos! Notice how tan θ adapts to 0.75 as you match inputs!"
+      visualTip: "Tangent is exactly sin/cos! Notice how tan θ adapts as you match inputs!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given: sin θ = 0.6, cos θ = 0.8" },
@@ -482,9 +484,10 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "The second and third Pythagorean identities connect sec/tan and cosec/cot: 1 + tan²θ = sec²θ and 1 + cot²θ = cosec²θ.",
       formulaBreakdown: "cosec²θ - cot²θ = 1",
       stepByStep: [
-        "Recall standard identity: 1 + cot²θ = cosec²θ.",
-        "Subtract cot²θ from both sides: cosec²θ - cot²θ = 1.",
-        "Hence, no matter the angle, this expression equals exactly 1."
+        "Recall the standard reciprocal identity.",
+        "Rearrange the identity to isolate the expression.",
+        "The expression simplifies to a constant value.",
+        "Submit the constant value."
       ],
       visualTip: "This is a direct reciprocal Pythagorean relation. The balanced sum is always exactly 1!"
     },
@@ -510,12 +513,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "On a unit circle (radius = 1), the coordinates of a swept point are (cos θ, sin θ). Applying the Pythagorean Theorem gives sin²θ + cos²θ = 1.",
       formulaBreakdown: "sin θ = √(1 - cos²θ)",
       stepByStep: [
-        "Given: cos θ = 0.6.",
-        "Apply formula: sin²θ = 1 - cos²θ = 1 - 0.36 = 0.64.",
-        "Take square root: sin θ = √0.64 = 0.8.",
+        "Given the cosine ratio on a unit circle.",
+        "Apply the identity: sin²θ = 1 - cos²θ.",
+        "Calculate the square root to find sin θ.",
         "Observe the vertical height on the unit circle screen."
       ],
-      visualTip: "Resize or drag the vector point until the horizontal cosine is 0.6. The height (sine) becomes 0.8!"
+      visualTip: "Resize or drag the vector point until the horizontal cosine matches the given value. The height (sine) updates automatically!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "In a unit circle, radius r = 1" },
@@ -542,12 +545,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "Any common factor multiplied by the Pythagorean Identity yields the factor itself, because the identity acts as a multiplier of 1.",
       formulaBreakdown: "k sin²θ + k cos²θ = k",
       stepByStep: [
-        "Expression: 3 sin²θ + 3 cos²θ.",
-        "Factor out 3: 3(sin²θ + cos²θ).",
-        "Since sin²θ + cos²θ = 1, we get 3(1) = 3.",
-        "Thus, k must be exactly 3 to balance the equation."
+        "Identify the expression with common coefficients.",
+        "Factor out the common coefficient.",
+        "Since sin²θ + cos²θ = 1, simplify the expression.",
+        "The coefficient equals the required value."
       ],
-      visualTip: "Factor out the 3 to see the reactor balance beautifully at 3!"
+      visualTip: "Factor out the coefficient to see the reactor balance beautifully!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given equation: 3 sin²θ + 3 cos²θ = k" },
@@ -573,9 +576,10 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "Two angles are said to be complementary if their sum is exactly equal to 90°.",
       formulaBreakdown: "θ₁ + θ₂ = 90°",
       stepByStep: [
-        "Identify given angle: θ = 40°.",
-        "Calculate complement: 90° - 40° = 50°.",
-        "Enter 50 to clear this level."
+        "Identify the given angle from the question.",
+        "Apply the complementary angle formula: 90° - θ.",
+        "Calculate the complementary angle.",
+        "Enter the calculated angle to clear this level."
       ],
       visualTip: "Look at the visual grid: the sum of the incidence and mirror angles forms a perfect 90° corner!"
     },
@@ -601,12 +605,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "For two rotating mechanical bridges to join at a perpendicular peak, their incline angles must sum to 90°.",
       formulaBreakdown: "Bridge B = 90° - Bridge A",
       stepByStep: [
-        "Observe Bridge A inclined at 35°.",
-        "Set Bridge B to complementary angle to form a rigid joint.",
-        "B = 90° - 35° = 55°.",
-        "Submit 55."
+        "Observe the first bridge's incline angle.",
+        "Set the second bridge to the complementary angle.",
+        "Use the formula: Bridge B = 90° - Bridge A.",
+        "Submit the calculated angle."
       ],
-      visualTip: "Pivot Bridge B using the slider until it hits 55° to bridge the chasm!"
+      visualTip: "Pivot Bridge B using the slider until it hits the complementary angle to bridge the chasm!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Angle of Bridge A = 35°" },
@@ -631,11 +635,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "Sine and Cosine are complementary co-functions: sin θ = cos(90° - θ) and cos θ = sin(90° - θ).",
       formulaBreakdown: "cos x = sin 30° = cos(90° - 30°) = cos 60°",
       stepByStep: [
-        "Recall identity: sin θ = cos(90° - θ).",
-        "We are given sin 30° = cos x.",
-        "Therefore, x = 90° - 30° = 60°."
+        "Recall the complementary co-function identity.",
+        "Set up the equation using the identity.",
+        "Solve for the unknown angle x.",
+        "Submit the calculated angle value."
       ],
-      visualTip: "Adjust the wave phase slider! At 60°, the sine wave shifts perfectly to match the cosine reference!"
+      visualTip: "Adjust the wave phase slider! At the complementary angle, the sine wave shifts perfectly to match the cosine reference!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Given: sin 30° = cos x" },
@@ -661,11 +666,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "Since sin θ = cos(90° - θ), any ratio of complementary co-functions of corresponding complementary angles is always equal to 1.",
       formulaBreakdown: "sin θ / cos(90° - θ) = 1",
       stepByStep: [
-        "Evaluate numerator: sin 30° = 0.5.",
-        "Evaluate denominator: cos 60° = 0.5.",
-        "Divide: 0.5 / 0.5 = 1."
+        "Evaluate the sine value from the given angle.",
+        "Evaluate the cosine value from the given angle.",
+        "Divide the sine by the cosine.",
+        "Submit the simplified fraction value."
       ],
-      visualTip: "Since 30° + 60° = 90°, sin 30° is identical to cos 60°! The fraction simplifies to exactly 1!"
+      visualTip: "Since the angles are complementary, the sine equals the cosine! The fraction simplifies to exactly 1!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Expression: sin 30° / cos 60°" },
@@ -689,11 +695,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "Synchronized dual elevation observers require complementary angles to intersect their scan ranges at a perpendicular lock.",
       formulaBreakdown: "Beta = 90° - Alpha",
       stepByStep: [
-        "Observe Drone Alpha tracking angle = 25°.",
-        "Drone Beta requires complement: 90° - 25° = 65°.",
-        "Set Drone Beta to 65°."
+        "Observe the first drone's tracking angle.",
+        "Calculate the required complementary angle for the second drone.",
+        "Use the formula: Beta = 90° - Alpha.",
+        "Set the second drone to the calculated angle."
       ],
-      visualTip: "Pivot Drone Beta's elevation pointer to 65° to align targets together!"
+      visualTip: "Pivot Drone Beta's elevation pointer to the complementary angle to align targets together!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Drone Alpha elevation = 25°" },
@@ -717,11 +724,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "Subtracting co-functions of complementary angles is identical to subtracting a value from itself, yielding exactly 0.",
       formulaBreakdown: "cos(90° - θ) - sin θ = 0",
       stepByStep: [
-        "Observe angles: 48° and 42° are complementary because 48° + 42° = 90°.",
-        "Apply identity: cos 48° = sin(90° - 48°) = sin 42°.",
-        "Substitute: sin 42° - sin 42° = 0."
+        "Check if the two angles are complementary (sum to 90°).",
+        "Apply the complementary co-function identity.",
+        "Substitute the cosine with its equivalent sine.",
+        "The expression simplifies to zero."
       ],
-      visualTip: "Since cos 48° is exactly equal to sin 42°, their subtraction results in 0!"
+      visualTip: "Since the angles are complementary, the cosine equals the sine! Their subtraction results in 0!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Expression: cos 48° - sin 42°" },
@@ -745,12 +753,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "For an angle of elevation of 45°, the tangent ratio is exactly 1. This means the height of the observed object is equal to the distance from its base.",
       formulaBreakdown: "Height = Base × tan 45° = Base × 1 = Base",
       stepByStep: [
-        "Identify given base distance = 20m.",
-        "Observe elevation angle = 45°.",
-        "Apply tangent: tan 45° = Height / 20.",
-        "Since tan 45° = 1: Height = 20 × 1 = 20m."
+        "Identify the given base distance from the question.",
+        "Observe the angle of elevation.",
+        "Apply the tangent formula: tan θ = Height / Base.",
+        "Calculate the height using the given values."
       ],
-      visualTip: "Notice the green laser vector: at 45°, height and base form a perfect square boundary of 20m!"
+      visualTip: "Notice the green laser vector: at 45°, height and base form a perfect square boundary!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Let the height of the building be h meters." },
@@ -777,12 +785,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "Tangent 60° is exactly equal to √3 ≈ 1.732. This represents a steep slope where height is 1.732 times the base distance.",
       formulaBreakdown: "Height = Base × tan 60° = Base × √3",
       stepByStep: [
-        "Horizontal distance (Base) = 100m.",
-        "Angle of elevation = 60°.",
-        "Apply tangent: tan 60° = Height / 100.",
-        "Height = 100 × √3 ≈ 100 × 1.732 = 173.2m."
+        "Identify the horizontal distance (base) from the question.",
+        "Observe the angle of elevation.",
+        "Apply the tangent formula: tan θ = Height / Base.",
+        "Calculate the height using tan 60° = √3 ≈ 1.732."
       ],
-      visualTip: "Observe the drone sweep: at 60°, height stretches to 1.732 times the 100m base length, matching 173.2m!"
+      visualTip: "Observe the drone sweep: at 60°, height stretches to 1.732 times the base length!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Let the height of the mountain be h." },
@@ -809,12 +817,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "When the base and angle are known and the slant length (hypotenuse) is required, the Cosine ratio is the most direct tool.",
       formulaBreakdown: "Hypotenuse = Base / cos θ",
       stepByStep: [
-        "Given Base (foot distance) = 10m.",
-        "Incline angle θ = 60°.",
-        "Apply cosine: cos 60° = 10 / L.",
-        "Since cos 60° = 0.5: L = 10 / 0.5 = 20m."
+        "Identify the given base distance from the question.",
+        "Observe the incline angle with the ground.",
+        "Apply the cosine formula: cos θ = Base / Hypotenuse.",
+        "Rearrange and calculate the hypotenuse (ladder length)."
       ],
-      visualTip: "At 60° ground angle, the hypotenuse ladder length is exactly double the base offset: 20m!"
+      visualTip: "At 60° ground angle, the hypotenuse ladder length is exactly double the base offset!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Let the length of the ladder be L meters." },
@@ -841,12 +849,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "An observer looking down measures an angle of depression. This translates directly to a congruent angle of elevation from the ship to the observer.",
       formulaBreakdown: "Distance = Height / tan(Depression Angle)",
       stepByStep: [
-        "Lighthouse height = 50m.",
-        "Angle of depression = 45°.",
-        "By alternate interior angles, angle of elevation at ship is 45°.",
-        "Distance = 50 / tan 45° = 50 / 1 = 50m."
+        "Identify the tower height from the question.",
+        "Observe the angle of depression.",
+        "By alternate interior angles, the elevation angle at the ship equals the depression angle.",
+        "Apply tangent to find the horizontal distance."
       ],
-      visualTip: "Depression angle of 45° forms a symmetrical right isosceles triangle: height = distance = 50m!"
+      visualTip: "Depression angle of 45° forms a symmetrical right isosceles triangle: height equals distance!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Height of tower = 50m" },
@@ -874,13 +882,12 @@ const trigonometrySpecs: Record<string, LevelSpecification> = {
       concept: "Multi-angle observation puzzles involve setting up two equations using a shared variable (height) and segmenting the baseline distance.",
       formulaBreakdown: "x + y = 80, h = x tan 60° = y tan 30°",
       stepByStep: [
-        "Let the height of towers be h, and point division be x and 80-x.",
-        "In triangle 1: h = x tan 60° = x√3.",
-        "In triangle 2: h = (80 - x) tan 30° = (80 - x)/√3.",
-        "Equate: x√3 = (80 - x)/√3  ⇒  3x = 80 - x  ⇒  4x = 80  ⇒  x = 20m.",
-        "Find height: h = 20√3 ≈ 20 × 1.732 = 34.64m."
+        "Let the tower height be h, and divide the baseline into x and (80-x).",
+        "Set up two equations using the elevation angles and tangent.",
+        "Equate the two expressions for height.",
+        "Solve for x, then calculate the height h."
       ],
-      visualTip: "Observe the two triangles: the closer one has 60° elevation, the farther has 30° elevation, sharing height 34.64m!"
+      visualTip: "Observe the two triangles: the closer one has steeper elevation, the farther has shallower elevation, sharing the same height!"
     },
     boardExamLines: [
       { lineNum: 1, textBefore: "Let height of towers = h meters, and first distance = x" },

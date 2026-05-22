@@ -24,6 +24,8 @@ export const GameContainer: React.FC = () => {
   const [stars, setStars] = useState(0);
   const [showConceptBook, setShowConceptBook] = useState(true);
   const [isSolved, setIsSolved] = useState(false);
+  const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [hintUsed, setHintUsed] = useState(false);
   const { addXp, addStars, unlockLevel, setCurrentLevel, completeLevel } = useGameStore();
 
   // Filter levels for the current chapter to handle progression
@@ -37,6 +39,8 @@ export const GameContainer: React.FC = () => {
     setShowConceptBook(true);
     setShowResult(false);
     setIsSolved(false);
+    setWrongAttempts(0);
+    setHintUsed(false);
   }, [levelId]);
 
   const handleNextLevel = () => {
@@ -56,14 +60,22 @@ export const GameContainer: React.FC = () => {
   const handleRetry = () => {
     setShowResult(false);
     setIsSolved(false);
+    setWrongAttempts(0);
+    setHintUsed(false);
     EventBus.emit('load-level', levelData);
+  };
+
+  const handleHintUsed = () => {
+    setHintUsed(true);
   };
 
   const handleCheckAnswer = (isCorrect: boolean) => {
     if (isCorrect && levelId) {
       soundManager.playSuccess();
       EventBus.emit('answer-correct');
-      const earnedStars = 3;
+      let earnedStars = 1;
+      if (!hintUsed && wrongAttempts === 0) earnedStars = 3;
+      else if (!hintUsed || wrongAttempts <= 2) earnedStars = 2;
       setStars(earnedStars);
       setIsSolved(true);
       setShowResult(true);
@@ -78,6 +90,7 @@ export const GameContainer: React.FC = () => {
         unlockLevel(chapterLevels[currentIndex + 1].id);
       }
     } else {
+      setWrongAttempts(prev => prev + 1);
       soundManager.playError();
       EventBus.emit('answer-wrong');
       Swal.fire({
@@ -132,6 +145,7 @@ export const GameContainer: React.FC = () => {
           <ConceptPanel 
             levelData={levelData} 
             onCheckAnswer={handleCheckAnswer}
+            onHintUsed={handleHintUsed}
             onOpenBook={() => setShowConceptBook(true)}
             isSolved={isSolved}
             onNextLevel={handleNextLevel}

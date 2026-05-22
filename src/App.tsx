@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { LoginScreen } from './components/auth/LoginScreen';
 import { RegisterScreen } from './components/auth/RegisterScreen';
 import { ForgotPasswordScreen } from './components/auth/ForgotPasswordScreen';
@@ -14,20 +14,15 @@ import { useAuthStore } from './store/authStore';
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = useAuthStore(state => state.token);
-  const setAuth = useAuthStore(state => state.setAuth);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (!token) {
-      setAuth('guest-bypass-token', {
-        id: 999,
-        name: 'Guest Explorer',
-        email: 'guest@ganitquest.in',
-        xp: 120,
-        level: 1,
-        stars: 3
-      });
+      navigate('/login', { replace: true });
     }
-  }, [token, setAuth]);
+  }, [token, navigate]);
+
+  if (!token) return null;
 
   return <>{children}</>;
 };
