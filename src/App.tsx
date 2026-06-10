@@ -9,6 +9,10 @@ import { ChapterScreen } from './components/screens/ChapterScreen';
 import { ChapterIntroScreen } from './components/screens/ChapterIntroScreen';
 import { LevelGridScreen } from './components/screens/LevelGridScreen';
 import { GameContainer } from './components/GameContainer';
+import { GradeScreen } from './components/screens/GradeScreen';
+import { LeaderboardScreen } from './components/screens/LeaderboardScreen';
+import { LearnScreen } from './components/screens/LearnScreen';
+import { Header } from './components/Header';
 import { useAuthStore } from './store/authStore';
 
 // Protected Route Component
@@ -29,7 +33,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <Routes>
+    <>
+      <Header />
+      <Routes>
       <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
@@ -41,6 +47,22 @@ function App() {
         element={
           <ProtectedRoute>
             <HomeScreen />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/grades" 
+        element={
+          <ProtectedRoute>
+            <GradeScreen />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/leaderboard" 
+        element={
+          <ProtectedRoute>
+            <LeaderboardScreen />
           </ProtectedRoute>
         } 
       />
@@ -76,7 +98,16 @@ function App() {
           </ProtectedRoute>
         } 
       />
-    </Routes>
+      <Route 
+        path="/learn/:chapterId" 
+        element={
+          <ProtectedRoute>
+            <LearnScreen />
+          </ProtectedRoute>
+        } 
+      />
+      </Routes>
+    </>
   );
 }
 

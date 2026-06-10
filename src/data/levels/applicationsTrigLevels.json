@@ -1,0 +1,36 @@
+[
+  { "id": "lvl-apptrig-01", "world": 1, "type": "line_of_sight", "title": "Aim Laser Telescope", "shape": "telescope", "targetValue": 45, "concept": "Line of Sight: Eye-level tracking to drone target" },
+  { "id": "lvl-apptrig-02", "world": 1, "type": "line_of_sight", "title": "Tower Sightings", "shape": "tower", "targetValue": 30, "concept": "Line of Sight: Pitch alignment from tower observation" },
+  { "id": "lvl-apptrig-03", "world": 1, "type": "line_of_sight", "title": "Calibrate Telescope Pitch", "shape": "telescope_align", "targetValue": 60, "concept": "Aiming target using angular elevation lines" },
+  { "id": "lvl-apptrig-04", "world": 1, "type": "line_of_sight", "title": "Locate Hidden Cargo", "shape": "cargo_scan", "targetValue": 45, "concept": "Line of Sight: Downward scanning angles" },
+  { "id": "lvl-apptrig-05", "world": 1, "type": "line_of_sight", "title": "Track Cargo Drone", "shape": "drone_track", "targetValue": 30, "concept": "Line of Sight: Ground tracking moving objects" },
+  { "id": "lvl-apptrig-06", "world": 1, "type": "line_of_sight", "title": "Laser Scope Verification", "shape": "scope_verify", "targetValue": 60, "concept": "Perfect alignment sweep and lock coordinates" },
+
+  { "id": "lvl-apptrig-07", "world": 2, "type": "elevation", "title": "Peak Elevation Radar", "shape": "mountain_peak", "targetValue": 86.6, "concept": "Angle of Elevation: Ground observer to summit (height)" },
+  { "id": "lvl-apptrig-08", "world": 2, "type": "elevation", "title": "Building Height Estimate", "shape": "building", "targetValue": 57.7, "concept": "Angle of Elevation: Measuring height from distance" },
+  { "id": "lvl-apptrig-09", "world": 2, "type": "elevation", "title": "Stranded Climber Rescue", "shape": "climber", "targetValue": 30.0, "concept": "Angle of Elevation: Target height = Base distance * tan(45°)" },
+  { "id": "lvl-apptrig-10", "world": 2, "type": "elevation", "title": "Rooftop Drone Landing", "shape": "rooftop", "targetValue": 103.9, "concept": "Angle of Elevation: Direct sight line to rooftop center" },
+  { "id": "lvl-apptrig-11", "world": 2, "type": "elevation", "title": "Survey Tower Height", "shape": "survey_tower", "targetValue": 86.6, "concept": "Angle of Elevation: Finding height with 30° scan" },
+  { "id": "lvl-apptrig-12", "world": 2, "type": "elevation", "title": "Timed Elevation Pulse", "shape": "timed_pulse", "targetValue": 40.0, "concept": "Angle of Elevation: Perfect elevation at 45°" },
+
+  { "id": "lvl-apptrig-13", "world": 3, "type": "depression", "title": "Vehicular Range Finder", "shape": "vehicle", "targetValue": 173.2, "concept": "Angle of Depression: Height = 100m, θ = 30° => Range" },
+  { "id": "lvl-apptrig-14", "world": 3, "type": "depression", "title": "Helicopter Drop Zone", "shape": "drop_zone", "targetValue": 120.0, "concept": "Angle of Depression: Helicopter height = 120m, θ = 45°" },
+  { "id": "lvl-apptrig-15", "world": 3, "type": "depression", "title": "Monitor Valley Station", "shape": "valley_station", "targetValue": 173.2, "concept": "Angle of Depression: Height = 300m, θ = 60°" },
+  { "id": "lvl-apptrig-16", "world": 3, "type": "depression", "title": "Lighthouse Ship Watch", "shape": "ship", "targetValue": 138.6, "concept": "Angle of Depression: Lighthouse height = 80m, θ = 30°" },
+  { "id": "lvl-apptrig-17", "world": 3, "type": "depression", "title": "Track Rover below Cliff", "shape": "cliff_rover", "targetValue": 60.0, "concept": "Angle of Depression: Cliff height = 60m, θ = 45°" },
+  { "id": "lvl-apptrig-18", "world": 3, "type": "depression", "title": "Depression Boundary Scan", "shape": "boundary_scan", "targetValue": 28.9, "concept": "Angle of Depression: Tower height = 50m, θ = 60°" },
+
+  { "id": "lvl-apptrig-19", "world": 4, "type": "heights_distances", "title": "Communication Antenna", "shape": "antenna", "targetValue": 52.0, "concept": "Heights and Distances: Base = 90m, θ = 30° => Height" },
+  { "id": "lvl-apptrig-20", "world": 4, "type": "heights_distances", "title": "Estimate Mountain Height", "shape": "mountain_survey", "targetValue": 346.4, "concept": "Heights and Distances: Base = 200m, θ = 60° => Height" },
+  { "id": "lvl-apptrig-21", "world": 4, "type": "heights_distances", "title": "Canyon Crossing Width", "shape": "canyon", "targetValue": 150.0, "concept": "Heights and Distances: Depth = 150m, θ = 45° => Width" },
+  { "id": "lvl-apptrig-22", "world": 4, "type": "heights_distances", "title": "Bridge Truss Support", "shape": "bridge_truss", "targetValue": 69.3, "concept": "Heights and Distances: Base = 120m, θ = 30° => Height" },
+  { "id": "lvl-apptrig-23", "world": 4, "type": "heights_distances", "title": "Multi-Point Tower Survey", "shape": "multi_tower", "targetValue": 50.0, "concept": "Heights and Distances: Heights using two observations" },
+  { "id": "lvl-apptrig-24", "world": 4, "type": "heights_distances", "title": "Double Ship Distance", "shape": "double_ship", "targetValue": 55.0, "concept": "Heights and Distances: Distance between two ships in line" },
+
+  { "id": "lvl-apptrig-25", "world": 5, "type": "commander", "title": "Peak Helicopter Rescue", "shape": "heli_rescue", "targetValue": 410.0, "concept": "Survey Commander: Two targets on opposite sides of a peak" },
+  { "id": "lvl-apptrig-26", "world": 5, "type": "commander", "title": "Double Plane Intersection", "shape": "double_plane", "targetValue": 73.2, "concept": "Survey Commander: Planes vertically above each other" },
+  { "id": "lvl-apptrig-27", "world": 5, "type": "commander", "title": "Runway Glide Path", "shape": "runway", "targetValue": 1200.0, "concept": "Survey Commander: Slant landing distance to threshold" },
+  { "id": "lvl-apptrig-28", "world": 5, "type": "commander", "title": "Disaster Fire Ladder", "shape": "fire_ladder", "targetValue": 17.32, "concept": "Survey Commander: Finding hypotenuse length with 60° tilt" },
+  { "id": "lvl-apptrig-29", "world": 5, "type": "commander", "title": "Equal Height Highway Poles", "shape": "highway_poles", "targetValue": 34.64, "concept": "Survey Commander: Two poles of equal heights opposite each other" },
+  { "id": "lvl-apptrig-30", "world": 5, "type": "boss", "title": "Lake Cloud Reflection", "shape": "cloud_boss", "targetValue": 120.0, "concept": "FINAL BOSS: Cloud height above lake using reflection" }
+]

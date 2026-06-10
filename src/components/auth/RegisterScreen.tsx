@@ -4,6 +4,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../../store/authStore';
+import { useGameStore } from '../../store/gameStore';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -17,6 +18,7 @@ export const RegisterScreen = () => {
   
   const navigate = useNavigate();
   const setAuth = useAuthStore(state => state.setAuth);
+  const loadProgress = useGameStore(state => state.loadProgress);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +42,7 @@ export const RegisterScreen = () => {
     try {
       const res = await axios.post(`${API_URL}/auth/register`, { name, email, password });
       setAuth(res.data.token, res.data.user);
+      if (res.data.progress) loadProgress(res.data.progress);
       navigate('/home');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to register');
@@ -53,6 +56,7 @@ export const RegisterScreen = () => {
       try {
         const res = await axios.post(`${API_URL}/auth/google`, { credential: tokenResponse.access_token });
         setAuth(res.data.token, res.data.user);
+        if (res.data.progress) loadProgress(res.data.progress);
         navigate('/home');
       } catch (err: any) {
         setError(err.response?.data?.error || 'Google signup failed');
@@ -83,7 +87,7 @@ export const RegisterScreen = () => {
               Join GanitQuest
             </h2>
             <p className="text-slate-500 text-[10px] sm:text-xs font-bold text-center uppercase tracking-widest mb-6 sm:mb-8">
-              CBSE Class 10 Math Prep
+              Class X Mathematics · All Boards
             </p>
           </motion.div>
 

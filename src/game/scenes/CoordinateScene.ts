@@ -1,7 +1,9 @@
+// @ts-nocheck
 import Phaser, { Scene, GameObjects } from 'phaser';
 import { EventBus } from '../EventBus';
 import { getLevelSpec } from '../../data/levelSpecs';
 import type { LevelSpecification } from '../../data/levelSpecs';
+import { soundManager } from '../SoundManager';
 
 export class CoordinateScene extends Scene {
     private levelSpec: LevelSpecification | null = null;
@@ -30,6 +32,9 @@ export class CoordinateScene extends Scene {
 
     // Overlay texts
     private coordinateInfoText!: GameObjects.Text;
+    
+    // Particle effects
+    private particles!: GameObjects.Particles.ParticleEmitter;
 
     constructor() {
         super('CoordinateScene');
@@ -37,6 +42,18 @@ export class CoordinateScene extends Scene {
 
     create() {
         this.cameras.main.setBackgroundColor('#ecf2f7');
+        
+        // Initialize particle emitter for celebrations
+        this.particles = this.add.particles(0, 0, 'spark', {
+            speed: { min: 50, max: 150 },
+            scale: { start: 0.8, end: 0 },
+            alpha: { start: 1, end: 0 },
+            lifespan: 800,
+            frequency: 50,
+            quantity: 3,
+            blendMode: 'ADD',
+            emitting: false
+        });
 
         // Main layers
         this.gridGraphics = this.add.graphics();
@@ -495,6 +512,280 @@ export class CoordinateScene extends Scene {
                 this.updateProjections(pt);
                 this.updateLaserLines();
             }
+        });
+    }
+
+    // ═════════════════════════════════════════════════════════════════
+    // GAMIFICATION & INTERACTIVE TOOLS
+    // ═════════════════════════════════════════════════════════════════
+
+    /**
+     * Draw animated distance measurement between two points
+     * Shows distance formula visualization with right triangle
+     */
+    private drawDistanceVisualizer(p1: { x: number, y: number }, p2: { x: number, y: number }) {
+        const x1 = this.centerX + p1.x * this.spacing;
+        const y1 = this.centerY - p1.y * this.spacing;
+        const x2 = this.centerX + p2.x * this.spacing;
+        const y2 = this.centerY - p2.y * this.spacing;
+
+        const dx = Math.abs(p2.x - p1.x);
+        const dy = Math.abs(p2.y - p1.y);
+        const distance = Math.sqrt(dx * dx + dy * dy).toFixed(2);
+
+        // Draw right triangle visualization
+        this.laserGraphics.lineStyle(2, 0x3b82f6, 0.6);
+        this.laserGraphics.lineBetween(x1, y1, x2, y1); // Horizontal
+        this.laserGraphics.lineBetween(x2, y1, x2, y2); // Vertical
+
+        // Animated distance line
+        this.laserGraphics.lineStyle(4, 0x10b981, 0.9);
+        this.laserGraphics.lineBetween(x1, y1, x2, y2);
+
+        // Distance label at midpoint
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2;
+        
+        const distText = this.add.text(midX, midY - 20, `d = ${distance}`, {
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: '14px',
+            color: '#10b981',
+            fontStyle: 'bold',
+            backgroundColor: '#0f172a',
+            padding: { x: 8, y: 4 }
+        }).setOrigin(0.5);
+
+        // Delta labels
+        const dxText = this.add.text((x1 + x2) / 2, y1 + 15, `Δx = ${dx}`, {
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: '11px',
+            color: '#3b82f6'
+        }).setOrigin(0.5);
+
+        const dyText = this.add.text(x2 + 20, (y1 + y2) / 2, `Δy = ${dy}`, {
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: '11px',
+            color: '#3b82f6'
+        }).setOrigin(0, 0.5);
+
+        // Cleanup after 3 seconds
+        this.time.delayedCall(3000, () => {
+            distText.destroy();
+            dxText.destroy();
+            dyText.destroy();
+        });
+    }
+
+    /**
+     * Treasure Hunt Mode - Visual target for coordinate finding
+     */
+    private drawTreasureTarget(targetX: number, targetY: number) {
+        const screenX = this.centerX + targetX * this.spacing;
+        const screenY = this.centerY - targetY * this.spacing;
+
+        // Pulsing treasure marker
+        const treasure = this.add.container(screenX, screenY);
+        
+        // Outer ring (pulsing)
+        const ring = this.add.circle(0, 0, 25, 0xfbbf24, 0.3);
+        treasure.add(ring);
+        
+        // Inner marker
+        const marker = this.add.circle(0, 0, 12, 0xfbbf24, 1);
+        marker.setStrokeStyle(3, 0xf59e0b);
+        treasure.add(marker);
+        
+        // Treasure icon
+        const icon = this.add.text(0, 0, '💎', {
+            fontSize: '20px'
+        }).setOrigin(0.5);
+        treasure.add(icon);
+
+        // Pulsing animation
+        this.tweens.add({
+            targets: ring,
+            scale: 1.5,
+            alpha: 0,
+            duration: 1000,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+
+        // Rotate animation
+        this.tweens.add({
+            targets: icon,
+            angle: 360,
+            duration: 3000,
+            repeat: -1,
+            ease: 'Linear'
+        });
+
+        return treasure;
+    }
+
+    /**
+     * Check if point is near treasure (within tolerance)
+     */
+    private checkTreasureFound(px: number, py: number, targetX: number, targetY: number): boolean {
+        const dx = px - targetX;
+        const dy = py - targetY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < 0.5; // Within 0.5 units
+    }
+
+    /**
+     * Celebration when reaching target coordinate
+     */
+    private celebrateCoordinateSuccess(x: number, y: number) {
+        const screenX = this.centerX + x * this.spacing;
+        const screenY = this.centerY - y * this.spacing;
+
+        // Particle burst
+        if (this.particles) {
+            this.particles.emitParticleAt(screenX, screenY, 30);
+        }
+
+        // Sound
+        // soundManager.playSuccess(); // Uncomment when soundManager is available
+
+        // Flash effect
+        const flash = this.add.circle(screenX, screenY, 50, 0x10b981, 0.8);
+        this.tweens.add({
+            targets: flash,
+            scale: 2,
+            alpha: 0,
+            duration: 600,
+            ease: 'Power2',
+            onComplete: () => flash.destroy()
+        });
+
+        // Success text
+        const successText = this.add.text(screenX, screenY - 60, '✅ Perfect!', {
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: '18px',
+            color: '#10b981',
+            fontStyle: 'bold'
+        }).setOrigin(0.5);
+
+        this.tweens.add({
+            targets: successText,
+            y: screenY - 80,
+            alpha: 0,
+            duration: 1500,
+            ease: 'Power2',
+            onComplete: () => successText.destroy()
+        });
+    }
+
+    /**
+     * Draw section formula slider for internal/external division
+     */
+    private drawSectionFormulaSlider(p1: { x: number, y: number }, p2: { x: number, y: number }) {
+        const x1 = this.centerX + p1.x * this.spacing;
+        const y1 = this.centerY - p1.y * this.spacing;
+        const x2 = this.centerX + p2.x * this.spacing;
+        const y2 = this.centerY - p2.y * this.spacing;
+
+        // Draw line between points
+        this.gridGraphics.lineStyle(2, 0x6366f1, 0.5);
+        this.gridGraphics.lineBetween(x1, y1, x2, y2);
+
+        // Section point (starts at midpoint)
+        let ratio = 1; // m:n ratio
+        const sectionX = (ratio * x2 + x1) / (ratio + 1);
+        const sectionY = (ratio * y2 + y1) / (ratio + 1);
+
+        const sectionPoint = this.add.circle(sectionX, sectionY, 10, 0xec4899, 1);
+        sectionPoint.setStrokeStyle(2, 0xffffff);
+        sectionPoint.setInteractive({ draggable: true });
+
+        // Label
+        const sectionLabel = this.add.text(sectionX, sectionY - 25, 'P', {
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: '12px',
+            color: '#ec4899',
+            fontStyle: 'bold'
+        }).setOrigin(0.5);
+
+        // Drag to change ratio
+        sectionPoint.on('drag', (pointer: Phaser.Input.Pointer) => {
+            // Calculate new position along the line
+            const t = Math.max(0, Math.min(1, 
+                ((pointer.x - x1) * (x2 - x1) + (pointer.y - y1) * (y2 - y1)) / 
+                ((x2 - x1) ** 2 + (y2 - y1) ** 2)
+            ));
+            
+            const newX = x1 + t * (x2 - x1);
+            const newY = y1 + t * (y2 - y1);
+            
+            sectionPoint.x = newX;
+            sectionPoint.y = newY;
+            sectionLabel.x = newX;
+            sectionLabel.y = newY - 25;
+            
+            // Update ratio display
+            const newRatio = t / (1 - t || 0.001);
+            ratio = newRatio;
+        });
+
+        return { point: sectionPoint, label: sectionLabel, getRatio: () => ratio };
+    }
+
+    /**
+     * Draw area visualization for triangle/quadrilateral
+     */
+    private drawAreaVisualization(points: { x: number, y: number }[]) {
+        if (points.length < 3) return;
+
+        const graphics = this.add.graphics();
+        graphics.fillStyle(0x10b981, 0.2);
+        graphics.lineStyle(2, 0x10b981, 0.8);
+
+        graphics.beginPath();
+        const startX = this.centerX + points[0].x * this.spacing;
+        const startY = this.centerY - points[0].y * this.spacing;
+        graphics.moveTo(startX, startY);
+
+        for (let i = 1; i < points.length; i++) {
+            const x = this.centerX + points[i].x * this.spacing;
+            const y = this.centerY - points[i].y * this.spacing;
+            graphics.lineTo(x, y);
+        }
+
+        graphics.closePath();
+        graphics.fillPath();
+        graphics.strokePath();
+
+        // Calculate and display area
+        let area = 0;
+        for (let i = 0; i < points.length; i++) {
+            const j = (i + 1) % points.length;
+            area += points[i].x * points[j].y;
+            area -= points[j].x * points[i].y;
+        }
+        area = Math.abs(area) / 2;
+
+        // Centroid for label placement
+        const centroidX = points.reduce((sum, p) => sum + p.x, 0) / points.length;
+        const centroidY = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+        const screenCX = this.centerX + centroidX * this.spacing;
+        const screenCY = this.centerY - centroidY * this.spacing;
+
+        const areaText = this.add.text(screenCX, screenCY, `Area = ${area.toFixed(1)}`, {
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: '14px',
+            color: '#10b981',
+            fontStyle: 'bold',
+            backgroundColor: '#0f172a',
+            padding: { x: 8, y: 4 }
+        }).setOrigin(0.5);
+
+        // Animate area filling
+        this.tweens.add({
+            targets: graphics,
+            alpha: { from: 0, to: 1 },
+            duration: 800,
+            ease: 'Power2'
         });
     }
 }

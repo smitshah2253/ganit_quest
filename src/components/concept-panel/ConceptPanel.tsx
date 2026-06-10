@@ -331,7 +331,7 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
       {/* Soft gradient corner background blob */}
       <div className="absolute -top-16 -right-16 sm:-top-24 sm:-right-24 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-br from-orange-500 to-indigo-500 rounded-full opacity-5 blur-3xl pointer-events-none" />
       
-      <div className="flex-1 flex flex-col min-h-0 relative z-10 overflow-hidden space-y-3 sm:space-y-5 pr-1">
+      <div className="flex-1 flex flex-col min-h-0 relative z-10 space-y-3 sm:space-y-5 pr-1">
         
         {/* Header Badges */}
         <ConceptPanelHeader levelType={levelData.type} onOpenBook={onOpenBook} />
@@ -345,8 +345,8 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
         <FormulaDisplayBox formulaDisplay={spec.formulaDisplay} concept={spec.bookPage.concept} />
         
         {/* Dynamic Workspace content */}
-        <div className="flex-1 flex flex-col min-h-0 space-y-3 sm:space-y-4">
-          <AnimatePresence mode="wait">
+        <div className="flex-1 flex flex-col min-h-0 space-y-3 sm:space-y-4 overflow-y-auto">
+          <AnimatePresence initial={false}>
             
             {isSolved || (showHint && spec.boardExamLines) ? (
               <BoardExamNotebook 
@@ -358,14 +358,14 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
               />
             ) : (
               /* SCENARIO 3: DIRECT MODE ACTIVE (Default view with clear question description) */
-              <motion.div 
+              <motion.div
                 key="direct-workspace"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="flex-1 flex flex-col min-h-0 space-y-3 sm:space-y-4"
+                className="flex flex-col space-y-3 sm:space-y-4 shrink-0"
               >
-                <div className="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200/60 shadow-sm flex-1 flex flex-col justify-center">
+                <div className="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200/60 shadow-sm">
                   <h4 className="text-[9px] sm:text-[10px] font-bold text-slate-400 mb-1.5 sm:mb-2 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
                     <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500" />
                     Your Challenge
@@ -377,20 +377,16 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
 
                 {/* Toggled simple text hint (if no boardExamLines) */}
                 {!spec.boardExamLines && showSimpleHint && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-amber-50 border border-amber-200/80 rounded-2xl p-3 sm:p-4 text-amber-900 shadow-sm text-[11px] sm:text-xs font-semibold leading-relaxed relative overflow-hidden"
-                  >
+                  <div className="bg-amber-50 border border-amber-200/80 rounded-2xl p-3 sm:p-4 text-amber-900 shadow-sm text-[11px] sm:text-xs font-semibold leading-relaxed relative shrink-0">
                     <div className="absolute top-2 right-2 text-amber-500/10">
                       <Lightbulb className="w-6 h-6 sm:w-8 sm:h-8" />
                     </div>
-                    <h5 className="font-bold text-[9px] sm:text-[10px] uppercase tracking-wider text-amber-850 mb-1 flex items-center gap-1.5">
+                    <h5 className="font-bold text-[9px] sm:text-[10px] uppercase tracking-wider text-amber-800 mb-1 flex items-center gap-1.5">
                       <Lightbulb className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-600" />
                       Quick Hint
                     </h5>
-                    <p>{spec.bookPage?.visualTip || "Check the Formula Book at the top right to calculate the exact size."}</p>
-                  </motion.div>
+                    <p className="pr-8">{spec.bookPage?.visualTip || "Check the Formula Book at the top right to calculate the exact size."}</p>
+                  </div>
                 )}
 
                 {/* Need a hint button */}

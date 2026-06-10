@@ -1,8 +1,13 @@
 import surfaceAreaVolumeSpecs from './specs/surfaceAreaVolumeSpecs';
 import coordinateGeometrySpecs from './specs/coordinateGeometrySpecs';
 import trigonometrySpecs from './specs/trigonometrySpecs';
+import applicationsTrigSpecs from './specs/applicationsTrigSpecs';
 import arithmeticProgressionSpecs from './specs/arithmeticProgressionSpecs';
 import probabilitySpecs from './specs/probabilitySpecs';
+import trianglesSpecs from './specs/trianglesSpecs';
+import circleSpecs from './specs/circleSpecs';
+import areasCircleSpecs from './specs/areasCircleSpecs';
+import statisticsSpecs from './specs/statisticsSpecs';
 
 export interface BookPage {
   title: string;
@@ -23,11 +28,21 @@ export interface BoardExamLine {
   correctAnswer?: string;
   widthChars?: number;
   hint?: string;
+  xpReward?: number;
+  boss?: boolean;
 }
 
 export interface LevelSpecification {
   id: string;
+  chapterId?: string;
+  world?: number;
   question: string;
+  title?: string;
+  description?: string;
+  hint?: string;
+  xpReward?: number;
+  boss?: boolean;
+  starsNeeded?: number;
   inputLabel: string;
   placeholder: string;
   correctAnswer: number;
@@ -63,7 +78,46 @@ export interface LevelSpecification {
   probTotalOutcomes?: number;
   probFavorableCount?: number;
   probAnswerType?: 'favorable_count' | 'total_count' | 'decimal';
-  probBagColors?: { color: string; count: number; hex: number }[];
+  probBagColors?: { color: string; count: number; hex: number; isFav?: boolean }[];
+  // Extended Areas Related to Circles properties
+  visualType?: string;
+  simulationParams?: {
+    radius?: number;
+    targetRadius?: number;
+    angle?: number;
+    innerRadius?: number;
+    outerRadius?: number;
+    diameter?: number;
+    arcLength?: number;
+    circumference?: number;
+    targetCircumference?: number;
+    sectorArea?: number;
+    perimeter?: number;
+    targetArea?: number;
+    radii?: number[];
+    rotations?: number;
+    trackWidth?: number;
+    gardenRadius?: number;
+    quadrants?: number;
+    quadrantRadius?: number;
+    semicircleRadius?: number;
+    overlapAngle?: number;
+    thickness?: number;
+    totalTrack?: number;
+    tolerance?: number;
+    initialRadius?: number;
+    squareSide?: number;
+    fillAnimation?: boolean;
+    showCircumference?: boolean;
+    showRotation?: boolean;
+  };
+  // Extended Statistics properties
+  statsMode?: 'collection' | 'frequency' | 'intervals' | 'cumulative' | 'median' | 'boss';
+  statsData?: number[];
+  statsIntervals?: { min: number, max: number, freq: number }[];
+  statsCategories?: string[];
+  statsTargetMedian?: number;
+  statsAnswerType?: 'value' | 'frequency' | 'interval' | 'median' | 'cumulative';
 }
 
 const defaultBookPage = (title: string, shape: string, formula: string, inputName: string): BookPage => ({
@@ -84,8 +138,13 @@ const specs: Record<string, LevelSpecification> = {
   ...surfaceAreaVolumeSpecs,
   ...coordinateGeometrySpecs,
   ...trigonometrySpecs,
+  ...applicationsTrigSpecs,
   ...arithmeticProgressionSpecs,
   ...probabilitySpecs,
+  ...trianglesSpecs,
+  ...circleSpecs,
+  ...areasCircleSpecs,
+  ...statisticsSpecs,
 };
 
 export const getLevelSpec = (levelId: string, levelData?: any): LevelSpecification => {

@@ -4,6 +4,11 @@ import { ArrowLeft, BookOpen } from 'lucide-react';
 import LevelGrid from '../chapter/LevelGrid';
 
 const CHAPTER_METADATA: Record<string, { title: string; syllabus: string; fullName: string }> = {
+  'ch-6': {
+    title: 'Triangles',
+    fullName: 'Chapter 6: Triangles',
+    syllabus: 'Syllabus: Similar triangles, scale factors, corresponding sides, Basic Proportionality Theorem (BPT), area relationships (Area ∝ k²), Pythagorean theorem, and geometric scaling. Select a level to begin.'
+  },
   'ch-14': {
     title: 'Probability',
     fullName: 'Chapter 14: Probability',
@@ -24,10 +29,30 @@ const CHAPTER_METADATA: Record<string, { title: string; syllabus: string; fullNa
     fullName: 'Chapter 8: Introduction to Trigonometry',
     syllabus: 'Syllabus: Ratios of right-angled triangles, identities sin²θ + cos²θ = 1, complementary angle formulas, and heights & distances applications. Select a level challenge to begin.'
   },
+  'ch-9': {
+    title: 'Some Applications of Trigonometry',
+    fullName: 'Chapter 9: Some Applications of Trigonometry',
+    syllabus: 'Syllabus: Line of sight, angle of elevation, angle of depression, height and distance calculations, and real-world surveying, aiming, and navigation. Select a level to begin.'
+  },
   'ch-12': {
     title: 'Surface Areas & Volumes',
     fullName: 'Chapter 12: Surface Areas and Volumes',
     syllabus: 'Syllabus: Formulations and transformations of solids—cubes, cuboids, spheres, cones, hemispheres, and combination solids. Select a level challenge to begin.'
+  },
+  'ch-10': {
+    title: 'Circles',
+    fullName: 'Chapter 10: Circles',
+    syllabus: 'Syllabus: Tangents to a circle, point of contact, theorem: radius is perpendicular to tangent at point of contact (tangent ⟂ radius), theorem: tangent lengths from same external point are equal, and interactive spatial engineering reactor challenges. Select a level to begin.'
+  },
+  'ch-11': {
+    title: 'Areas Related to Circles',
+    fullName: 'Chapter 11: Areas Related to Circles',
+    syllabus: 'Syllabus: Circumference, area of circle, semicircle, quadrant, sectors, arc length, area of sector, combined circular regions, and practical geometry applications. Select a level to begin.'
+  },
+  'ch-13': {
+    title: 'Statistics',
+    fullName: 'Chapter 13: Statistics',
+    syllabus: 'Syllabus: Mean (average), Median, Mode of grouped data, cumulative frequency distribution, and graphical representation. Select a level to begin your Data City investigation.'
   }
 };
 
@@ -38,7 +63,7 @@ export const LevelGridScreen: React.FC = () => {
   const metadata = CHAPTER_METADATA[chapterId || 'ch-5'] || CHAPTER_METADATA['ch-5'];
 
   return (
-    <div className="h-screen bg-[var(--color-bg)] text-slate-800 p-4 sm:p-6 md:p-10 overflow-y-auto relative select-none">
+    <div className="h-screen bg-[var(--color-bg)] text-slate-800 p-4 sm:p-6 md:p-10 overflow-y-auto relative select-none pt-20">
       {/* Decorative ambient gradients */}
       <div className="absolute top-0 right-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 left-1/4 w-40 h-40 sm:w-[30rem] sm:h-[30rem] bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />

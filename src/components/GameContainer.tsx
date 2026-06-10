@@ -6,6 +6,7 @@ import { EventBus } from '../game/EventBus';
 import { ResultScreen } from './ResultScreen';
 import levels from '../data/levels';
 import { useGameStore } from '../store/gameStore';
+import { useAuthStore } from '../store/authStore';
 import { ConceptPanel } from './concept-panel/ConceptPanel';
 import { ConceptBook } from './ConceptBook';
 import { getLevelSpec } from '../data/levelSpecs';
@@ -26,15 +27,21 @@ export const GameContainer: React.FC = () => {
   const [isSolved, setIsSolved] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [hintUsed, setHintUsed] = useState(false);
-  const { addXp, addStars, unlockLevel, setCurrentLevel, completeLevel } = useGameStore();
+  const { addXp, addStars, unlockLevel, setCurrentLevel, completeLevel, syncProgress } = useGameStore();
+  const { token } = useAuthStore();
 
   // Filter levels for the current chapter to handle progression
   const chapterLevels = levels.filter(level => {
+    if (chapterId === 'ch-6') return level.id.startsWith('lvl-tri-');
     if (chapterId === 'ch-7') return level.id.startsWith('lvl-cg-');
     if (chapterId === 'ch-8') return level.id.startsWith('lvl-trig-');
+    if (chapterId === 'ch-9') return level.id.startsWith('lvl-apptrig-');
     if (chapterId === 'ch-5') return level.id.startsWith('lvl-ap-');
     if (chapterId === 'ch-14') return level.id.startsWith('lvl-prob-');
-    return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-');
+    if (chapterId === 'ch-10') return level.id.startsWith('lvl-circle-');
+    if (chapterId === 'ch-11') return level.id.startsWith('lvl-areas-c-');
+    if (chapterId === 'ch-13') return level.id.startsWith('lvl-stats-');
+    return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-apptrig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-') && !level.id.startsWith('lvl-tri-') && !level.id.startsWith('lvl-circle-') && !level.id.startsWith('lvl-areas-c-') && !level.id.startsWith('lvl-stats-');
   });
 
   useEffect(() => {
@@ -91,6 +98,9 @@ export const GameContainer: React.FC = () => {
       if (currentIndex !== -1 && currentIndex + 1 < chapterLevels.length) {
         unlockLevel(chapterLevels[currentIndex + 1].id);
       }
+      if (token) {
+        setTimeout(() => syncProgress(token), 300);
+      }
     } else {
       setWrongAttempts(prev => prev + 1);
       soundManager.playError();
@@ -110,9 +120,9 @@ export const GameContainer: React.FC = () => {
   if (!levelData || !spec) return <div className="text-white p-8">Level not found</div>;
 
   return (
-    <div className="w-screen h-screen bg-[var(--color-bg)] flex flex-col overflow-hidden relative">
+    <div className="w-screen h-screen bg-[var(--color-bg)] flex flex-col overflow-hidden relative pt-16">
       
-      {/* Top Header */}
+      {/* Top Header - Back button */}
       <div className="w-full px-4 md:px-8 py-3 md:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/70 backdrop-blur-md border-b border-slate-200/80 z-10 shrink-0 shadow-sm select-none">
         <button 
           onClick={() => navigate(`/chapter/${chapterId}/levels`)}

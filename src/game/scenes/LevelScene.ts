@@ -121,6 +121,11 @@ export class LevelScene extends Scene {
                 this.scene.start('TrigonometryScene');
                 return;
             }
+            if (levelData.id.startsWith('lvl-apptrig-')) {
+                this.isLevelActive = false;
+                this.scene.start('ApplicationsTrigScene');
+                return;
+            }
             if (levelData.id.startsWith('lvl-ap-')) {
                 this.isLevelActive = false;
                 this.scene.start('APScene');
@@ -129,6 +134,26 @@ export class LevelScene extends Scene {
             if (levelData.id.startsWith('lvl-prob-')) {
                 this.isLevelActive = false;
                 this.scene.start('ProbabilityScene');
+                return;
+            }
+            if (levelData.id.startsWith('lvl-tri-')) {
+                this.isLevelActive = false;
+                this.scene.start('TriangleScene');
+                return;
+            }
+            if (levelData.id.startsWith('lvl-circle-')) {
+                this.isLevelActive = false;
+                this.scene.start('CircleScene');
+                return;
+            }
+            if (levelData.id.startsWith('lvl-areas-c-')) {
+                this.isLevelActive = false;
+                this.scene.start('AreasCircleScene');
+                return;
+            }
+            if (levelData.id.startsWith('lvl-stats-')) {
+                this.isLevelActive = false;
+                this.scene.start('StatisticsScene');
                 return;
             }
             this.currentLevelData = levelData;
@@ -1196,6 +1221,102 @@ export class LevelScene extends Scene {
                 this.bottomLabel.setText('r = 10')
                     .setPosition(this.graphics.x + cx + rx/4, this.graphics.y + h/2 + 20).setVisible(true);
             }
+        } else if (shape.includes('triangle') || this.currentLevelData?.id?.startsWith('lvl-tri-')) {
+            // TRIANGLE CHAPTER: Draw interactive triangle
+            this.hideLabels();
+            
+            // Triangle dimensions
+            const baseWidth = s * 1.5;
+            const height = s * 1.2;
+            const apexX = cx;
+            const apexY = cy - height/2;
+            const baseLeftX = cx - baseWidth/2;
+            const baseLeftY = cy + height/2;
+            const baseRightX = cx + baseWidth/2;
+            const baseRightY = cy + height/2;
+            
+            // Draw triangle fill
+            this.graphics.fillStyle(color, fillOpacity);
+            this.graphics.beginPath();
+            this.graphics.moveTo(apexX, apexY);
+            this.graphics.lineTo(baseLeftX, baseLeftY);
+            this.graphics.lineTo(baseRightX, baseRightY);
+            this.graphics.closePath();
+            this.graphics.fillPath();
+            
+            // Draw triangle outline
+            this.graphics.lineStyle(3, 0x3b82f6, 1);
+            this.graphics.beginPath();
+            this.graphics.moveTo(apexX, apexY);
+            this.graphics.lineTo(baseLeftX, baseLeftY);
+            this.graphics.lineTo(baseRightX, baseRightY);
+            this.graphics.closePath();
+            this.graphics.strokePath();
+            
+            // Draw vertex points (draggable indicators)
+            const vertexRadius = 8;
+            this.graphics.fillStyle(0x3b82f6, 1);
+            // Apex A
+            this.graphics.fillCircle(apexX, apexY, vertexRadius);
+            // Base left B
+            this.graphics.fillCircle(baseLeftX, baseLeftY, vertexRadius);
+            // Base right C
+            this.graphics.fillCircle(baseRightX, baseRightY, vertexRadius);
+            
+            // White inner dots for vertices
+            this.graphics.fillStyle(0xffffff, 1);
+            this.graphics.fillCircle(apexX, apexY, 3);
+            this.graphics.fillCircle(baseLeftX, baseLeftY, 3);
+            this.graphics.fillCircle(baseRightX, baseRightY, 3);
+            
+            // Calculate side lengths
+            const sideAB = Math.sqrt(Math.pow(baseLeftX - apexX, 2) + Math.pow(baseLeftY - apexY, 2));
+            const sideBC = baseWidth;
+            const sideCA = Math.sqrt(Math.pow(apexX - baseRightX, 2) + Math.pow(apexY - baseRightY, 2));
+            
+            // Use existing labels for vertex labels
+            if (this.bottomLabel) {
+                this.bottomLabel.setText(`A (${apexX.toFixed(0)},${apexY.toFixed(0)})`)
+                    .setPosition(this.graphics.x + apexX, this.graphics.y + apexY - 25)
+                    .setVisible(true);
+            }
+            if (this.sideLabel) {
+                this.sideLabel.setText('B')
+                    .setPosition(this.graphics.x + baseLeftX - 25, this.graphics.y + baseLeftY + 15)
+                    .setVisible(true);
+            }
+            if (this.depthLabel) {
+                this.depthLabel.setText('C')
+                    .setPosition(this.graphics.x + baseRightX + 15, this.graphics.y + baseRightY + 15)
+                    .setVisible(true);
+            }
+            
+            // Draw side length labels using labelGraphics
+            this.labelGraphics.lineStyle(1, 0x64748b, 0.6);
+            
+            // Label AB - left side
+            const midABX = (apexX + baseLeftX) / 2 - 20;
+            const midABY = (apexY + baseLeftY) / 2;
+            this.labelGraphics.fillStyle(0x4f46e5, 0.8);
+            this.labelGraphics.fillCircle(midABX, midABY, 12);
+            
+            // Label BC - base
+            const midBCX = cx;
+            const midBCY = baseLeftY + 20;
+            this.labelGraphics.fillStyle(0x4f46e5, 0.8);
+            this.labelGraphics.fillCircle(midBCX, midBCY, 12);
+            
+            // Label CA - right side
+            const midCAX = (apexX + baseRightX) / 2 + 20;
+            const midCAY = (apexY + baseRightY) / 2;
+            this.labelGraphics.fillStyle(0x4f46e5, 0.8);
+            this.labelGraphics.fillCircle(midCAX, midCAY, 12);
+            
+            // Status text for triangle
+            if (this.statusText) {
+                this.statusText.setText(`△ABC | Perimeter: ${(sideAB + sideBC + sideCA).toFixed(0)} | Area: ${(0.5 * baseWidth * height).toFixed(0)}`);
+            }
+            
         } else {
             // Hemisphere or combination fallbacks
             const radius = s;

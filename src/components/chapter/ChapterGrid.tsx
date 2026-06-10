@@ -16,14 +16,14 @@ export const NCERT_CHAPTERS: NCERTChapter[] = [
   { id: "ch-3", number: 3, title: "Pair of Linear Equations in Two Variables", isUnlocked: false, conceptCount: "4 Subtopics" },
   { id: "ch-4", number: 4, title: "Quadratic Equations", isUnlocked: false, conceptCount: "3 Subtopics" },
   { id: "ch-5", number: 5, title: "Arithmetic Progressions", isUnlocked: true, conceptCount: "30 Math Challenges" },
-  { id: "ch-6", number: 6, title: "Triangles", isUnlocked: false, conceptCount: "5 Subtopics" },
+  { id: "ch-6", number: 6, title: "Triangles", isUnlocked: true, conceptCount: "30 Math Challenges" },
   { id: "ch-7", number: 7, title: "Coordinate Geometry", isUnlocked: true, conceptCount: "30 Math Challenges" },
   { id: "ch-8", number: 8, title: "Introduction to Trigonometry", isUnlocked: true, conceptCount: "30 Math Challenges" },
-  { id: "ch-9", number: 9, title: "Some Applications of Trigonometry", isUnlocked: false, conceptCount: "2 Subtopics" },
-  { id: "ch-10", number: 10, title: "Circles", isUnlocked: false, conceptCount: "2 Subtopics" },
-  { id: "ch-11", number: 11, title: "Areas Related to Circles", isUnlocked: false, conceptCount: "3 Subtopics" },
+  { id: "ch-9", number: 9, title: "Some Applications of Trigonometry", isUnlocked: true, conceptCount: "30 Math Challenges" },
+  { id: "ch-10", number: 10, title: "Circles", isUnlocked: true, conceptCount: "30 Math Challenges" },
+  { id: "ch-11", number: 11, title: "Areas Related to Circles", isUnlocked: true, conceptCount: "30 Math Challenges" },
   { id: "ch-12", number: 12, title: "Surface Areas and Volumes", isUnlocked: true, conceptCount: "30 Math Challenges" },
-  { id: "ch-13", number: 13, title: "Statistics", isUnlocked: false, conceptCount: "4 Subtopics" },
+  { id: "ch-13", number: 13, title: "Statistics", isUnlocked: true, conceptCount: "30 Math Challenges" },
   { id: "ch-14", number: 14, title: "Probability", isUnlocked: true, conceptCount: "30 Math Challenges" }
 ];
 

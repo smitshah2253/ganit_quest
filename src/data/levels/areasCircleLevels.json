@@ -1,0 +1,272 @@
+[
+  {
+    "id": "lvl-areas-c-01",
+    "world": 1,
+    "type": "areas_circle",
+    "title": "Reactor Calibration",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-02",
+    "world": 1,
+    "type": "areas_circle",
+    "title": "Orbital Path Match",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-03",
+    "world": 1,
+    "type": "areas_circle",
+    "title": "Ring Rotation",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-04",
+    "world": 1,
+    "type": "areas_circle",
+    "title": "Wheel Motion Control",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-05",
+    "world": 1,
+    "type": "areas_circle",
+    "title": "Shield Stability",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-06",
+    "world": 1,
+    "type": "areas_circle",
+    "title": "Precision Navigation",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-07",
+    "world": 2,
+    "type": "areas_circle",
+    "title": "Energy Chamber Fill",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-08",
+    "world": 2,
+    "type": "areas_circle",
+    "title": "Area Growth Analysis",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-09",
+    "world": 2,
+    "type": "areas_circle",
+    "title": "Storage Zone Optimization",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-10",
+    "world": 2,
+    "type": "areas_circle",
+    "title": "Maximum Field Builder",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-11",
+    "world": 2,
+    "type": "areas_circle",
+    "title": "Multi-Region Balance",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-12",
+    "world": 2,
+    "type": "areas_circle",
+    "title": "Dynamic Resizing Challenge",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-13",
+    "world": 3,
+    "type": "areas_circle",
+    "title": "Sector Unlock",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-14",
+    "world": 3,
+    "type": "areas_circle",
+    "title": "Arc Transport Route",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-15",
+    "world": 3,
+    "type": "areas_circle",
+    "title": "Sector Scanner",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-16",
+    "world": 3,
+    "type": "areas_circle",
+    "title": "Radar System",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-17",
+    "world": 3,
+    "type": "areas_circle",
+    "title": "Orbital Slice Control",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-18",
+    "world": 3,
+    "type": "areas_circle",
+    "title": "Arc Navigation Puzzle",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-19",
+    "world": 4,
+    "type": "areas_circle",
+    "title": "Semicircular Bridge",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-20",
+    "world": 4,
+    "type": "areas_circle",
+    "title": "Quadrant Energy Network",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-21",
+    "world": 4,
+    "type": "areas_circle",
+    "title": "Ring-Shaped City",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-22",
+    "world": 4,
+    "type": "areas_circle",
+    "title": "Circular Garden Layout",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-23",
+    "world": 4,
+    "type": "areas_circle",
+    "title": "Overlapping Circles Puzzle",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-24",
+    "world": 4,
+    "type": "areas_circle",
+    "title": "Futuristic Dome",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-25",
+    "world": 5,
+    "type": "areas_circle",
+    "title": "Running Track Design",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-26",
+    "world": 5,
+    "type": "areas_circle",
+    "title": "Wheel Transport System",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-27",
+    "world": 5,
+    "type": "areas_circle",
+    "title": "Water Distribution Network",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-28",
+    "world": 5,
+    "type": "areas_circle",
+    "title": "Orbital Defense Ring",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-29",
+    "world": 5,
+    "type": "areas_circle",
+    "title": "Mixed-Sector Optimization",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  },
+  {
+    "id": "lvl-areas-c-30",
+    "world": 5,
+    "type": "areas_circle",
+    "title": "🎯 FINAL BOSS: The Circular Energy Core",
+    "shape": "circle",
+    "targetValue": 0,
+    "concept": "Areas Related to Circles"
+  }
+]

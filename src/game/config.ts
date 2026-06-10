@@ -3,8 +3,13 @@ import { BootScene } from './scenes/BootScene';
 import { LevelScene } from './scenes/LevelScene';
 import { CoordinateScene } from './scenes/CoordinateScene';
 import { TrigonometryScene } from './scenes/TrigonometryScene';
+import { ApplicationsTrigScene } from './scenes/ApplicationsTrigScene';
 import { APScene } from './scenes/APScene';
 import { ProbabilityScene } from './scenes/ProbabilityScene';
+import { TriangleScene } from './scenes/TriangleScene';
+import { CircleScene } from './scenes/CircleScene';
+import AreasCircleScene from './scenes/AreasCircleScene';
+import { StatisticsScene } from './scenes/StatisticsScene';
 
 export const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -22,7 +27,12 @@ export const config: Phaser.Types.Core.GameConfig = {
         LevelScene,
         CoordinateScene,
         TrigonometryScene,
+        ApplicationsTrigScene,
         APScene,
-        ProbabilityScene
+        ProbabilityScene,
+        TriangleScene,
+        CircleScene,
+        AreasCircleScene,
+        StatisticsScene
     ]
 };

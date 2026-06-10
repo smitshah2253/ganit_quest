@@ -1,0 +1,36 @@
+[
+  { "id": "lvl-circle-01", "world": 1, "type": "resize_reactor", "title": "Resize Reactor Core", "shape": "circle_resize", "targetValue": 7, "concept": "Resize circular reactor to target radius" },
+  { "id": "lvl-circle-02", "world": 1, "type": "circumference_path", "title": "Circumference Path Match", "shape": "circle_circumference", "targetValue": 14, "concept": "Match required circumference path" },
+  { "id": "lvl-circle-03", "world": 1, "type": "orbital_roll", "title": "Orbital Ring Roll", "shape": "circle_roll", "targetValue": 360, "concept": "Rotate orbital ring exact distance" },
+  { "id": "lvl-circle-04", "world": 1, "type": "wheel_rotation", "title": "Wheel Revolution Count", "shape": "wheel_revolutions", "targetValue": 100, "concept": "Control wheel movement using circumference" },
+  { "id": "lvl-circle-05", "world": 1, "type": "circumference_match", "title": "Stable Shield Boundary", "shape": "circle_boundary", "targetValue": 14, "concept": "Create stable circular shield" },
+  { "id": "lvl-circle-06", "world": 1, "type": "board_exam", "title": "Circumference Notebook", "shape": "circle_board_1", "targetValue": 0, "concept": "Circumference and diameter calibration challenge" },
+
+  { "id": "lvl-circle-07", "world": 2, "type": "fill_chamber", "title": "Fill Energy Chamber", "shape": "circle_fill", "targetValue": 7, "concept": "Fill circular energy chamber fully" },
+  { "id": "lvl-circle-08", "world": 2, "type": "area_growth", "title": "Area Growth Scale", "shape": "circle_growth", "targetValue": 4, "concept": "Compare area growth with changing radius" },
+  { "id": "lvl-circle-09", "world": 2, "type": "optimize_storage", "title": "Optimize Storage Zone", "shape": "circle_storage", "targetValue": 14, "concept": "Optimize circular storage zone radius" },
+  { "id": "lvl-circle-10", "world": 2, "type": "largest_field", "title": "Largest Field Area", "shape": "circle_inscribed", "targetValue": 314, "concept": "Build largest-area circular field in square" },
+  { "id": "lvl-circle-11", "world": 2, "type": "balance_regions", "title": "Balance Dual Rings", "shape": "circle_balance", "targetValue": 10, "concept": "Balance multiple circular energy regions" },
+  { "id": "lvl-circle-12", "world": 2, "type": "board_exam", "title": "Area Mechanics Notebook", "shape": "circle_board_2", "targetValue": 0, "concept": "Solve area of circles notebook" },
+
+  { "id": "lvl-circle-13", "world": 3, "type": "sector_angle", "title": "Sector Angle Lock", "shape": "sector_slice", "targetValue": 90, "concept": "Unlock reactor using correct sector angle" },
+  { "id": "lvl-circle-14", "world": 3, "type": "arc_route", "title": "Arc Transport Route", "shape": "arc_bridge", "targetValue": 60, "concept": "Create exact arc-length transport route" },
+  { "id": "lvl-circle-15", "world": 3, "type": "sector_scanner", "title": "Sector Sweep Area", "shape": "sector_sweep", "targetValue": 45, "concept": "Rotate sector scanner precisely" },
+  { "id": "lvl-circle-16", "world": 3, "type": "radar_sectors", "title": "Radar Sweep Area", "shape": "radar_sectors", "targetValue": 37.7, "concept": "Build radar system using sectors" },
+  { "id": "lvl-circle-17", "world": 3, "type": "orbital_slice", "title": "Dynamic Arc Slice", "shape": "arc_slice", "targetValue": 90, "concept": "Control orbital slice area dynamically" },
+  { "id": "lvl-circle-18", "world": 3, "type": "board_exam", "title": "Sectors & Arcs Notebook", "shape": "circle_board_3", "targetValue": 0, "concept": "Master sectors and arc length details" },
+
+  { "id": "lvl-circle-19", "world": 4, "type": "semicircle_bridge", "title": "Semicircular Bridge", "shape": "semicircle_bridge", "targetValue": 72, "concept": "Construct semicircular bridge system" },
+  { "id": "lvl-circle-20", "world": 4, "type": "quadrant_grid", "title": "Quadrant Energy Grid", "shape": "quadrant_network", "targetValue": 25, "concept": "Build quadrant-based energy network" },
+  { "id": "lvl-circle-21", "world": 4, "type": "ring_city", "title": "Concentric Ring City", "shape": "annulus_ring", "targetValue": 462, "concept": "Create ring-shaped orbital city" },
+  { "id": "lvl-circle-22", "world": 4, "type": "garden_layout", "title": "Circular Path Design", "shape": "lawn_path", "targetValue": 1386, "concept": "Design circular garden layout path" },
+  { "id": "lvl-circle-23", "world": 4, "type": "overlapping_circles", "title": "Flower Design Frame", "shape": "overlapping_arcs", "targetValue": 112, "concept": "Advanced overlapping-circle design area" },
+  { "id": "lvl-circle-24", "world": 4, "type": "board_exam", "title": "Combined Geometries Notebook", "shape": "circle_board_4", "targetValue": 0, "concept": "Solve combined shape area steps" },
+
+  { "id": "lvl-circle-25", "world": 5, "type": "running_track", "title": "Running Track Design", "shape": "running_track", "targetValue": 420, "concept": "Optimize running track design parameters" },
+  { "id": "lvl-circle-26", "world": 5, "type": "wheel_roll", "title": "Wheel Roll Distance", "shape": "wheel_transport", "targetValue": 22, "concept": "Build efficient wheel transport system" },
+  { "id": "lvl-circle-27", "world": 5, "type": "water_sprinkler", "title": "Sprinkler Sweep Zone", "shape": "sprinkler_network", "targetValue": 462, "concept": "Design circular water-distribution network" },
+  { "id": "lvl-circle-28", "world": 5, "type": "defense_annulus", "title": "Defense Ring Barrier", "shape": "defense_barrier", "targetValue": 113.1, "concept": "Create orbital defense ring structure" },
+  { "id": "lvl-circle-29", "world": 5, "type": "board_exam", "title": "Master Synthesis Notebook", "shape": "circle_board_5", "targetValue": 0, "concept": "Solve advanced mixed optimization puzzle" },
+  { "id": "lvl-circle-30", "world": 5, "type": "boss", "title": "CIRCULAR REACTOR CORE", "shape": "circle_boss", "targetValue": 154, "concept": "Master circular energy core combined parameters" }
+]

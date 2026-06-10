@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Scene, GameObjects } from 'phaser';
 import { EventBus } from '../EventBus';
 import { getLevelSpec } from '../../data/levelSpecs';

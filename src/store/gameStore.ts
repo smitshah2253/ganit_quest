@@ -1,5 +1,33 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import axios from 'axios'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
+// TEST MODE: All levels unlocked for testing
+// Generate all level IDs for all chapters
+const generateAllLevels = (): string[] => {
+  const levels: string[] = []
+  // Surface Areas and Volumes (lvl-01 to lvl-30)
+  for (let i = 1; i <= 30; i++) levels.push(`lvl-${i.toString().padStart(2, '0')}`)
+  // Coordinate Geometry (lvl-cg-01 to lvl-cg-30)
+  for (let i = 1; i <= 30; i++) levels.push(`lvl-cg-${i.toString().padStart(2, '0')}`)
+  // Trigonometry (lvl-trig-01 to lvl-trig-30)
+  for (let i = 1; i <= 30; i++) levels.push(`lvl-trig-${i.toString().padStart(2, '0')}`)
+  // Applications of Trigonometry (lvl-apptrig-01 to lvl-apptrig-30)
+  for (let i = 1; i <= 30; i++) levels.push(`lvl-apptrig-${i.toString().padStart(2, '0')}`)
+  // Arithmetic Progression (lvl-ap-01 to lvl-ap-30)
+  for (let i = 1; i <= 30; i++) levels.push(`lvl-ap-${i.toString().padStart(2, '0')}`)
+  // Probability (lvl-prob-01 to lvl-prob-30)
+  for (let i = 1; i <= 30; i++) levels.push(`lvl-prob-${i.toString().padStart(2, '0')}`)
+  // Triangles (lvl-tri-01 to lvl-tri-30)
+  for (let i = 1; i <= 30; i++) levels.push(`lvl-tri-${i.toString().padStart(2, '0')}`)
+  // Circles (lvl-circle-01 to lvl-circle-30)
+  for (let i = 1; i <= 30; i++) levels.push(`lvl-circle-${i.toString().padStart(2, '0')}`)
+  return levels
+}
+
+const INITIAL_UNLOCKED = generateAllLevels()
 
 interface GameState {
   xp: number
@@ -7,52 +35,85 @@ interface GameState {
   currentLevelId: string | null
   unlockedLevels: string[]
   completedLevels: string[]
+  isSyncing: boolean
   addXp: (amount: number) => void
   addStars: (amount: number) => void
   setCurrentLevel: (levelId: string) => void
   unlockLevel: (levelId: string) => void
   completeLevel: (levelId: string) => void
+  loadProgress: (progress: { xp: number; stars: number; completedLevels: string[]; unlockedLevels: string[] }) => void
+  syncProgress: (token: string) => Promise<void>
+  reset: () => void
 }
 
 export const useGameStore = create<GameState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       xp: 0,
       stars: 0,
       currentLevelId: null,
-      unlockedLevels: [
-        'lvl-01', 'lvl-cg-01', 'lvl-trig-01',
-        'lvl-ap-01', 'lvl-ap-02', 'lvl-ap-03', 'lvl-ap-04', 'lvl-ap-05', 'lvl-ap-06',
-        'lvl-ap-07', 'lvl-ap-08', 'lvl-ap-09', 'lvl-ap-10', 'lvl-ap-11', 'lvl-ap-12',
-        'lvl-ap-13', 'lvl-ap-14', 'lvl-ap-15', 'lvl-ap-16', 'lvl-ap-17', 'lvl-ap-18',
-        'lvl-ap-19', 'lvl-ap-20', 'lvl-ap-21', 'lvl-ap-22', 'lvl-ap-23', 'lvl-ap-24',
-        'lvl-ap-25', 'lvl-ap-26', 'lvl-ap-27', 'lvl-ap-28', 'lvl-ap-29', 'lvl-ap-30',
-        'lvl-prob-01', 'lvl-prob-02', 'lvl-prob-03', 'lvl-prob-04', 'lvl-prob-05', 'lvl-prob-06',
-        'lvl-prob-07', 'lvl-prob-08', 'lvl-prob-09', 'lvl-prob-10', 'lvl-prob-11', 'lvl-prob-12',
-        'lvl-prob-13', 'lvl-prob-14', 'lvl-prob-15', 'lvl-prob-16', 'lvl-prob-17', 'lvl-prob-18',
-        'lvl-prob-19', 'lvl-prob-20', 'lvl-prob-21', 'lvl-prob-22', 'lvl-prob-23', 'lvl-prob-24',
-        'lvl-prob-25', 'lvl-prob-26', 'lvl-prob-27', 'lvl-prob-28', 'lvl-prob-29', 'lvl-prob-30'
-      ], // All AP + Probability levels unlocked for testing
+      unlockedLevels: INITIAL_UNLOCKED,
       completedLevels: [],
-      
+      isSyncing: false,
+
       addXp: (amount) => set((state) => ({ xp: Math.max(0, state.xp + amount) })),
       addStars: (amount) => set((state) => ({ stars: state.stars + amount })),
       setCurrentLevel: (levelId) => set({ currentLevelId: levelId }),
+
       unlockLevel: (levelId) => set((state) => {
         if (!state.unlockedLevels.includes(levelId)) {
           return { unlockedLevels: [...state.unlockedLevels, levelId] }
         }
         return state
       }),
+
       completeLevel: (levelId) => set((state) => {
         if (!state.completedLevels.includes(levelId)) {
           return { completedLevels: [...state.completedLevels, levelId] }
         }
         return state
       }),
+
+      loadProgress: (progress) => set((state) => ({
+        xp: progress.xp > 0 ? progress.xp : state.xp,
+        stars: progress.stars > 0 ? progress.stars : state.stars,
+        // Merge: server completed + local completed
+        completedLevels: Array.from(new Set([...state.completedLevels, ...(progress.completedLevels ?? [])])),
+        // Trust server's unlockedLevels if provided; otherwise use INITIAL_UNLOCKED for new users
+        unlockedLevels: (progress.unlockedLevels && progress.unlockedLevels.length > 0)
+          ? Array.from(new Set([...progress.unlockedLevels, ...state.unlockedLevels]))
+          : Array.from(new Set([...INITIAL_UNLOCKED, ...state.unlockedLevels])),
+      })),
+
+      syncProgress: async (token: string) => {
+        if (get().isSyncing) return
+        set({ isSyncing: true })
+        try {
+          const { xp, stars, completedLevels, unlockedLevels } = get()
+          await axios.post(
+            `${API_URL}/progress/sync`,
+            { xp, stars, completedLevels, unlockedLevels },
+            { headers: { Authorization: `Bearer ${token}` } }
+          )
+        } catch (err) {
+          console.warn('Progress sync failed (offline?):', err)
+        } finally {
+          set({ isSyncing: false })
+        }
+      },
+
+      reset: () => set({
+        xp: 0,
+        stars: 0,
+        currentLevelId: null,
+        unlockedLevels: INITIAL_UNLOCKED,
+        completedLevels: [],
+        isSyncing: false,
+      }),
     }),
     {
       name: 'ganitquest-game-store',
+      version: 3, // TEST MODE: Bump version to force reset and unlock all levels (includes circle chapter)
       partialize: (state) => ({
         xp: state.xp,
         stars: state.stars,
@@ -60,6 +121,20 @@ export const useGameStore = create<GameState>()(
         unlockedLevels: state.unlockedLevels,
         completedLevels: state.completedLevels,
       }),
+      migrate: (persistedState: any, version: number) => {
+        // TEST MODE: Always reset to unlock all levels
+        if (version < 2 || true) { // '|| true' forces reset every time for testing
+          return {
+            xp: 0,
+            stars: 0,
+            currentLevelId: null,
+            unlockedLevels: INITIAL_UNLOCKED,
+            completedLevels: [],
+            isSyncing: false,
+          }
+        }
+        return persistedState as any
+      },
     }
   )
 )

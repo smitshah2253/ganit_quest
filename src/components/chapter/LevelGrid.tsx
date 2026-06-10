@@ -6,6 +6,13 @@ import type { LevelData } from '../../data/levels';
 import { useGameStore } from '../../store/gameStore';
 
 export const CHAPTER_WORLD_NAMES: Record<string, Record<number, string>> = {
+  'ch-6': {
+    1: "World 1: Triangle Foundations",
+    2: "World 2: Similar Triangles",
+    3: "World 3: Basic Proportionality Theorem",
+    4: "World 4: Areas & Scaling",
+    5: "World 5: Pythagoras & Mastery"
+  },
   'ch-7': {
     1: "World 1: Understanding Coordinates",
     2: "World 2: Plotting Mechanics",
@@ -19,6 +26,13 @@ export const CHAPTER_WORLD_NAMES: Record<string, Record<number, string>> = {
     3: "World 3: Trigonometric Identity Lab",
     4: "World 4: Complementary Angles",
     5: "World 5: Heights & Distances"
+  },
+  'ch-9': {
+    1: "World 1: Observation Basics (Levels 1–6)",
+    2: "World 2: Angle of Elevation (Levels 7–12)",
+    3: "World 3: Angle of Depression (Levels 13–18)",
+    4: "World 4: Heights & Distances (Levels 19–24)",
+    5: "World 5: Survey Commander (Levels 25–30)"
   },
   'ch-12': {
     1: "World 1: Shape Basics",
@@ -40,6 +54,27 @@ export const CHAPTER_WORLD_NAMES: Record<string, Record<number, string>> = {
     3: "World 3: Events & Probability Intuition",
     4: "World 4: Probability Formula Engine",
     5: "World 5: Real-World Probability Systems"
+  },
+  'ch-10': {
+    1: "World 1: Circle & Tangent Foundations",
+    2: "World 2: Radius & Tangent Mechanics",
+    3: "World 3: Equal Tangent Systems",
+    4: "World 4: Circle Construction",
+    5: "World 5: Orbital Mastery"
+  },
+  'ch-11': {
+    1: "World 1: Circle Foundations",
+    2: "World 2: Area Mechanics",
+    3: "World 3: Sectors & Arcs",
+    4: "World 4: Circular Region Combinations",
+    5: "World 5: Real-World Engineering"
+  },
+  'ch-13': {
+    1: "World 1: Data Collection Unit",
+    2: "World 2: Frequency Analysis Lab",
+    3: "World 3: Class Interval Systems",
+    4: "World 4: Cumulative Frequency Engine",
+    5: "World 5: Median Investigation Headquarters"
   }
 };
 
@@ -53,11 +88,17 @@ export const LevelGrid: React.FC<LevelGridProps> = ({ chapterId }) => {
 
   // Filter levels by selected chapter
   const selectedLevels = levels.filter(level => {
+    if (chapterId === 'ch-6') {
+      return level.id.startsWith('lvl-tri-');
+    }
     if (chapterId === 'ch-7') {
       return level.id.startsWith('lvl-cg-');
     }
     if (chapterId === 'ch-8') {
       return level.id.startsWith('lvl-trig-');
+    }
+    if (chapterId === 'ch-9') {
+      return level.id.startsWith('lvl-apptrig-');
     }
     if (chapterId === 'ch-5') {
       return level.id.startsWith('lvl-ap-');
@@ -65,8 +106,17 @@ export const LevelGrid: React.FC<LevelGridProps> = ({ chapterId }) => {
     if (chapterId === 'ch-14') {
       return level.id.startsWith('lvl-prob-');
     }
+    if (chapterId === 'ch-10') {
+      return level.id.startsWith('lvl-circle-');
+    }
+    if (chapterId === 'ch-11') {
+      return level.id.startsWith('lvl-areas-c-');
+    }
+    if (chapterId === 'ch-13') {
+      return level.id.startsWith('lvl-stats-');
+    }
     if (chapterId === 'ch-12') {
-      return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-');
+      return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-') && !level.id.startsWith('lvl-tri-') && !level.id.startsWith('lvl-circle-') && !level.id.startsWith('lvl-areas-c-') && !level.id.startsWith('lvl-stats-');
     }
     return false;
   });

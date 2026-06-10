@@ -1,0 +1,36 @@
+[
+  { "id": "lvl-tri-01", "world": 1, "type": "triangle_construct", "title": "Triangle Constructor", "shape": "triangle_construct", "targetValue": 0, "concept": "Construct triangle using draggable vertices" },
+  { "id": "lvl-tri-02", "world": 1, "type": "triangle_match", "title": "Match Target Shape", "shape": "triangle_match", "targetValue": 0, "concept": "Match target triangle shape" },
+  { "id": "lvl-tri-03", "world": 1, "type": "triangle_resize", "title": "Resize While Maintaining Angles", "shape": "triangle_resize", "targetValue": 0, "concept": "Resize triangle while maintaining angles" },
+  { "id": "lvl-tri-04", "world": 1, "type": "triangle_balance", "title": "Triangular Support", "shape": "triangle_balance", "targetValue": 0, "concept": "Balance triangular support structure" },
+  { "id": "lvl-tri-05", "world": 1, "type": "triangle_frame", "title": "Geometric Frame", "shape": "triangle_frame", "targetValue": 0, "concept": "Build stable geometric frame" },
+  { "id": "lvl-tri-06", "world": 1, "type": "triangle_timed", "title": "Timed Challenge", "shape": "triangle_timed", "targetValue": 0, "concept": "Timed triangle construction challenge" },
+
+  { "id": "lvl-tri-07", "world": 2, "type": "similar_match", "title": "Scale Match", "shape": "similar_match", "targetValue": 2, "concept": "Match two triangles through scaling (ratio 2:1)" },
+  { "id": "lvl-tri-08", "world": 2, "type": "corresponding_sides", "title": "Corresponding Sides", "shape": "corresponding_sides", "targetValue": 0, "concept": "Identify corresponding sides visually" },
+  { "id": "lvl-tri-09", "world": 2, "type": "holographic_scale", "title": "Holographic Resize", "shape": "holographic_scale", "targetValue": 3, "concept": "Resize holographic triangle to similarity ratio 3:1" },
+  { "id": "lvl-tri-10", "world": 2, "type": "similarity_repair", "title": "Reactor Repair", "shape": "similarity_repair", "targetValue": 0, "concept": "Repair broken similarity reactor" },
+  { "id": "lvl-tri-11", "world": 2, "type": "perfect_clone", "title": "Perfect Clone", "shape": "perfect_clone", "targetValue": 0, "concept": "Create perfect scaled clone of triangle" },
+  { "id": "lvl-tri-12", "world": 2, "type": "sync_puzzle", "title": "Synchronization Puzzle", "shape": "sync_puzzle", "targetValue": 0, "concept": "Similarity synchronization puzzle" },
+
+  { "id": "lvl-tri-13", "world": 3, "type": "bpt_divide", "title": "Proportional Division", "shape": "bpt_divide", "targetValue": 0, "concept": "Divide triangle beam proportionally using BPT" },
+  { "id": "lvl-tri-14", "world": 3, "type": "bridge_balance", "title": "Bridge Balance", "shape": "bridge_balance", "targetValue": 0, "concept": "Balance triangular bridge supports proportionally" },
+  { "id": "lvl-tri-15", "world": 3, "type": "parallel_beams", "title": "Parallel Energy", "shape": "parallel_beams", "targetValue": 0, "concept": "Create parallel energy beam system (DE || BC)" },
+  { "id": "lvl-tri-16", "world": 3, "type": "ratio_unlock", "title": "Proportion Gate", "shape": "ratio_unlock", "targetValue": 0, "concept": "Use proportional segments AD/DB = AE/EC to unlock gate" },
+  { "id": "lvl-tri-17", "world": 3, "type": "line_adjust", "title": "Adjust Lines", "shape": "line_adjust", "targetValue": 0, "concept": "Adjust line positions maintaining ratios" },
+  { "id": "lvl-tri-18", "world": 3, "type": "bpt_advanced", "title": "Advanced BPT", "shape": "bpt_advanced", "targetValue": 0, "concept": "Advanced proportionality puzzle challenge" },
+
+  { "id": "lvl-tri-19", "world": 4, "type": "area_compare", "title": "Area Growth", "shape": "area_compare", "targetValue": 4, "concept": "Compare area growth during scaling (ratio² = 4)" },
+  { "id": "lvl-tri-20", "world": 4, "type": "land_optimize", "title": "Land Distribution", "shape": "land_optimize", "targetValue": 0, "concept": "Optimize triangular land distribution" },
+  { "id": "lvl-tri-21", "world": 4, "type": "equal_area", "title": "Equal Area Zones", "shape": "equal_area", "targetValue": 0, "concept": "Construct equal-area geometry zones" },
+  { "id": "lvl-tri-22", "world": 4, "type": "reactor_scale", "title": "Reactor Efficiency", "shape": "reactor_scale", "targetValue": 0, "concept": "Scale triangle reactor efficiently" },
+  { "id": "lvl-tri-23", "world": 4, "type": "area_ratio", "title": "Area-Ratio Balance", "shape": "area_ratio", "targetValue": 0, "concept": "Area-ratio balancing challenge (Area ratio = k²)" },
+  { "id": "lvl-tri-24", "world": 4, "type": "scaling_puzzle", "title": "Geometric Scaling", "shape": "scaling_puzzle", "targetValue": 0, "concept": "Advanced geometric scaling puzzle" },
+
+  { "id": "lvl-tri-25", "world": 5, "type": "shortest_path", "title": "Shortest Path", "shape": "shortest_path", "targetValue": 0, "concept": "Build shortest triangular support path using Pythagoras" },
+  { "id": "lvl-tri-26", "world": 5, "type": "laser_distance", "title": "Laser Distance", "shape": "laser_distance", "targetValue": 0, "concept": "Laser-distance triangle puzzle" },
+  { "id": "lvl-tri-27", "world": 5, "type": "bridge_optimize", "title": "Bridge Optimization", "shape": "bridge_optimize", "targetValue": 0, "concept": "Bridge-construction optimization challenge" },
+  { "id": "lvl-tri-28", "world": 5, "type": "navigation", "title": "Navigation System", "shape": "navigation", "targetValue": 0, "concept": "Right-triangle navigation system" },
+  { "id": "lvl-tri-29", "world": 5, "type": "multi_reasoning", "title": "Geometric Reasoning", "shape": "multi_reasoning", "targetValue": 0, "concept": "Multi-step geometric reasoning puzzle" },
+  { "id": "lvl-tri-30", "world": 5, "type": "boss", "title": "FINAL BOSS", "shape": "triangles_boss", "targetValue": 0, "concept": "Master reactor: similarity + BPT + scaling + areas + Pythagoras" }
+]

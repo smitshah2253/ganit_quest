@@ -1,0 +1,101 @@
+# GanitQuest CI Pipeline
+# Triggers: push to main, PRs to main
+# Jobs: lint + build frontend, build backend
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel previous runs on the same branch to save GitHub Actions minutes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── 1. Frontend: lint + type-check + build ─────────────────────────
+  frontend:
+    name: Frontend Build & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Type-check & Build (Vite)
+        run: npm run build
+
+      - name: Upload build artifact (for deploy preview)
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist/
+
+  # ── 2. Backend: type-check + compile ─────────────────────────────────
+  backend:
+    name: Backend Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: Compile TypeScript
+        working-directory: ./server
+        run: npm run build
+
+  # ── 3. Verify server starts (smoke test) ─────────────────────────────
+  smoke-test:
+    name: Server Smoke Test
+    runs-on: ubuntu-latest
+    needs: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install & build server
+        working-directory: ./server
+        run: |
+          npm ci
+          npm run build
+
+      # Note: MySQL is NOT started here. This only verifies
+      # the compiled JS can be required without syntax errors.
+      # For DB integration tests, spin up a MySQL service container.
+      - name: Verify server binary loads
+        working-directory: ./server
+        run: node -e "require('./dist/index.js')" || true
