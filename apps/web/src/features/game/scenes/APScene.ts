@@ -5,33 +5,35 @@ import type { LevelSpecification } from '@/data/levelSpecs';
 import { soundManager } from '../engine/SoundManager';
 
 const FONT = 'Inter, system-ui, -apple-system, sans-serif';
-const BAR_COLORS = [0x3b82f6, 0x6366f1, 0x8b5cf6, 0xa855f7, 0xec4899, 0xf97316, 0xf59e0b];
 
-// Block color palette
-const C_KNOWN   = { fill: 0x3b82f6, stroke: 0x2563eb, text: '#ffffff' }; // blue  – known term
-const C_ANSWER  = { fill: 0xf97316, stroke: 0xea580c, text: '#ffffff' }; // orange – answer block
-const C_TARGET  = { fill: 0x0891b2, stroke: 0x0e7490, text: '#ffffff' }; // teal   – target/locked
-const C_EMPTY   = { fill: 0xdde6ef, stroke: 0xb8ccd9, text: '#94a3b8' }; // grey   – null placeholder
+// ─── Colors (light theme) ─────────────────────────────────────────
+const BG      = 0xecf2f7;
+const GRID    = 0xcbd5e1;
+const KNOWN   = { fill: 0xdbeafe, stroke: 0x3b82f6, text: '#1e40af' }; // blue
+const ANSWER  = { fill: 0xfef3c7, stroke: 0xf59e0b, text: '#92400e' }; // amber
+const CORRECT = { fill: 0xd1fae5, stroke: 0x10b981, text: '#065f46' }; // green
+const WRONG   = { fill: 0xfee2e2, stroke: 0xef4444, text: '#991b1b' }; // red
+const BAR_PALETTE = [0x3b82f6, 0x6366f1, 0x8b5cf6, 0xa855f7, 0xec4899, 0xf97316, 0xf59e0b];
 
 export class APScene extends Scene {
 
-    private backgroundGraphics!: GameObjects.Graphics;
-    private mainGraphics!: GameObjects.Graphics;
+    private bgGfx!: GameObjects.Graphics;
+    private mainGfx!: GameObjects.Graphics;
     private labels: Record<string, GameObjects.Text> = {};
 
     private levelSpec: LevelSpecification | null = null;
     private isLevelActive = false;
     private currentInput = 0;
     private lastInput = -9999;
-    private answerLabelKey = '';
+    private answerBlockKey = '';
 
     constructor() { super('APScene'); }
 
     // ─────────────────────────────────────────────────────────────────
     create() {
         this.cameras.main.setBackgroundColor('#ecf2f7');
-        this.backgroundGraphics = this.add.graphics();
-        this.mainGraphics = this.add.graphics();
+        this.bgGfx   = this.add.graphics();
+        this.mainGfx = this.add.graphics();
 
         const onLoadLevel = (levelData: any) => {
             if (!this.scene?.systems) return;
@@ -44,9 +46,10 @@ export class APScene extends Scene {
             this.isLevelActive = true;
             this.currentInput = 0;
             this.lastInput = -9999;
+            this.answerBlockKey = '';
             this.drawLevel();
-            this.cameras.main.zoomTo(1.07, 380, 'Power2');
-            this.time.delayedCall(380, () => this.cameras.main.zoomTo(1, 320, 'Power2'));
+            this.cameras.main.zoomTo(1.06, 350, 'Power2');
+            this.time.delayedCall(350, () => this.cameras.main.zoomTo(1, 300, 'Power2'));
         };
 
         const onUserInput = (data: { value: string }) => {
@@ -62,485 +65,613 @@ export class APScene extends Scene {
             this.currentInput = isNaN(v) ? 0 : v;
         };
 
-        const onCorrect = () => {
-            this.flashOverlay(0x10b981);
-            this.celebrateSuccess();
-        };
-        const onWrong   = () => this.flashOverlay(0xef4444);
+        const onCorrect = () => { this.flashScreen(0x10b981); this.celebrateSuccess(); };
+        const onWrong   = () => this.flashScreen(0xef4444);
 
-        EventBus.on('load-level', onLoadLevel);
-        EventBus.on('user-input-changed', onUserInput);
+        EventBus.on('load-level',              onLoadLevel);
+        EventBus.on('user-input-changed',       onUserInput);
         EventBus.on('board-exam-input-changed', onBoardInput);
-        EventBus.on('answer-correct', onCorrect);
-        EventBus.on('answer-wrong', onWrong);
+        EventBus.on('answer-correct',           onCorrect);
+        EventBus.on('answer-wrong',             onWrong);
 
         const cleanup = () => {
-            EventBus.off('load-level', onLoadLevel);
-            EventBus.off('user-input-changed', onUserInput);
+            EventBus.off('load-level',              onLoadLevel);
+            EventBus.off('user-input-changed',       onUserInput);
             EventBus.off('board-exam-input-changed', onBoardInput);
-            EventBus.off('answer-correct', onCorrect);
-            EventBus.off('answer-wrong', onWrong);
+            EventBus.off('answer-correct',           onCorrect);
+            EventBus.off('answer-wrong',             onWrong);
             this.scale.off('resize', onResize);
         };
         this.events.once('shutdown', cleanup);
-        this.events.once('destroy', cleanup);
+        this.events.once('destroy',  cleanup);
 
         const onResize = (gs: Phaser.Structs.Size) => {
-            if (!this.cameras || !this.cameras.main) return;
+            if (!this.cameras?.main) return;
             this.cameras.main.setSize(gs.width, gs.height);
             if (this.isLevelActive) this.drawLevel();
         };
         this.scale.on('resize', onResize);
-
         EventBus.emit('game-ready');
     }
 
-    // Live refresh when input changes
     update() {
         if (!this.isLevelActive || !this.levelSpec) return;
         if (this.currentInput !== this.lastInput) {
             this.lastInput = this.currentInput;
-            this.refreshAnswer();
+            this.refreshLive();
         }
     }
 
     // ─────────────────────────────────────────────────────────────────
-    // MAIN DRAW ENTRY
+    // DRAW LEVEL — routes to the right mode
     // ─────────────────────────────────────────────────────────────────
     private drawLevel() {
         if (!this.levelSpec) return;
         const W = this.cameras.main.width;
         const H = this.cameras.main.height;
+        const spec = this.levelSpec;
 
-        this.backgroundGraphics.clear();
-        this.mainGraphics.clear();
+        this.bgGfx.clear();
+        this.mainGfx.clear();
         this.clearLabels();
 
-        this.backgroundGraphics.fillStyle(0xecf2f7, 1);
-        this.backgroundGraphics.fillRect(0, 0, W, H);
+        // Dot-grid background
+        this.bgGfx.fillStyle(BG, 1);
+        this.bgGfx.fillRect(0, 0, W, H);
+        this.bgGfx.fillStyle(GRID, 0.5);
+        for (let x = 20; x < W; x += 26) for (let y = 20; y < H; y += 26)
+            this.bgGfx.fillCircle(x, y, 1.1);
 
-        const spec = this.levelSpec;
-        this.makeLabel('title', 'AP Sequence Engine', 20, 18, '#475569', '14px', 0, 0);
-        this.makeLabel('mode',  `▶ ${this.getModeName(spec.apMode)}`, 20, 38, '#3b82f6', '11px', 0, 0);
-        this.makeLabel('formula', `  ${spec.formulaDisplay}  `, 20, H - 12, '#1e293b', '13px', 0, 1, '#ffffffd9');
+        // Mode label (top left)
+        const levelNum = parseInt(spec.id.replace('lvl-ap-', ''), 10);
+        const worldNum = levelNum <= 6 ? 1 : levelNum <= 12 ? 2 : levelNum <= 18 ? 3 : levelNum <= 24 ? 4 : 5;
+        const worldNames = ['', 'Pattern Discovery', 'Common Difference', 'Nth Term Engine', 'Sum Factory', 'Real World'];
+        this.txt('w_lbl', `W${worldNum}: ${worldNames[worldNum]}  ·  Level ${levelNum}`, 16, 14, '#3b82f6', '10px', 0, 0);
 
-        if (spec.apMode === 'boss') {
-            this.drawBossMode(spec, W, H);
-        } else if (spec.apMode === 'realworld') {
-            this.drawRealWorldMode(spec, W, H);
-        } else if (spec.apMode === 'sum') {
-            this.drawSumMode(spec, W, H);
-        } else {
-            this.drawSequenceMode(spec, W, H);
-        }
-        this.drawInfoPanel(spec, W);
+        // Formula bar at bottom
+        this.bgGfx.fillStyle(0xffffff, 0.85);
+        this.bgGfx.fillRect(0, H - 34, W, 34);
+        this.bgGfx.lineStyle(1, GRID, 1);
+        this.bgGfx.lineBetween(0, H - 34, W, H - 34);
+        this.txt('formula', `📐  ${spec.formulaDisplay}`, W / 2, H - 17, '#374151', '11px', 0.5, 0.5);
+
+        if (spec.apMode === 'boss')      this.drawBossMode(spec, W, H);
+        else if (spec.apMode === 'realworld') this.drawRealWorld(spec, W, H);
+        else if (spec.apMode === 'sum')  this.drawSumMode(spec, W, H);
+        else                             this.drawSequenceMode(spec, W, H);
     }
 
     // ─────────────────────────────────────────────────────────────────
-    // SEQUENCE MODE  — handles term / difference / position answer types
+    // SEQUENCE MODE  (pattern / difference / nth_term)
     // ─────────────────────────────────────────────────────────────────
     private drawSequenceMode(spec: LevelSpecification, W: number, H: number) {
-        const raw       = spec.apSequence ?? [];
-        const n         = spec.apN ?? 1;
-        const d         = spec.apCommonDiff ?? 0;
-        const a         = spec.apFirstTerm ?? 0;
-        const aType     = spec.apAnswerType ?? 'term';
+        const raw   = spec.apSequence ?? [];
+        const n     = spec.apN ?? 1;
+        const d     = spec.apCommonDiff ?? 0;
+        const a     = spec.apFirstTerm ?? 0;
+        const aType = spec.apAnswerType ?? 'term';
 
-        // ── Build the display item list ──────────────────────────────
-        // Each item: { value: number | null, kind: 'known'|'answer'|'target'|'empty'|'ellipsis', label: string }
-        type Item = { val: number | null; kind: 'known' | 'answer' | 'target' | 'empty' | 'ellipsis'; posLabel: string };
+        // ── Build item list ─────────────────────────────────────────
+        type Kind = 'known' | 'answer' | 'target' | 'ellipsis';
+        type Item = { val: number | null; kind: Kind; pos: string };
         const items: Item[] = [];
 
+        const sub = (i: number) => ['₁','₂','₃','₄','₅','₆','₇','₈','₉','₁₀'][i - 1] ?? String(i);
+
         if (aType === 'position') {
-            // Show first 3 known terms + "..." + target locked block (value we're finding position of)
-            const targetVal = a + (n - 1) * d;  // the term whose position is unknown
-            const show = raw.slice(0, 3).map(Number);
-            show.forEach((v, i) => items.push({ val: v, kind: 'known', posLabel: `a${this.sub(i + 1)}` }));
-            items.push({ val: null, kind: 'ellipsis', posLabel: '' });
-            items.push({ val: targetVal, kind: 'target', posLabel: `a${this.sub(n)}` });
+            const targetVal = a + (n - 1) * d;
+            raw.slice(0, 3).forEach((v, i) => items.push({ val: Number(v), kind: 'known', pos: `a${sub(i + 1)}` }));
+            items.push({ val: null, kind: 'ellipsis', pos: '' });
+            items.push({ val: targetVal, kind: 'target', pos: `a${sub(n)}` });
         } else if (aType === 'difference') {
-            // Show known terms; null slots are empty placeholders; the d arrow is the answer
-            raw.forEach((v, i) => {
-                if (v === null) {
-                    items.push({ val: null, kind: 'empty', posLabel: `a${this.sub(i + 1)}` });
-                } else {
-                    items.push({ val: v as number, kind: 'known', posLabel: `a${this.sub(i + 1)}` });
-                }
-            });
+            raw.forEach((v, i) => items.push({ val: v === null ? null : Number(v), kind: v === null ? 'known' : 'known', pos: `a${sub(i + 1)}` }));
         } else {
-            // apAnswerType === 'term'
-            const isHighN = n > 6 && raw.findIndex(v => v === null) === raw.length - 1;
-            if (isHighN) {
-                // Show first 3 known + "..." + null (nth block)
+            const highN = n > 6 && raw.indexOf(null) === raw.length - 1;
+            if (highN) {
                 [0, 1, 2].forEach(i => {
-                    const v = raw[i] !== undefined ? (raw[i] as number) : (a + i * d);
-                    items.push({ val: v, kind: 'known', posLabel: `a${this.sub(i + 1)}` });
+                    const v = raw[i] !== undefined ? Number(raw[i]) : a + i * d;
+                    items.push({ val: v, kind: 'known', pos: `a${sub(i + 1)}` });
                 });
-                items.push({ val: null, kind: 'ellipsis', posLabel: '' });
-                items.push({ val: null, kind: 'answer', posLabel: `a${this.sub(n)}` });
+                items.push({ val: null, kind: 'ellipsis', pos: '' });
+                items.push({ val: null, kind: 'answer', pos: `a${sub(n)}` });
             } else {
-                raw.forEach((v, i) => {
-                    items.push({
-                        val: v === null ? null : (v as number),
-                        kind: v === null ? 'answer' : 'known',
-                        posLabel: `a${this.sub(i + 1)}`
-                    });
-                });
+                raw.forEach((v, i) => items.push({
+                    val: v === null ? null : Number(v),
+                    kind: v === null ? 'answer' : 'known',
+                    pos: `a${sub(i + 1)}`
+                }));
             }
         }
 
-        // ── Layout ───────────────────────────────────────────────────
-        const BLOCK_W = Math.min(68, Math.floor((W - 60) / (items.length * 1.6)));
-        const BLOCK_H = 46;
-        const ARROW_W = Math.min(44, Math.floor(W / (items.length * 2.5)));
-        const STEP_W  = BLOCK_W + ARROW_W;
-        const totalW  = items.length * STEP_W - ARROW_W;
-        const startX  = Math.max(20, (W - totalW) / 2);
-        const beltY   = H * 0.44;
+        // ── Layout ─────────────────────────────────────────────────
+        const isMobile = W < 430;
+        const BLOCK_W  = Math.min(isMobile ? 58 : 72, Math.floor((W - 32) / items.length) - (isMobile ? 8 : 10));
+        const BLOCK_H  = isMobile ? 56 : 66;
+        const ARROW    = isMobile ? 22 : 30;
+        const STEP     = BLOCK_W + ARROW;
+        const totalW   = items.length * STEP - ARROW;
+        const startX   = Math.max(12, (W - totalW) / 2);
 
-        // Belt track
-        this.mainGraphics.fillStyle(0xdde6ef, 1);
-        this.mainGraphics.fillRoundedRect(startX - 16, beltY - BLOCK_H / 2 - 10, totalW + 32, BLOCK_H + 20, 12);
-        this.mainGraphics.lineStyle(1.5, 0xb8ccd9, 1);
-        this.mainGraphics.strokeRoundedRect(startX - 16, beltY - BLOCK_H / 2 - 10, totalW + 32, BLOCK_H + 20, 12);
+        // Belt center Y — put it in upper half so working panel fits below
+        const beltY = H * 0.40;
 
-        // Draw blocks
+        // ── Belt track ─────────────────────────────────────────────
+        const trackPad = 14;
+        this.mainGfx.fillStyle(0xffffff, 1);
+        this.mainGfx.fillRoundedRect(startX - trackPad, beltY - BLOCK_H / 2 - trackPad, totalW + trackPad * 2, BLOCK_H + trackPad * 2, 14);
+        this.mainGfx.lineStyle(2, GRID, 1);
+        this.mainGfx.strokeRoundedRect(startX - trackPad, beltY - BLOCK_H / 2 - trackPad, totalW + trackPad * 2, BLOCK_H + trackPad * 2, 14);
+        // Belt teeth
+        this.mainGfx.fillStyle(GRID, 0.5);
+        for (let x = startX; x < startX + totalW; x += 14)
+            this.mainGfx.fillRect(x, beltY + BLOCK_H / 2 + 5, 9, 4);
+
+        // ── Blocks ─────────────────────────────────────────────────
         items.forEach((item, i) => {
-            const cx = startX + i * STEP_W + BLOCK_W / 2;
+            const cx = startX + i * STEP + BLOCK_W / 2;
 
             if (item.kind === 'ellipsis') {
-                this.makeLabel(`blk_${i}`, '· · ·', cx, beltY, '#94a3b8', '16px', 0.5, 0.5);
+                this.txt(`ell_${i}`, '· · ·', cx, beltY, '#94a3b8', isMobile ? '16px' : '20px', 0.5, 0.5);
                 return;
             }
 
-            const pal = item.kind === 'answer' ? C_ANSWER
-                      : item.kind === 'target'  ? C_TARGET
-                      : item.kind === 'empty'   ? C_EMPTY
-                      : C_KNOWN;
+            const pal = item.kind === 'answer' || item.kind === 'target' ? ANSWER : KNOWN;
+            const bx = cx - BLOCK_W / 2;
+            const by = beltY - BLOCK_H / 2;
+
+            // Glow ring for answer block
+            if (item.kind === 'answer' || item.kind === 'target') {
+                this.mainGfx.lineStyle(3, pal.stroke, 0.4);
+                this.mainGfx.strokeRoundedRect(bx - 4, by - 4, BLOCK_W + 8, BLOCK_H + 8, 14);
+            }
 
             // Block body
-            this.mainGraphics.fillStyle(pal.fill, 1);
-            this.mainGraphics.fillRoundedRect(cx - BLOCK_W / 2, beltY - BLOCK_H / 2, BLOCK_W, BLOCK_H, 10);
-            this.mainGraphics.lineStyle(2, pal.stroke, 1);
-            this.mainGraphics.strokeRoundedRect(cx - BLOCK_W / 2, beltY - BLOCK_H / 2, BLOCK_W, BLOCK_H, 10);
-            // Highlight strip
-            if (item.kind !== 'empty') {
-                this.mainGraphics.fillStyle(0xffffff, 0.15);
-                this.mainGraphics.fillRoundedRect(cx - BLOCK_W / 2 + 4, beltY - BLOCK_H / 2 + 4, BLOCK_W - 8, 8, 4);
+            this.mainGfx.fillStyle(pal.fill, 1);
+            this.mainGfx.fillRoundedRect(bx, by, BLOCK_W, BLOCK_H, 10);
+            this.mainGfx.lineStyle(2, pal.stroke, 1);
+            this.mainGfx.strokeRoundedRect(bx, by, BLOCK_W, BLOCK_H, 10);
+
+            // Value text
+            const numStr = item.kind === 'answer' ? '?' : (item.val !== null ? String(item.val) : '');
+            const fSize  = String(numStr).length > 3 ? '11px' : '16px';
+            this.txt(`num_${i}`, numStr, cx, beltY - 6, pal.text, fSize, 0.5, 0.5);
+            if (item.kind === 'answer') this.answerBlockKey = `num_${i}`;
+
+            // Position subscript label below block
+            if (item.pos) {
+                const posColor = item.kind === 'answer' ? '#92400e' : item.kind === 'target' ? '#0369a1' : '#6b7280';
+                this.txt(`pos_${i}`, item.pos, cx, beltY + BLOCK_H / 2 + 8, posColor, '9px', 0.5, 0);
             }
 
-            // Number text
-            const numStr = item.kind === 'answer' ? '?'
-                         : item.kind === 'empty'  ? ''
-                         : String(item.val);
-            const sz = numStr.length > 4 ? '10px' : numStr.length > 3 ? '12px' : '14px';
-            this.makeLabel(`num_${i}`, numStr, cx, beltY - 4, pal.text, sz, 0.5, 0.5);
-            if (item.kind === 'answer') this.answerLabelKey = `num_${i}`;
-
-            // Position sub-label
-            if (item.posLabel) {
-                this.makeLabel(`pos_${i}`, item.posLabel, cx, beltY + BLOCK_H / 2 + 7, pal.text === '#ffffff' ? (item.kind === 'answer' ? '#f97316' : item.kind === 'target' ? '#0891b2' : '#3b82f6') : '#94a3b8', '10px', 0.5, 0);
-            }
-
-            // Arrow to next (skip before ellipsis or if last)
+            // Jump arc to next block (show +d)
             const next = items[i + 1];
-            if (next && next.kind !== 'ellipsis' && next.kind !== 'target') {
-                const arrowColor = aType === 'difference' ? 0x94a3b8 : (d < 0 ? 0xef4444 : 0x64748b);
-                const dLabel = aType === 'difference' ? '?' : (d >= 0 ? `+${d}` : `${d}`);
-                const dColor = aType === 'difference' ? '#94a3b8' : (d < 0 ? '#ef4444' : '#64748b');
-                this.drawJumpArc(cx, beltY - BLOCK_H / 2, STEP_W, arrowColor, dLabel, dColor, `arr_${i}`);
-            } else if (next && next.kind === 'ellipsis') {
-                // Small dots gap, no arrow
-            } else if (next && next.kind === 'target') {
-                // Draw dashed line to target
-                this.drawDashedArrow(cx + BLOCK_W / 2 + 2, beltY, ARROW_W, `arr_${i}`);
+            if (next && next.kind !== 'ellipsis' && item.kind !== 'ellipsis') {
+                const arcLabel = aType === 'difference' ? '+d' : (d >= 0 ? `+${d}` : `${d}`);
+                const arcColor = d < 0 ? 0xef4444 : 0x3b82f6;
+                this.drawArc(cx, beltY - BLOCK_H / 2, STEP, arcColor, arcLabel, `arc_${i}`);
             }
         });
 
-        // ── Answer badge ─────────────────────────────────────────────
-        const badgeY = beltY - BLOCK_H / 2 - 44;
-        if (aType === 'difference') {
-            this.drawAnswerBadge('d = ?', 'd', W / 2, badgeY, W);
-        } else if (aType === 'position') {
-            this.drawAnswerBadge('n = ?', 'n', W / 2, badgeY, W);
+        // ── Answer display badge (for difference / position types) ──
+        if (aType === 'difference' || aType === 'position') {
+            const prefix = aType === 'difference' ? 'd' : 'n';
+            const badgeY = beltY - BLOCK_H / 2 - 44;
+            this.mainGfx.fillStyle(0xfff7ed, 1);
+            this.mainGfx.fillRoundedRect(W / 2 - 90, badgeY - 16, 180, 32, 10);
+            this.mainGfx.lineStyle(2, 0xf59e0b, 1);
+            this.mainGfx.strokeRoundedRect(W / 2 - 90, badgeY - 16, 180, 32, 10);
+            this.txt('badge_lbl', `▶  Answer (${prefix}) =`, W / 2 - 30, badgeY, '#92400e', '10px', 0.5, 0.5);
+            this.txt('badge_val', '?', W / 2 + 60, badgeY, '#f59e0b', '16px', 0.5, 0.5);
         }
 
-        // ── Hint text ────────────────────────────────────────────────
-        const hint = aType === 'difference' ? 'Find the common difference d between each pair'
-                   : aType === 'position'   ? `Find the position n of the highlighted term`
-                   : 'Find the missing term on the belt';
-        this.makeLabel('hint', hint, W / 2, beltY + BLOCK_H / 2 + 26, '#94a3b8', '10px', 0.5, 0);
+        // ── Working panel ───────────────────────────────────────────
+        this.drawWorkingPanel(spec, W, H, beltY + BLOCK_H / 2 + 28);
 
-        this.refreshAnswer();
+        this.refreshLive();
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // WORKING PANEL — shows live formula substitution
+    // ─────────────────────────────────────────────────────────────────
+    private drawWorkingPanel(spec: LevelSpecification, W: number, H: number, topY: number) {
+        const a    = spec.apFirstTerm ?? 0;
+        const d    = spec.apCommonDiff ?? 0;
+        const n    = spec.apN ?? 1;
+        const panH = Math.min(90, H - 34 - topY - 8);
+        if (panH < 30) return;
+
+        const panW  = Math.min(340, W - 24);
+        const panX  = (W - panW) / 2;
+
+        this.mainGfx.fillStyle(0xffffff, 0.92);
+        this.mainGfx.fillRoundedRect(panX, topY, panW, panH, 10);
+        this.mainGfx.lineStyle(1.5, GRID, 1);
+        this.mainGfx.strokeRoundedRect(panX, topY, panW, panH, 10);
+
+        const cx = W / 2;
+        const aType = spec.apAnswerType ?? 'term';
+        const mode  = spec.apMode;
+
+        // Line 1: formula with values substituted
+        let line1 = '', line2 = '';
+        if (mode === 'sum') {
+            line1 = `Sₙ = n/2 × [2a + (n−1)d]`;
+            line2 = `S${n} = ${n}/2 × [2×${a} + (${n}−1)×${d}] = ?`;
+        } else if (aType === 'difference') {
+            line1 = `d = (aₙ − a) ÷ (n − 1)`;
+            line2 = `d = (a${n} − ${a}) ÷ (${n}−1) = ?`;
+        } else if (aType === 'position') {
+            line1 = `aₙ = a + (n−1)d`;
+            line2 = `${a + (n - 1) * d} = ${a} + (n−1) × ${d}  →  solve for n`;
+        } else {
+            line1 = `aₙ = a + (n−1)d`;
+            line2 = `a${n} = ${a} + (${n}−1) × ${d} = ${a} + ${(n - 1) * d} = ?`;
+        }
+
+        this.txt('wp_l1', line1, cx, topY + 18, '#374151', '10px', 0.5, 0);
+        this.txt('wp_l2', line2, cx, topY + 36, '#1d4ed8', '11px', 0.5, 0);
+        this.txt('wp_ans', 'Type your answer above ↑', cx, topY + 58, '#9ca3af', '9px', 0.5, 0);
     }
 
     // ─────────────────────────────────────────────────────────────────
     // SUM MODE
     // ─────────────────────────────────────────────────────────────────
     private drawSumMode(spec: LevelSpecification, W: number, H: number) {
-        const terms   = (spec.apSequence ?? []).map(Number);
+        const terms   = (spec.apSequence ?? []).filter(v => v !== null).map(Number);
         const n       = spec.apN ?? 5;
         const visible = Math.min(terms.length, 7);
         const slice   = terms.slice(0, visible);
-        const maxVal  = Math.max(...slice, 1);
+        const maxVal  = Math.max(...slice.filter(v => v > 0), 1);
 
-        const BAR_W   = Math.min(44, Math.floor((W - 80) / visible) - 6);
-        const MAX_H   = H * 0.30;
-        const areaX   = (W - (BAR_W + 6) * visible) / 2;
-        const baseY   = H * 0.72;
+        const headerH = 36;
+        const footerH = 34;
+        const usableH = H - headerH - footerH - 20;
 
-        // Floor line
-        this.mainGraphics.lineStyle(2, 0xb8ccd9, 1);
-        this.mainGraphics.lineBetween(areaX - 10, baseY, areaX + (BAR_W + 6) * visible + 10, baseY);
+        // ── Sn answer panel ────────────────────────────────────────
+        const panW = Math.min(310, W - 24);
+        const panX = (W - panW) / 2;
+        const panY = headerH + 6;
+        const panH = 58;
+
+        this.mainGfx.fillStyle(0xfff7ed, 1);
+        this.mainGfx.fillRoundedRect(panX, panY, panW, panH, 12);
+        this.mainGfx.lineStyle(2, 0xf59e0b, 1);
+        this.mainGfx.strokeRoundedRect(panX, panY, panW, panH, 12);
+
+        const a = spec.apFirstTerm ?? 0, d = spec.apCommonDiff ?? 0;
+        this.txt('sn_lbl', `S${n} = n/2 × [2a + (n−1)d] = ${n}/2 × [2×${a} + (${n}−1)×${d}]`, W / 2, panY + 16, '#92400e', '10px', 0.5, 0.5);
+        this.txt('sn_eq',  `= ${n}/2 × ${2 * a + (n - 1) * d}  =`, W / 2 - 20, panY + 38, '#374151', '11px', 0.5, 0.5);
+        this.txt('sum_val', '?', W / 2 + 50, panY + 38, '#f59e0b', '18px', 0.5, 0.5);
+
+        // ── Bar chart ──────────────────────────────────────────────
+        const isMobile = W < 430;
+        const barGap = isMobile ? 4 : 6;
+        const BAR_W  = Math.min(isMobile ? 32 : 42, Math.floor((W - 48) / visible) - barGap);
+        const MAX_H  = usableH * 0.46;
+        const totalBarW = visible * (BAR_W + barGap) - barGap;
+        const areaX  = (W - totalBarW) / 2;
+        const baseY  = panY + panH + 10 + MAX_H;
+
+        // Ground line
+        this.mainGfx.lineStyle(2, 0x94a3b8, 1);
+        this.mainGfx.lineBetween(areaX - 10, baseY, areaX + totalBarW + 10, baseY);
 
         slice.forEach((val, i) => {
-            const bh  = Math.max(8, (val / maxVal) * MAX_H);
-            const bx  = areaX + i * (BAR_W + 6);
+            const bh  = Math.max(10, (val / maxVal) * MAX_H);
+            const bx  = areaX + i * (BAR_W + barGap);
             const by  = baseY - bh;
-            const col = BAR_COLORS[i % BAR_COLORS.length];
+            const col = BAR_PALETTE[i % BAR_PALETTE.length];
 
-            // Base term (normal)
-            this.mainGraphics.fillStyle(col, 1);
-            this.mainGraphics.fillRoundedRect(bx, by, BAR_W, bh, { tl: 6, tr: 6, bl: 0, br: 0 });
-            this.mainGraphics.fillStyle(0xffffff, 0.15);
-            this.mainGraphics.fillRoundedRect(bx + 3, by + 3, BAR_W - 6, 8, 3);
-            this.makeLabel(`bv_${i}`, String(val), bx + BAR_W / 2, by - 4, '#1e293b', '10px', 0.5, 1);
-            this.makeLabel(`bp_${i}`, `a${this.sub(i + 1)}`, bx + BAR_W / 2, baseY + 6, '#475569', '10px', 0.5, 0);
+            // Bar body
+            this.mainGfx.fillStyle(col, 0.85);
+            this.mainGfx.fillRoundedRect(bx, by, BAR_W, bh, { tl: 5, tr: 5, bl: 0, br: 0 });
+            // Shine
+            this.mainGfx.fillStyle(0xffffff, 0.2);
+            this.mainGfx.fillRoundedRect(bx + 3, by + 4, BAR_W - 6, 7, 3);
 
-            // Inverted term (Gauss's trick)
-            if (visible === n) {
-                const invVal = slice[visible - 1 - i];
-                const invH = Math.max(8, (invVal / maxVal) * MAX_H);
-                const invBy = by - invH; // stacked on top
-                this.mainGraphics.fillStyle(BAR_COLORS[(visible - 1 - i) % BAR_COLORS.length], 0.3); // ghost
-                this.mainGraphics.fillRoundedRect(bx, invBy, BAR_W, invH, { tl: 0, tr: 0, bl: 6, br: 6 });
-                // Label for inverted part
-                this.makeLabel(`inv_bv_${i}`, String(invVal), bx + BAR_W / 2, invBy + invH / 2, '#475569', '10px', 0.5, 0.5);
+            // Gauss ghost bar (paired)
+            if (n <= visible) {
+                const inv = slice[visible - 1 - i];
+                const invH = Math.max(8, (inv / maxVal) * MAX_H);
+                this.mainGfx.fillStyle(BAR_PALETTE[(visible - 1 - i) % BAR_PALETTE.length], 0.18);
+                this.mainGfx.fillRoundedRect(bx, by - invH, BAR_W, invH, { tl: 0, tr: 0, bl: 4, br: 4 });
             }
+
+            this.txt(`bv_${i}`, String(val), bx + BAR_W / 2, by - 5, '#374151', '9px', 0.5, 1);
+            this.txt(`bp_${i}`, `a${['₁','₂','₃','₄','₅','₆','₇'][i] ?? ''}`, bx + BAR_W / 2, baseY + 5, '#6b7280', '9px', 0.5, 0);
         });
 
-        if (visible === n) {
-            this.makeLabel('gauss_hint', '💡 Gauss’s Trick: Duplicate & flip the staircase to form a rectangle!', W/2, baseY - MAX_H - 30, '#0ea5e9', '13px', 0.5, 0.5);
+        if (n > visible) this.txt('ell_bar', '+ · · ·', areaX + totalBarW + 8, baseY - 16, '#94a3b8', '13px', 0, 0.5);
+
+        // Gauss hint
+        if (n <= visible) {
+            const hintY = baseY + 20;
+            this.mainGfx.fillStyle(0xeff6ff, 1);
+            this.mainGfx.fillRoundedRect(areaX - 4, hintY, totalBarW + 8, 22, 6);
+            this.txt('gauss', `💡 Gauss: pair first + last = ${slice[0] + slice[visible - 1]}, × ${Math.floor(n / 2)} pairs`, W / 2, hintY + 11, '#1d4ed8', '9px', 0.5, 0.5);
         }
 
-        if (n > visible) {
-            this.makeLabel('ellipsis', '+ · · ·', areaX + visible * (BAR_W + 6) + 8, baseY - 20, '#94a3b8', '14px', 0, 0.5);
-        }
-
-        // Sum answer panel
-        const px = W / 2;
-        const py = H * 0.22;
-        this.mainGraphics.fillStyle(0xf97316, 0.1);
-        this.mainGraphics.fillRoundedRect(px - 120, py - 30, 240, 56, 14);
-        this.mainGraphics.lineStyle(2, 0xea580c, 0.5);
-        this.mainGraphics.strokeRoundedRect(px - 120, py - 30, 240, 56, 14);
-        this.makeLabel('sum_lbl', `S${this.sub(n)} = ?`, px, py - 14, '#475569', '12px', 0.5, 0.5);
-        this.makeLabel('sum_val', '___', px, py + 12, '#f97316', '22px', 0.5, 0.5);
-
-        this.makeLabel('hint', `Add all ${n} terms of the AP`, W / 2, H * 0.79, '#94a3b8', '10px', 0.5, 0);
-
-        this.refreshAnswer();
+        this.refreshLive();
     }
 
     // ─────────────────────────────────────────────────────────────────
-    // REAL WORLD MODE
+    // REAL-WORLD MODE (Levels 25–29)
     // ─────────────────────────────────────────────────────────────────
-    private drawRealWorldMode(spec: LevelSpecification, W: number, H: number) {
-        const id = spec.id;
+    private drawRealWorld(spec: LevelSpecification, W: number, H: number) {
+        const id  = spec.id;
+        const cx  = W / 2;
+        const cy  = H / 2;
         const val = this.currentInput;
-        const cx = W / 2;
-        const cy = H / 2;
+        const tol = spec.tolerance ?? 0;
+        const isRight = val !== 0 && Math.abs(val - spec.correctAnswer) <= tol;
+        const ansColor = val !== 0 ? (isRight ? '#059669' : '#dc2626') : '#92400e';
+
+        // ── Context card (shared) ──────────────────────────────────
+        const cardW = Math.min(300, W - 24);
+        const cardX = (W - cardW) / 2;
+        const cardY = 32;
+        const cardH = 72;
+
+        this.mainGfx.fillStyle(0xffffff, 1);
+        this.mainGfx.fillRoundedRect(cardX, cardY, cardW, cardH, 10);
+        this.mainGfx.lineStyle(2, 0x3b82f6, 1);
+        this.mainGfx.strokeRoundedRect(cardX, cardY, cardW, cardH, 10);
 
         if (id === 'lvl-ap-25') {
-            // Village Skyline (Procedural graphics)
-            this.backgroundGraphics.fillStyle(0x0f172a, 1); // Night sky
-            this.backgroundGraphics.fillRect(0, 0, W, H);
-            
-            // Draw stylized village buildings
-            this.mainGraphics.fillStyle(0x1e293b, 1);
-            this.mainGraphics.fillRect(cx - 150, cy, 60, 100);
-            this.mainGraphics.fillStyle(0x334155, 1);
-            this.mainGraphics.fillTriangle(cx - 150, cy, cx - 120, cy - 40, cx - 90, cy);
-            
-            this.mainGraphics.fillStyle(0x0f172a, 1);
-            this.mainGraphics.fillRect(cx - 80, cy + 20, 100, 80);
-            this.mainGraphics.fillStyle(0x475569, 1);
-            this.mainGraphics.fillRect(cx + 40, cy - 30, 80, 130);
+            // Village population
+            this.txt('ctx_title', '🏘️  Village Population Growth', cx, cardY + 14, '#1e40af', '12px', 0.5, 0);
+            this.txt('ctx_a', `Year 1 population (a) = ${spec.apFirstTerm}`, cx, cardY + 32, '#374151', '10px', 0.5, 0);
+            this.txt('ctx_d', `Grows by (d) = ${spec.apCommonDiff} each year`, cx, cardY + 48, '#059669', '10px', 0.5, 0);
+            this.txt('ctx_q', `Find: Population in Year ${spec.apN}`, cx, cardY + 62, '#92400e', '10px', 0.5, 0);
 
-            // Windows
-            this.mainGraphics.fillStyle(0xfef08a, 0.8);
-            for (let i = 0; i < 3; i++) {
-                this.mainGraphics.fillRect(cx - 140, cy + 20 + i*25, 12, 12);
-                this.mainGraphics.fillRect(cx + 55, cy - 10 + i*30, 20, 15);
-            }
+            // Simple row of houses
+            const houseY = cy + 10;
+            const houses = [cx - 100, cx - 50, cx, cx + 50, cx + 100];
+            houses.forEach((hx, i) => {
+                const hh = 30 + i * 5;
+                this.mainGfx.fillStyle(0xfde68a, 1);
+                this.mainGfx.fillRect(hx - 14, houseY - hh, 28, hh);
+                this.mainGfx.lineStyle(1.5, 0xd97706, 1);
+                this.mainGfx.strokeRect(hx - 14, houseY - hh, 28, hh);
+                this.mainGfx.fillStyle(0xef4444, 1);
+                this.mainGfx.fillTriangle(hx - 18, houseY - hh, hx + 18, houseY - hh, hx, houseY - hh - 18);
+                // door
+                this.mainGfx.fillStyle(0xb45309, 1);
+                this.mainGfx.fillRect(hx - 5, houseY - 14, 10, 14);
+                // growing label
+                this.txt(`yr_${i}`, `Yr ${i + 1}`, hx, houseY + 8, '#6b7280', '8px', 0.5, 0);
+            });
+            // Ground
+            this.mainGfx.lineStyle(2, 0x6b7280, 0.5);
+            this.mainGfx.lineBetween(cx - 140, houseY, cx + 140, houseY);
 
-            this.makeLabel('title2', 'Population Growth', cx, H*0.15, '#e2e8f0', '20px', 0.5, 0.5);
-            
-            // Draw Answer
-            this.makeLabel('badge_val', val !== 0 ? String(val) : '___', cx, cy - 80, val !== 0 ? '#10b981' : '#f97316', '32px', 0.5, 0.5);
-            this.makeLabel('lbl_yr', 'Target Population (Year 7)', cx, cy - 40, '#94a3b8', '14px', 0.5, 0.5);
         } else if (id === 'lvl-ap-26') {
-            // Salary Payslip
-            this.backgroundGraphics.fillStyle(0x334155, 1);
-            this.backgroundGraphics.fillRect(0, 0, W, H);
-            
-            // Draw Payslip Card
-            const pw = 280, ph = 180;
-            const px = cx - pw/2, py = cy - ph/2;
-            this.mainGraphics.fillStyle(0xffffff, 1);
-            this.mainGraphics.fillRoundedRect(px, py, pw, ph, 8);
-            this.mainGraphics.lineStyle(2, 0xcbd5e1, 1);
-            this.mainGraphics.strokeRoundedRect(px + 10, py + 10, pw - 20, ph - 20, 4);
+            // Payslip
+            this.txt('ctx_title', '💼  Employee Salary — Month 8', cx, cardY + 14, '#1e40af', '12px', 0.5, 0);
+            this.txt('ctx_a', `Starting salary (a) = ₹${spec.apFirstTerm}`, cx, cardY + 32, '#374151', '10px', 0.5, 0);
+            this.txt('ctx_d', `Monthly increment (d) = ₹${spec.apCommonDiff}`, cx, cardY + 48, '#059669', '10px', 0.5, 0);
+            this.txt('ctx_q', `Find: Salary in Month 8`, cx, cardY + 62, '#92400e', '10px', 0.5, 0);
 
-            this.mainGraphics.fillStyle(0x3b82f6, 1);
-            this.mainGraphics.fillCircle(px + 30, py + 30, 12); // Logo
-
-            this.makeLabel('p_title', 'PAYSLIP - MONTH 8', px + 50, py + 22, '#334155', '14px');
-            this.makeLabel('p_base', `Base Salary: $${spec.apFirstTerm}`, px + 20, py + 60, '#64748b', '12px');
-            this.makeLabel('p_raise', `Monthly Raise: +$${spec.apCommonDiff}`, px + 20, py + 80, '#22c55e', '12px');
-            
-            this.mainGraphics.lineStyle(1, 0xcbd5e1, 1);
-            this.mainGraphics.lineBetween(px + 20, py + 110, px + pw - 20, py + 110);
-            
-            this.makeLabel('p_tot', 'NET PAY', px + 20, py + 130, '#1e293b', '16px');
-            this.makeLabel('badge_val', val !== 0 ? `$${val}` : '$___', px + pw - 20, py + 130, val !== 0 ? '#10b981' : '#f97316', '18px', 1, 0);
+            // Payslip visual
+            const pw = Math.min(260, W - 40);
+            const px = (W - pw) / 2, py = cy - 50;
+            this.mainGfx.fillStyle(0xffffff, 1);
+            this.mainGfx.fillRoundedRect(px, py, pw, 120, 8);
+            this.mainGfx.lineStyle(1, 0xcbd5e1, 1);
+            this.mainGfx.strokeRoundedRect(px, py, pw, 120, 8);
+            this.mainGfx.fillStyle(0x1d4ed8, 1);
+            this.mainGfx.fillRoundedRect(px, py, pw, 32, 8);
+            this.mainGfx.fillRect(px, py + 18, pw, 14);
+            this.txt('p_hdr', '📄 PAYSLIP', cx, py + 16, '#ffffff', '11px', 0.5, 0.5);
+            this.txt('p_m1', `Month 1 Base Salary:`, px + 12, py + 44, '#6b7280', '10px', 0, 0);
+            this.txt('p_m1v', `₹${spec.apFirstTerm}`, px + pw - 12, py + 44, '#374151', '10px', 1, 0);
+            this.txt('p_inc', `Per Month Increment:`, px + 12, py + 62, '#6b7280', '10px', 0, 0);
+            this.txt('p_incv', `+₹${spec.apCommonDiff}`, px + pw - 12, py + 62, '#059669', '10px', 1, 0);
+            this.mainGfx.lineStyle(1, 0xe5e7eb, 1);
+            this.mainGfx.lineBetween(px + 10, py + 80, px + pw - 10, py + 80);
+            this.txt('p_net', `Month 8 Net Pay:`, px + 12, py + 94, '#374151', '11px', 0, 0);
+            this.txt('p_ans_lbl', val !== 0 ? `₹${val}` : '₹ ?', px + pw - 12, py + 94, ansColor, '14px', 1, 0);
 
         } else if (id === 'lvl-ap-27') {
-            // Bricks Stacking
-            this.backgroundGraphics.fillStyle(0x87ceeb, 1); // Sky blue
-            this.backgroundGraphics.fillRect(0, 0, W, H);
-            
-            const bw = 40, bh = 20;
-            const startY = H - 60;
-            // Draw bottom 3 rows procedurally
-            for (let row = 0; row < 3; row++) {
-                const numBricks = 3 + row * 2;
-                const rw = numBricks * bw;
-                const rx = cx - rw/2;
-                for (let b = 0; b < numBricks; b++) {
-                    this.mainGraphics.fillStyle(0xc2410c, 1);
-                    this.mainGraphics.fillRect(rx + b*bw + 1, startY - row*bh + 1, bw - 2, bh - 2);
-                }
-            }
+            // Bricks
+            this.txt('ctx_title', '🧱  Brick Staircase Pattern', cx, cardY + 14, '#1e40af', '12px', 0.5, 0);
+            this.txt('ctx_a', `Row 1 bricks (a) = ${spec.apFirstTerm}`, cx, cardY + 32, '#374151', '10px', 0.5, 0);
+            this.txt('ctx_d', `Extra bricks per row (d) = ${spec.apCommonDiff}`, cx, cardY + 48, '#059669', '10px', 0.5, 0);
+            this.txt('ctx_q', `Find: Bricks in Row ${spec.apN}`, cx, cardY + 62, '#92400e', '10px', 0.5, 0);
 
-            this.makeLabel('b_title', 'Row 10 Brick Count', cx, H*0.2, '#1e293b', '18px', 0.5, 0.5);
-            this.makeLabel('badge_val', val !== 0 ? String(val) : '___', cx, H*0.3, val !== 0 ? '#10b981' : '#f97316', '28px', 0.5, 0.5);
+            // Brick staircase
+            const bw = Math.min(20, (W - 60) / 14);
+            const bh = Math.min(12, bw * 0.6);
+            const baseRowY = cy + 60;
+            const aVal = spec.apFirstTerm ?? 3, dVal = spec.apCommonDiff ?? 2;
+            for (let row = 0; row < 5; row++) {
+                const numB = aVal + row * dVal;
+                const rw   = numB * (bw + 1);
+                const rx   = cx - rw / 2;
+                const ry   = baseRowY - (row + 1) * (bh + 1);
+                for (let b = 0; b < numB; b++) {
+                    this.mainGfx.fillStyle(row % 2 === 0 ? 0xc2410c : 0xb45309, 1);
+                    this.mainGfx.fillRect(rx + b * (bw + 1), ry, bw, bh);
+                    this.mainGfx.lineStyle(0.5, 0x7c2d12, 0.7);
+                    this.mainGfx.strokeRect(rx + b * (bw + 1), ry, bw, bh);
+                }
+                this.txt(`row_${row}`, `Row ${row + 1}: ${numB}`, cx + rw / 2 + 8, ry + bh / 2, '#374151', '9px', 0, 0.5);
+            }
+            this.txt('row_q', `Row ${spec.apN}: ?`, cx + 10, baseRowY - 7 * (bh + 1) + bh / 2, '#92400e', '9px', 0, 0.5);
 
         } else if (id === 'lvl-ap-28') {
-            // Arcade Leaderboard
-            this.backgroundGraphics.fillStyle(0x09090b, 1);
-            this.backgroundGraphics.fillRect(0, 0, W, H);
+            // Arcade score
+            this.txt('ctx_title', '🎮  Arcade Score Tracker', cx, cardY + 14, '#1e40af', '12px', 0.5, 0);
+            this.txt('ctx_a', `Round 1 score (a) = ${spec.apFirstTerm}`, cx, cardY + 32, '#374151', '10px', 0.5, 0);
+            this.txt('ctx_d', `Bonus per round (d) = ${spec.apCommonDiff}`, cx, cardY + 48, '#059669', '10px', 0.5, 0);
+            this.txt('ctx_q', `Find: Score in Round ${spec.apN}`, cx, cardY + 62, '#92400e', '10px', 0.5, 0);
 
-            // Arcade Frame
-            this.mainGraphics.lineStyle(4, 0xef4444, 1);
-            this.mainGraphics.strokeRoundedRect(cx - 120, cy - 100, 240, 200, 10);
-            this.mainGraphics.lineStyle(2, 0xfca5a5, 1);
-            this.mainGraphics.strokeRoundedRect(cx - 116, cy - 96, 232, 192, 6);
-
-            this.makeLabel('l_title', 'HIGH SCORES', cx, cy - 80, '#ef4444', '16px', 0.5, 0.5);
-            this.makeLabel('l_1', `1. PlayerA   ${spec.apFirstTerm}`, cx, cy - 40, '#fbbf24', '14px', 0.5, 0.5);
-            this.makeLabel('l_2', `2. PlayerB   ${(spec.apFirstTerm ?? 0) + (spec.apCommonDiff ?? 0)}`, cx, cy - 15, '#d1d5db', '14px', 0.5, 0.5);
-            this.makeLabel('l_3', `3. PlayerC   ${(spec.apFirstTerm ?? 0) + 2*(spec.apCommonDiff ?? 0)}`, cx, cy + 10, '#b45309', '14px', 0.5, 0.5);
-            
-            this.makeLabel('badge_val', val !== 0 ? String(val) : '___', cx, cy + 60, val !== 0 ? '#22c55e' : '#f97316', '18px', 0.5, 0.5);
+            const scores = [
+                { name: '🥇 Round 1', score: spec.apFirstTerm ?? 10 },
+                { name: '🥈 Round 2', score: (spec.apFirstTerm ?? 10) + (spec.apCommonDiff ?? 5) },
+                { name: '🥉 Round 3', score: (spec.apFirstTerm ?? 10) + 2 * (spec.apCommonDiff ?? 5) },
+            ];
+            const sW = Math.min(220, W - 40);
+            const sX = (W - sW) / 2;
+            scores.forEach((s, i) => {
+                const sy = cy - 30 + i * 34;
+                this.mainGfx.fillStyle(0xf8fafc, 1);
+                this.mainGfx.fillRoundedRect(sX, sy, sW, 28, 6);
+                this.mainGfx.lineStyle(1, GRID, 1);
+                this.mainGfx.strokeRoundedRect(sX, sy, sW, 28, 6);
+                this.txt(`sc_n${i}`, s.name, sX + 12, sy + 14, '#374151', '10px', 0, 0.5);
+                this.txt(`sc_v${i}`, String(s.score), sX + sW - 12, sy + 14, '#1d4ed8', '11px', 1, 0.5);
+            });
+            this.txt('sc_q', `Round ${spec.apN} → ?`, cx, cy + 80, '#92400e', '12px', 0.5, 0.5);
 
         } else if (id === 'lvl-ap-29') {
-            // Running Track
-            this.backgroundGraphics.fillStyle(0x4ade80, 1); // Grass
-            this.backgroundGraphics.fillRect(0, 0, W, H);
-            
-            this.mainGraphics.fillStyle(0xb91c1c, 1); // Track red
-            this.mainGraphics.fillRect(0, cy - 40, W, 80);
-            this.mainGraphics.lineStyle(2, 0xffffff, 1);
-            this.mainGraphics.lineBetween(0, cy - 20, W, cy - 20);
-            this.mainGraphics.lineBetween(0, cy + 20, W, cy + 20);
+            // Runner
+            this.txt('ctx_title', '🏃  Daily Running Distance', cx, cardY + 14, '#1e40af', '12px', 0.5, 0);
+            this.txt('ctx_a', `Day 1 distance (a) = ${spec.apFirstTerm} km`, cx, cardY + 32, '#374151', '10px', 0.5, 0);
+            this.txt('ctx_d', `Extra per day (d) = ${spec.apCommonDiff} km`, cx, cardY + 48, '#059669', '10px', 0.5, 0);
+            this.txt('ctx_q', `Find: Total in ${spec.apN} days (Sₙ)`, cx, cardY + 62, '#92400e', '10px', 0.5, 0);
 
-            // Stylized runner
-            this.mainGraphics.fillStyle(0x1e3a8a, 1);
-            this.mainGraphics.fillCircle(cx - 40, cy - 10, 8); // head
-            this.mainGraphics.fillRect(cx - 44, cy, 8, 15); // body
-            
-            this.makeLabel('r_title', 'Runner Distance Tracker', cx, H*0.2, '#064e3b', '18px', 0.5, 0.5);
-            this.makeLabel('badge_val', val !== 0 ? `${val} km` : '___ km', cx, H*0.8, val !== 0 ? '#10b981' : '#1e3a8a', '24px', 0.5, 0.5);
+            // Progress bars for first 5 days
+            const a = spec.apFirstTerm ?? 2, d = spec.apCommonDiff ?? 1;
+            const maxD = a + 4 * d;
+            const barW = Math.min(160, W - 80);
+            for (let day = 0; day < 5; day++) {
+                const dist = a + day * d;
+                const barFill = (dist / maxD) * barW;
+                const bY = cy - 20 + day * 24;
+                this.mainGfx.fillStyle(0xe5e7eb, 1);
+                this.mainGfx.fillRoundedRect(cx - barW / 2, bY, barW, 14, 7);
+                this.mainGfx.fillStyle(0x3b82f6, 1);
+                this.mainGfx.fillRoundedRect(cx - barW / 2, bY, barFill, 14, 7);
+                this.txt(`d_lbl_${day}`, `Day ${day + 1}:`, cx - barW / 2 - 48, bY + 7, '#374151', '9px', 0, 0.5);
+                this.txt(`d_val_${day}`, `${dist} km`, cx + barW / 2 + 6, bY + 7, '#374151', '9px', 0, 0.5);
+            }
         }
 
-        this.refreshAnswer();
+        // ── Working panel (formula substitution) ───────────────────
+        const a   = spec.apFirstTerm ?? 0;
+        const d   = spec.apCommonDiff ?? 0;
+        const n   = spec.apN ?? 1;
+        const mode = spec.apMode;
+        const workY = cy + 80;
+        const wW = Math.min(300, W - 24);
+        const wX = (W - wW) / 2;
+
+        this.mainGfx.fillStyle(0xffffff, 0.95);
+        this.mainGfx.fillRoundedRect(wX, workY, wW, 60, 10);
+        this.mainGfx.lineStyle(1.5, GRID, 1);
+        this.mainGfx.strokeRoundedRect(wX, workY, wW, 60, 10);
+
+        let wLine1 = '', wLine2 = '';
+        if (mode === 'realworld' && id === 'lvl-ap-29') {
+            wLine1 = `Sₙ = n/2 × [2a + (n−1)d]`;
+            wLine2 = `S${n} = ${n}/2 × [${2 * a} + (${n}-1)×${d}] = ?`;
+        } else {
+            wLine1 = `aₙ = a + (n−1)d`;
+            wLine2 = `a${n} = ${a} + (${n}−1) × ${d} = ${a + (n - 1) * d}`;
+        }
+        this.txt('wl1', wLine1, cx, workY + 18, '#374151', '10px', 0.5, 0.5);
+        this.txt('wl2', wLine2, cx, workY + 38, '#1d4ed8', '11px', 0.5, 0.5);
+
+        // Answer badge
+        const ansW = 160;
+        const ansX = (W - ansW) / 2;
+        const ansY = workY + 70;
+        this.mainGfx.fillStyle(0xfff7ed, 1);
+        this.mainGfx.fillRoundedRect(ansX, ansY, ansW, 32, 8);
+        this.mainGfx.lineStyle(2, 0xf59e0b, 1);
+        this.mainGfx.strokeRoundedRect(ansX, ansY, ansW, 32, 8);
+        this.txt('badge_val', val !== 0 ? String(val) : '?', cx, ansY + 16, ansColor, '16px', 0.5, 0.5);
+
+        this.refreshLive();
     }
 
     // ─────────────────────────────────────────────────────────────────
-    // BOSS MODE
+    // BOSS MODE (Level 30)
     // ─────────────────────────────────────────────────────────────────
-    private drawBossMode(_spec: LevelSpecification, W: number, H: number) {
+    private drawBossMode(spec: LevelSpecification, W: number, H: number) {
+        const cx  = W / 2;
         const val = this.currentInput;
-        const cx = W / 2;
-        const cy = H / 2;
+        const tol = spec.tolerance ?? 0;
+        const isRight = val !== 0 && Math.abs(val - spec.correctAnswer) <= tol;
 
-        this.backgroundGraphics.fillStyle(0x450a0a, 1); // Dark blood red
-        this.backgroundGraphics.fillRect(0, 0, W, H);
+        // Banner
+        this.mainGfx.fillStyle(0x1e1b4b, 1);
+        this.mainGfx.fillRect(0, 30, W, 44);
+        this.txt('boss_ttl', '⚔️  BOSS: SEQUENCE MASTER  ⚔️', cx, 52, '#a5b4fc', '14px', 0.5, 0.5);
 
-        // Boss Banner
-        this.mainGraphics.fillStyle(0x7f1d1d, 1);
-        this.mainGraphics.fillRect(0, 0, W, 60);
-        this.makeLabel('boss_title', '⚠️ BOSS: SEQUENCE MASTER', cx, 30, '#fca5a5', '18px', 0.5, 0.5);
+        // Vault visual
+        const vaultR = Math.min(70, W * 0.18);
+        const vaultY = H * 0.48;
 
-        // Vault Door
-        this.mainGraphics.fillStyle(0x94a3b8, 1); // Steel base
-        this.mainGraphics.fillCircle(cx, cy + 20, 100);
-        this.mainGraphics.fillStyle(0x475569, 1); // Darker inner
-        this.mainGraphics.fillCircle(cx, cy + 20, 80);
-        
-        // Vault handles
-        this.mainGraphics.lineStyle(8, 0xcbd5e1, 1);
-        this.mainGraphics.beginPath();
-        this.mainGraphics.moveTo(cx - 50, cy + 20);
-        this.mainGraphics.lineTo(cx + 50, cy + 20);
-        this.mainGraphics.moveTo(cx, cy - 30);
-        this.mainGraphics.lineTo(cx, cy + 70);
-        this.mainGraphics.strokePath();
+        this.mainGfx.fillStyle(0x78716c, 1);
+        this.mainGfx.fillCircle(cx, vaultY, vaultR);
+        this.mainGfx.fillStyle(0x57534e, 1);
+        this.mainGfx.fillCircle(cx, vaultY, vaultR - 8);
+        this.mainGfx.lineStyle(8, isRight ? 0x22c55e : 0x9ca3af, 1);
+        this.mainGfx.lineBetween(cx - vaultR * 0.55, vaultY, cx + vaultR * 0.55, vaultY);
+        this.mainGfx.lineBetween(cx, vaultY - vaultR * 0.55, cx, vaultY + vaultR * 0.55);
+        for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 4) {
+            this.mainGfx.fillStyle(0x44403c, 1);
+            this.mainGfx.fillCircle(cx + Math.cos(angle) * (vaultR - 10), vaultY + Math.sin(angle) * (vaultR - 10), 5);
+        }
+        this.mainGfx.fillStyle(isRight ? 0x22c55e : 0xdc2626, 1);
+        this.mainGfx.fillCircle(cx, vaultY, 14);
 
-        this.mainGraphics.fillStyle(0xf87171, 1);
-        this.mainGraphics.fillCircle(cx, cy + 20, 20); // Center hub
+        // Info panel below vault
+        const a = spec.apFirstTerm ?? 5, n = spec.apN ?? 10, sn = spec.correctAnswer;
+        const pW = Math.min(280, W - 24), pX = (W - pW) / 2, pY = vaultY + vaultR + 16;
+        this.mainGfx.fillStyle(0xffffff, 1);
+        this.mainGfx.fillRoundedRect(pX, pY, pW, 74, 10);
+        this.mainGfx.lineStyle(1.5, 0x6366f1, 1);
+        this.mainGfx.strokeRoundedRect(pX, pY, pW, 74, 10);
+        this.txt('bvs_given', `Given: a = ${a}  |  n = ${n}  |  Sₙ = ${sn}`, cx, pY + 14, '#374151', '10px', 0.5, 0.5);
+        this.txt('bvs_form', `Sₙ = n/2 × [2a + (n−1)d]  →  solve for d`, cx, pY + 32, '#1e40af', '10px', 0.5, 0.5);
+        this.txt('bvs_ans', `d = `, cx - 20, pY + 54, '#374151', '12px', 0.5, 0.5);
+        this.txt('badge_val', val !== 0 ? String(val) : '?', cx + 30, pY + 54, isRight ? '#059669' : (val !== 0 ? '#dc2626' : '#92400e'), '18px', 0.5, 0.5);
 
-        this.makeLabel('vault_lbl', 'COMBINATION: d = ?', cx, H - 60, '#fca5a5', '14px', 0.5, 0.5);
-        this.makeLabel('badge_val', val !== 0 ? String(val) : '___', cx, H - 30, val !== 0 ? '#22c55e' : '#f97316', '24px', 0.5, 0.5);
+        this.txt('boss_hint', '🔐 Enter correct d to unlock the vault!', cx, pY + 82, '#6366f1', '10px', 0.5, 0.5);
 
-        this.refreshAnswer();
+        this.refreshLive();
     }
 
     // ─────────────────────────────────────────────────────────────────
-    // LIVE ANSWER REFRESH
+    // LIVE REFRESH
     // ─────────────────────────────────────────────────────────────────
-    private refreshAnswer() {
+    private refreshLive() {
         if (!this.levelSpec) return;
-        const spec    = this.levelSpec;
-        const val     = this.currentInput;
-        const correct = spec.correctAnswer;
-        const tol     = spec.tolerance ?? 0;
-        const isRight = val !== 0 && Math.abs(val - correct) <= tol;
-        const color   = val !== 0 ? (isRight ? '#22c55e' : '#ef4444') : '#f97316';
+        const spec = this.levelSpec;
+        const val  = this.currentInput;
+        const tol  = spec.tolerance ?? 0;
+        const isRight = val !== 0 && Math.abs(val - spec.correctAnswer) <= tol;
+        const col  = val !== 0 ? (isRight ? '#059669' : '#dc2626') : '#92400e';
 
-        if (spec.apMode === 'sum') {
-            this.labels['sum_val']?.setText(val !== 0 ? String(val) : '___').setColor(color);
-        } else if (spec.apMode === 'realworld' || spec.apMode === 'boss') {
+        const mode  = spec.apMode;
+        const aType = spec.apAnswerType ?? 'term';
+
+        if (mode === 'sum') {
+            this.labels['sum_val']?.setText(val !== 0 ? String(val) : '?').setColor(col);
+        } else if (mode === 'realworld' || mode === 'boss') {
             const badge = this.labels['badge_val'];
             if (badge) {
-                const strVal = val !== 0 ? String(val) : '___';
-                let formatted = strVal;
-                if (spec.id === 'lvl-ap-26') formatted = val !== 0 ? `$${val}` : '$___';
-                if (spec.id === 'lvl-ap-29') formatted = val !== 0 ? `${val} km` : '___ km';
-                badge.setText(formatted).setColor(color);
+                let txt = val !== 0 ? String(val) : '?';
+                if (spec.id === 'lvl-ap-26') txt = val !== 0 ? `₹${val}` : '₹ ?';
+                if (spec.id === 'lvl-ap-29') txt = val !== 0 ? `${val} km` : '? km';
+                if (spec.id === 'lvl-ap-27') txt = val !== 0 ? `${val} bricks` : '?';
+                badge.setText(txt).setColor(col);
+                this.labels['p_ans_lbl']?.setText(spec.id === 'lvl-ap-26' ? (val !== 0 ? `₹${val}` : '₹ ?') : '').setColor(col);
             }
         } else {
-            const aType = spec.apAnswerType ?? 'term';
             if (aType === 'term') {
-                const lbl = this.labels[this.answerLabelKey];
-                if (lbl) lbl.setText(val !== 0 ? String(val) : '?').setColor(isRight ? '#22c55e' : '#ffffff');
-            } else if (aType === 'difference') {
+                const lbl = this.labels[this.answerBlockKey];
+                if (lbl) {
+                    const bg = isRight ? CORRECT : (val !== 0 ? WRONG : ANSWER);
+                    lbl.setText(val !== 0 ? String(val) : '?').setColor(bg.text);
+                }
+            } else {
                 const badge = this.labels['badge_val'];
-                if (badge) badge.setText(val !== 0 ? `d = ${val}` : 'd = ?').setColor(color);
-            } else if (aType === 'position') {
-                const badge = this.labels['badge_val'];
-                if (badge) badge.setText(val !== 0 ? `n = ${val}` : 'n = ?').setColor(color);
+                const prefix = aType === 'difference' ? 'd' : 'n';
+                badge?.setText(val !== 0 ? `${prefix} = ${val}` : `${prefix} = ?`).setColor(col);
             }
         }
     }
@@ -548,81 +679,30 @@ export class APScene extends Scene {
     // ─────────────────────────────────────────────────────────────────
     // HELPERS
     // ─────────────────────────────────────────────────────────────────
-    private drawAnswerBadge(initial: string, _prefix: string, cx: number, cy: number, W: number) {
-        const bx = Math.max(20, cx - 110);
-        const bw = Math.min(220, W - 40);
-        this.mainGraphics.fillStyle(0xf97316, 0.08);
-        this.mainGraphics.fillRoundedRect(bx, cy - 18, bw, 36, 10);
-        this.mainGraphics.lineStyle(1.5, 0xf97316, 0.4);
-        this.mainGraphics.strokeRoundedRect(bx, cy - 18, bw, 36, 10);
-        this.makeLabel('badge_lbl', '▶  Answer:', bx + 12, cy, '#64748b', '11px', 0, 0.5);
-        this.makeLabel('badge_val', initial, cx + 30, cy, '#f97316', '16px', 0.5, 0.5);
-    }
-
-    private drawJumpArc(cx: number, topY: number, stepW: number, col: number, label: string, labelColor: string, key: string) {
-        // Draw an arc from top-center of one block to the next
-        const startX = cx;
-        const endX = cx + stepW;
-        const midX = (startX + endX) / 2;
-        const controlY = topY - 30;
-
-        this.mainGraphics.lineStyle(2, col, 1);
-        
+    private drawArc(cx: number, topY: number, stepW: number, color: number, label: string, key: string) {
+        const startX = cx, endX = cx + stepW, midX = (startX + endX) / 2;
+        const controlY = topY - 22;
+        this.mainGfx.lineStyle(2, color, 0.9);
         const curve = new Phaser.Curves.QuadraticBezier(
             new Phaser.Math.Vector2(startX, topY),
             new Phaser.Math.Vector2(midX, controlY),
             new Phaser.Math.Vector2(endX, topY)
         );
-        curve.draw(this.mainGraphics, 32);
-
-        // Arrow head at endX, topY
-        this.mainGraphics.beginPath();
-        this.mainGraphics.moveTo(endX, topY);
-        this.mainGraphics.lineTo(endX - 6, topY - 8);
-        this.mainGraphics.lineTo(endX + 2, topY - 8); // slightly right to make it point down-right
-        this.mainGraphics.lineTo(endX, topY);
-        this.mainGraphics.fillStyle(col, 1);
-        this.mainGraphics.fillPath();
-
-        // Label above the arc
-        this.makeLabel(key, label, midX, controlY - 14, labelColor, '11px', 0.5, 0.5);
+        curve.draw(this.mainGfx, 24);
+        this.mainGfx.beginPath();
+        this.mainGfx.moveTo(endX, topY);
+        this.mainGfx.lineTo(endX - 6, topY - 8);
+        this.mainGfx.lineTo(endX + 2, topY - 7);
+        this.mainGfx.fillStyle(color, 1);
+        this.mainGfx.fillPath();
+        this.txt(key, label, midX, controlY - 12, color === 0xef4444 ? '#dc2626' : '#1d4ed8', '10px', 0.5, 0.5);
     }
 
-    private drawDashedArrow(fromX: number, cy: number, arrowW: number, key: string) {
-        const ae = fromX + arrowW - 6;
-        const seg = 5;
-        for (let x = fromX; x < ae - seg; x += seg * 2) {
-            this.mainGraphics.lineStyle(1.5, 0x94a3b8, 0.6);
-            this.mainGraphics.lineBetween(x, cy, Math.min(x + seg, ae), cy);
-        }
-        this.mainGraphics.lineStyle(1.5, 0x94a3b8, 0.6);
-        this.mainGraphics.lineBetween(ae, cy, ae - 5, cy - 4);
-        this.mainGraphics.lineBetween(ae, cy, ae - 5, cy + 4);
-        this.makeLabel(key, '…', fromX + (arrowW - 6) / 2, cy - 12, '#94a3b8', '11px', 0.5, 0.5);
-    }
-
-    private drawInfoPanel(spec: LevelSpecification, W: number) {
-        const parts: string[] = [];
-        if (spec.apFirstTerm !== undefined) parts.push(`a = ${spec.apFirstTerm}`);
-        if (spec.apCommonDiff !== undefined) parts.push(`d = ${spec.apCommonDiff}`);
-        if (spec.apN !== undefined) parts.push(`n = ${spec.apN}`);
-        this.makeLabel('info', parts.join('   |   '), W - 16, 20, '#475569', '11px', 1, 0, '#ffffffb0');
-    }
-
-    private makeLabel(
-        key: string, text: string, x: number, y: number,
-        color: string, fontSize = '11px',
-        originX = 0, originY = 0,
-        bgColor?: string
-    ): GameObjects.Text {
+    private txt(key: string, text: string, x: number, y: number, color: string, fontSize = '11px', ox = 0, oy = 0): GameObjects.Text {
         if (this.labels[key]) { this.labels[key].destroy(); delete this.labels[key]; }
         this.labels[key] = this.add.text(x, y, text, {
-            fontFamily: FONT,
-            fontSize,
-            color,
-            fontStyle: 'bold',
-            ...(bgColor ? { backgroundColor: bgColor, padding: { x: 8, y: 4 } } : {}),
-        }).setOrigin(originX, originY);
+            fontFamily: FONT, fontSize, color, fontStyle: 'bold',
+        }).setOrigin(ox, oy);
         return this.labels[key];
     }
 
@@ -631,85 +711,29 @@ export class APScene extends Scene {
         this.labels = {};
     }
 
-    private sub(n: number): string {
-        const map: Record<string, string> = {
-            '0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'
-        };
-        return String(n).split('').map(c => map[c] ?? c).join('');
-    }
-
-    private getModeName(mode?: string): string {
-        const m: Record<string, string> = {
-            pattern:   'Pattern Discovery',
-            difference:'Common Difference',
-            nth_term:  'Nth Term Engine',
-            sum:       'Sum of AP Factory',
-            realworld: 'Real World Simulation',
-            boss:      'BOSS: Sequence Master',
-        };
-        return m[mode ?? ''] ?? 'Arithmetic Progression';
-    }
-
-    private flashOverlay(color: number) {
-        const W = this.cameras.main.width;
-        const H = this.cameras.main.height;
+    private flashScreen(color: number) {
+        const W = this.cameras.main.width, H = this.cameras.main.height;
         const flash = this.add.graphics();
-        flash.fillStyle(color, 0.4);
-        flash.fillRect(0, 0, W, H);
-        flash.setDepth(100);
-        this.tweens.add({
-            targets: flash,
-            alpha: 0,
-            duration: 500,
-            ease: 'Power2',
-            onComplete: () => flash.destroy()
-        });
+        flash.fillStyle(color, 0.28).fillRect(0, 0, W, H).setDepth(100);
+        this.tweens.add({ targets: flash, alpha: 0, duration: 500, ease: 'Power2', onComplete: () => flash.destroy() });
     }
 
     private celebrateSuccess() {
-        if (!this.scene || !this.scene.systems) return;
-
-        const W = this.cameras.main.width;
-        const H = this.cameras.main.height;
-        const cx = W / 2;
-        const cy = H / 2;
-
+        if (!this.scene?.systems) return;
+        const W = this.cameras.main.width, H = this.cameras.main.height;
         soundManager.playSuccess();
-
-        // Particle burst
-        const particles = this.add.particles(cx, cy, 'particle_star', {
-            speed: { min: 100, max: 300 },
-            angle: { min: 0, max: 360 },
-            scale: { start: 1, end: 0 },
-            lifespan: 1500,
-            blendMode: 'ADD',
-            tint: [0xffeb3b, 0x4ade80, 0x06b6d4],
-            quantity: 30,
-            duration: 200
-        });
-
-        // "Excellent!" text
-        const successText = this.add.text(cx, cy - 60, 'Excellent! ✅', {
-            fontFamily: 'Inter, system-ui, sans-serif',
-            fontSize: '32px',
-            color: '#10b981',
-            fontStyle: 'bold',
-            stroke: '#ffffff',
-            strokeThickness: 6
-        }).setOrigin(0.5).setAlpha(0).setScale(0.5);
-
-        this.tweens.add({
-            targets: successText,
-            scale: 1.2,
-            alpha: 1,
-            duration: 400,
-            ease: 'Back.easeOut',
-            yoyo: true,
-            hold: 800,
-            onComplete: () => {
-                successText.destroy();
-                particles.destroy();
-            }
-        });
+        try {
+            const p = this.add.particles(W / 2, H / 2, 'particle_star', {
+                speed: { min: 80, max: 260 }, angle: { min: 0, max: 360 },
+                scale: { start: 1, end: 0 }, lifespan: 1300, blendMode: 'ADD',
+                tint: [0xffeb3b, 0x4ade80, 0x06b6d4, 0xf97316], quantity: 25, duration: 200
+            });
+            const t = this.add.text(W / 2, H / 2 - 50, '✅ Excellent!', {
+                fontFamily: FONT, fontSize: '28px', color: '#059669', fontStyle: 'bold',
+                stroke: '#ffffff', strokeThickness: 5
+            }).setOrigin(0.5).setAlpha(0).setScale(0.4).setDepth(200);
+            this.tweens.add({ targets: t, scale: 1.1, alpha: 1, duration: 350, ease: 'Back.easeOut',
+                yoyo: true, hold: 850, onComplete: () => { t.destroy(); p.destroy(); } });
+        } catch { /* noop */ }
     }
 }

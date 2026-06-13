@@ -11,6 +11,7 @@ import { LevelGridPage } from '@/features/chapters/pages/LevelGridPage';
 import { GameContainer } from '@/features/game/components/GameContainer';
 import { LeaderboardPage } from '@/features/leaderboard/pages/LeaderboardPage';
 import { LearnPage } from '@/features/learn/pages/LearnPage';
+import { SubscriptionPage } from '@/features/subscription/pages/SubscriptionPage';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 
 export const AppRoutes = () => {
@@ -43,6 +44,14 @@ export const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <LeaderboardPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/subscription" 
+        element={
+          <ProtectedRoute>
+            <SubscriptionPage />
           </ProtectedRoute>
         } 
       />

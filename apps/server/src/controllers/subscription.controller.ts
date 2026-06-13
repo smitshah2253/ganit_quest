@@ -38,8 +38,15 @@ export class SubscriptionController {
     try {
       if (!req.user || !req.user.id) return res.status(401).json({ error: 'Unauthorized' });
 
-      const { subscriptionId, paymentId, paymentProvider } = req.body;
-      const result = await SubscriptionService.verifySubscription(req.user.id, subscriptionId, paymentId, paymentProvider);
+      const { subscriptionId, paymentId, paymentProvider, razorpayOrderId, razorpaySignature } = req.body;
+      const result = await SubscriptionService.verifySubscription(
+        req.user.id, 
+        subscriptionId, 
+        paymentId, 
+        paymentProvider,
+        razorpayOrderId,
+        razorpaySignature
+      );
 
       return res.json({
         message: 'Subscription activated successfully',

@@ -1,5 +1,7 @@
 import { AppDataSource } from '../data-source';
 import { Subscription } from '../entities/Subscription';
+import Razorpay from 'razorpay';
+import crypto from 'crypto';
 
 const subscriptionRepository = () => AppDataSource.getRepository(Subscription);
 
@@ -42,7 +44,12 @@ export class SubscriptionService {
   static async createSubscription(userId: number, planType: string = 'annual') {
     const startDate = new Date();
     const endDate = new Date(startDate);
-    endDate.setFullYear(endDate.getFullYear() + 1); // TODO: handle monthly
+    
+    if (planType === 'monthly') {
+      endDate.setMonth(endDate.getMonth() + 1);
+    } else {
+      endDate.setFullYear(endDate.getFullYear() + 1);
+    }
 
     const existing = await subscriptionRepository().findOne({
       where: {
@@ -55,36 +62,70 @@ export class SubscriptionService {
       throw new Error('Active subscription already exists');
     }
 
+    const pricing: Record<string, { amount: number; currency: string }> = {
+      annual: { amount: 499, currency: 'INR' },
+      monthly: { amount: 99, currency: 'INR' },
+    };
+    const amount = pricing[planType]?.amount || 499;
+
+    const rzp = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID!,
+      key_secret: process.env.RAZORPAY_KEY_SECRET!,
+    });
+
+    const order = await rzp.orders.create({
+      amount: amount * 100,
+      currency: 'INR',
+      receipt: `rcpt_${userId}_${Date.now()}`
+    });
+
     const subscription = subscriptionRepository().create({
       userId,
       status: 'pending',
       planType,
       startDate,
       endDate,
+      razorpayOrderId: order.id,
     });
 
     const saved = await subscriptionRepository().save(subscription);
 
-    const pricing: Record<string, { amount: number; currency: string }> = {
-      annual: { amount: 499, currency: 'INR' },
-      monthly: { amount: 99, currency: 'INR' },
-    };
-
     return {
       subscriptionId: saved.id,
+      razorpayOrderId: order.id,
+      keyId: process.env.RAZORPAY_KEY_ID,
       planType,
-      amount: pricing[planType]?.amount || 499,
+      amount,
       currency: 'INR',
     };
   }
 
-  static async verifySubscription(userId: number, subscriptionId: number, paymentId: string, paymentProvider: string) {
+  static async verifySubscription(
+    userId: number, 
+    subscriptionId: number, 
+    paymentId: string, 
+    paymentProvider: string,
+    razorpayOrderId?: string,
+    razorpaySignature?: string
+  ) {
     const subscription = await subscriptionRepository().findOne({
       where: { id: subscriptionId, userId },
     });
 
     if (!subscription) {
       throw new Error('Subscription not found');
+    }
+
+    if (paymentProvider === 'razorpay' && razorpayOrderId && razorpaySignature) {
+      const body = razorpayOrderId + '|' + paymentId;
+      const expectedSignature = crypto
+        .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+        .update(body.toString())
+        .digest('hex');
+
+      if (expectedSignature !== razorpaySignature) {
+        throw new Error('Invalid payment signature');
+      }
     }
 
     subscription.status = 'active';

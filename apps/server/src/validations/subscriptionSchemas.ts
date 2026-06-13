@@ -8,6 +8,8 @@ export const verifySubscriptionSchema = z.object({
   subscriptionId: z.number().int().positive('Subscription ID must be positive'),
   paymentId: z.string().min(1, 'Payment ID is required'),
   paymentProvider: z.enum(['razorpay', 'stripe']),
+  razorpayOrderId: z.string().optional(),
+  razorpaySignature: z.string().optional(),
 });
 
 export type CreateSubscriptionInput = z.infer<typeof createSubscriptionSchema>;

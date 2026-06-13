@@ -13,7 +13,7 @@ export class Subscription {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: 'int', unique: true })
+  @Column({ type: 'int' })
   userId!: number;
 
   @Column({
@@ -26,7 +26,7 @@ export class Subscription {
   @Column({ type: 'varchar', length: 50, default: 'annual' })
   planType!: string;
 
-  @CreateDateColumn()
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   startDate!: Date;
 
   @Column({ type: 'datetime' })
@@ -37,6 +37,9 @@ export class Subscription {
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   paymentId!: string | null;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  razorpayOrderId!: string | null;
 
   @CreateDateColumn()
   createdAt!: Date;

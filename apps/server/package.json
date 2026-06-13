@@ -25,6 +25,7 @@
     "google-auth-library": "^10.6.2",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.22.3",
+    "razorpay": "^2.9.6",
     "reflect-metadata": "^0.2.2",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",

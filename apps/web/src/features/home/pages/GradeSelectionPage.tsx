@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Lock, ChevronRight, Sparkles } from 'lucide-react';
+import { ArrowLeft, Lock, ChevronRight, Sparkles, Crown } from 'lucide-react';
+import { useSubscriptionStore } from '@/store/subscription.store';
+import { useAuthStore } from '@/store/auth.store';
 
 interface Grade {
   grade: number;
@@ -26,6 +28,20 @@ const GRADES: Grade[] = [
 
 export const GradeSelectionPage: React.FC = () => {
   const navigate = useNavigate();
+  const { isSubscribed, checkSubscription } = useSubscriptionStore();
+  const { token } = useAuthStore();
+
+  useEffect(() => {
+    if (token) {
+      checkSubscription(token);
+    }
+  }, [token]);
+
+  // Merge default unlock state with subscription status
+  const grades = GRADES.map(g => ({
+    ...g,
+    isUnlocked: g.isUnlocked || isSubscribed
+  }));
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-slate-800 p-4 sm:p-6 md:p-10 overflow-y-auto relative select-none pt-20">
@@ -62,15 +78,14 @@ export const GradeSelectionPage: React.FC = () => {
 
         {/* Grade Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-          {GRADES.map(({ grade, label, tagline, isUnlocked }) => (
+          {grades.map(({ grade, label, tagline, isUnlocked }) => (
             <button
               key={grade}
-              onClick={() => isUnlocked && navigate('/chapters')}
-              disabled={!isUnlocked}
+              onClick={() => isUnlocked ? navigate('/chapters') : navigate('/subscription')}
               className={`group relative p-4 sm:p-5 rounded-2xl border text-left transition-all duration-300 overflow-hidden ${
                 isUnlocked
                   ? 'border-orange-200 bg-white/85 backdrop-blur-md shadow-sm hover:border-orange-400 hover:shadow-orange-500/10 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer'
-                  : 'border-slate-200/70 bg-slate-50/60 opacity-55 cursor-not-allowed'
+                  : 'border-slate-200/80 bg-slate-50/80 hover:bg-white hover:border-orange-200 hover:shadow-md hover:-translate-y-0.5 cursor-pointer'
               }`}
             >
               {/* Active grade top accent */}
@@ -90,7 +105,9 @@ export const GradeSelectionPage: React.FC = () => {
                 {isUnlocked ? (
                   <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500 group-hover:translate-x-0.5 transition-transform" />
                 ) : (
-                  <Lock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400" />
+                  <div className="bg-gradient-to-br from-amber-400 to-orange-500 p-1 rounded-md shadow-sm group-hover:scale-110 transition-transform">
+                    <Lock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />
+                  </div>
                 )}
               </div>
 
@@ -105,10 +122,15 @@ export const GradeSelectionPage: React.FC = () => {
                 {isUnlocked ? tagline : 'Coming Soon'}
               </p>
 
-              {isUnlocked && (
+              {isUnlocked ? (
                 <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Active Lab</span>
+                </div>
+              ) : (
+                <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Crown className="w-3 h-3 text-orange-500" />
+                  <span className="text-[9px] sm:text-[10px] font-bold text-orange-600 uppercase tracking-wider">Unlock PRO</span>
                 </div>
               )}
             </button>

@@ -5,6 +5,7 @@ import { LogOut, Trophy } from 'lucide-react';
 import { useGameStore } from '@/store/game.store';
 import { useAuthStore } from '@/store/auth.store';
 import { LanguageSwitcher } from '../common/LanguageSwitcher';
+import { SubscriptionBadge } from '@/features/subscription/components/SubscriptionBadge';
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -68,6 +69,11 @@ export const Header: React.FC = () => {
         
         {/* Language Switcher */}
         <LanguageSwitcher />
+        
+        <div className="w-px h-3 sm:h-4 bg-slate-200" />
+        
+        {/* Subscription Badge */}
+        <SubscriptionBadge />
         
         <div className="w-px h-3 sm:h-4 bg-slate-200" />
         

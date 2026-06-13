@@ -9,6 +9,7 @@ import authRoutes from './routes/auth';
 import progressRoutes from './routes/progress';
 import leaderboardRoutes from './routes/leaderboard';
 import subscriptionRoutes from './routes/subscription';
+import webhookRoutes from './routes/webhook';
 
 dotenv.config();
 
@@ -16,7 +17,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(express.json());
+
+// Save raw body for webhook verification
+app.use(express.json({
+  verify: (req: any, res, buf) => {
+    if (req.originalUrl.startsWith('/webhook')) {
+      req.rawBody = buf.toString();
+    }
+  }
+}));
 
 // Swagger setup
 const swaggerOptions = {
@@ -58,6 +67,7 @@ const startServer = async () => {
     app.use('/progress', progressRoutes);
     app.use('/leaderboard', leaderboardRoutes);
     app.use('/subscription', subscriptionRoutes);
+    app.use('/webhook', webhookRoutes);
 
     app.get('/health', (req, res) => {
       res.json({ status: 'ok', message: 'Server is running', orm: 'TypeORM' });
