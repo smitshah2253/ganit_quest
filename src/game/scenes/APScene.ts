@@ -69,14 +69,17 @@ export class APScene extends Scene {
             EventBus.off('load-level', onLoadLevel);
             EventBus.off('user-input-changed', onUserInput);
             EventBus.off('board-exam-input-changed', onBoardInput);
+            this.scale.off('resize', onResize);
         };
         this.events.once('shutdown', cleanup);
         this.events.once('destroy', cleanup);
 
-        this.scale.on('resize', (gs: Phaser.Structs.Size) => {
+        const onResize = (gs: Phaser.Structs.Size) => {
+            if (!this.cameras || !this.cameras.main) return;
             this.cameras.main.setSize(gs.width, gs.height);
             if (this.isLevelActive) this.drawLevel();
-        });
+        };
+        this.scale.on('resize', onResize);
 
         EventBus.emit('game-ready');
     }

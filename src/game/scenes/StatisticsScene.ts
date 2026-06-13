@@ -180,6 +180,7 @@ export class StatisticsScene extends Scene {
       EventBus.off('board-exam-input-changed', onBoardInput);
       EventBus.off('answer-correct', onCorrect);
       EventBus.off('answer-wrong', onWrong);
+      this.scale.off('resize', this.handleResize, this);
     };
     this.events.once('shutdown', cleanup);
     this.events.once('destroy', cleanup);
@@ -455,6 +456,7 @@ export class StatisticsScene extends Scene {
   }
 
   private handleResize(gameSize: Phaser.Structs.Size) {
+    if (!this.cameras || !this.cameras.main) return;
     this.cameras.main.setSize(gameSize.width, gameSize.height);
     this.formulaText.setPosition(22, gameSize.height - 28);
     this.instructionText.setPosition(gameSize.width / 2, 70);

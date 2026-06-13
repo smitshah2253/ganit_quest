@@ -72,7 +72,8 @@ export class LevelScene extends Scene {
         });
 
         // Handle canvas resize (e.g., orientation change, container resize on mobile)
-        this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
+        const onResize = (gameSize: Phaser.Structs.Size) => {
+            if (!this.cameras || !this.cameras.main) return;
             this.cameras.main.setSize(gameSize.width, gameSize.height);
             if (this.graphics) {
                 this.graphics.setPosition(gameSize.width / 2, gameSize.height / 2 - 20);
@@ -81,7 +82,8 @@ export class LevelScene extends Scene {
                 this.labelGraphics.setPosition(gameSize.width / 2, gameSize.height / 2 - 20);
             }
             this.updateShape();
-        });
+        };
+        this.scale.on('resize', onResize);
 
         // Status text overlay
         this.statusText = this.add.text(20, 20, 'Ready', {
@@ -239,20 +241,24 @@ export class LevelScene extends Scene {
             }
         };
 
+        const onAnswerCorrect = () => this.triggerGlowEffect();
+        const onAnswerWrong = () => this.triggerSmokeEffect();
+
         // Register listeners
         EventBus.on('load-level', onLoadLevel);
         EventBus.on('user-input-changed', onUserInputChanged);
         EventBus.on('board-exam-input-changed', onBoardExamInputChanged);
-        EventBus.on('answer-correct', () => this.triggerGlowEffect());
-        EventBus.on('answer-wrong', () => this.triggerSmokeEffect());
+        EventBus.on('answer-correct', onAnswerCorrect);
+        EventBus.on('answer-wrong', onAnswerWrong);
 
         // Safely detach all listeners on scene shutdown or destruction
         const cleanup = () => {
             EventBus.off('load-level', onLoadLevel);
             EventBus.off('user-input-changed', onUserInputChanged);
             EventBus.off('board-exam-input-changed', onBoardExamInputChanged);
-            EventBus.off('answer-correct', () => this.triggerGlowEffect());
-            EventBus.off('answer-wrong', () => this.triggerSmokeEffect());
+            EventBus.off('answer-correct', onAnswerCorrect);
+            EventBus.off('answer-wrong', onAnswerWrong);
+            this.scale.off('resize', onResize);
         };
 
         this.events.once('shutdown', cleanup);

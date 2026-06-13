@@ -154,15 +154,18 @@ export class CircleScene extends Scene {
             EventBus.off('board-exam-input-changed', onBoardInput);
             EventBus.off('answer-correct', onCorrect);
             EventBus.off('answer-wrong', onWrong);
+            this.scale.off('resize', onResize);
         };
         this.events.once('shutdown', cleanup);
         this.events.once('destroy', cleanup);
 
-        this.scale.on('resize', (gs: Phaser.Structs.Size) => {
+        const onResize = (gs: Phaser.Structs.Size) => {
+            if (!this.cameras || !this.cameras.main) return;
             this.cameras.main.setSize(gs.width, gs.height);
             this.formulaText.setPosition(22, gs.height - 28);
             if (this.isLevelActive) this.redraw();
-        });
+        };
+        this.scale.on('resize', onResize);
 
         EventBus.emit('game-ready');
     }

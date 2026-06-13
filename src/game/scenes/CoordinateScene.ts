@@ -219,17 +219,20 @@ export class CoordinateScene extends Scene {
             EventBus.off('load-level', onLoadLevel);
             EventBus.off('user-input-changed', onUserInputChanged);
             EventBus.off('board-exam-input-changed', onBoardExamInputChanged);
+            this.scale.off('resize', onResize);
         };
         this.events.once('shutdown', cleanup);
         this.events.once('destroy', cleanup);
 
         // Handle canvas resize (e.g., orientation change, container resize on mobile)
-        this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
+        const onResize = (gameSize: Phaser.Structs.Size) => {
+            if (!this.cameras || !this.cameras.main) return;
             this.cameras.main.setSize(gameSize.width, gameSize.height);
             if (this.isLevelActive && this.levelSpec) {
                 this.setupGrid();
             }
-        });
+        };
+        this.scale.on('resize', onResize);
 
         // Trigger load-level if levelData is already in PhaserGame
         EventBus.emit('game-ready');
