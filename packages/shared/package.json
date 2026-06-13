@@ -1,0 +1,16 @@
+{
+  "name": "@ganitquest/shared",
+  "version": "1.0.0",
+  "description": "Shared constants, types, and validations for GanitQuest",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

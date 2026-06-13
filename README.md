@@ -6,20 +6,68 @@ Developed with a React + TypeScript frontend, a Phaser 3 interactive engine, and
 
 ---
 
+## 🚀 Quick Start (How to Run)
+
+GanitQuest is structured as an **npm workspaces monorepo** containing both the frontend (`apps/web`) and backend (`apps/server`).
+
+### Prerequisites
+- Node.js (v18+ recommended)
+- MySQL (running locally on port 3306 for the backend database)
+
+### 1. Install Dependencies
+Run the following command from the **root** of the project. This will automatically install and link dependencies for all workspaces:
+```bash
+npm install
+```
+
+### 2. Environment Variables
+You will need a `.env` file in the `apps/server/` directory for the database connection. Create `apps/server/.env` with the following variables:
+```env
+PORT=5000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=ganitquest
+JWT_SECRET=your_secret_key
+```
+
+### 3. Run the Development Servers
+You can run the frontend and backend servers simultaneously from the root using npm workspace scripts:
+
+**Run the Frontend (React + Vite):**
+```bash
+npm run dev:web
+```
+*The web app will be available at http://localhost:5173*
+
+**Run the Backend (Express + TypeORM):**
+```bash
+npm run dev:server
+```
+*The API will be available at http://localhost:5000*
+
+### 4. Build for Production
+To build all packages and apps (shared, server, web) for production, run:
+```bash
+npm run build
+```
+
+---
+
 ## 📖 Key Documentation Modules
 
 We have compiled comprehensive guides detailing the architecture, pedagogy, mobile roadmap, and commercial scaling vectors of the startup:
 
-1. 🛠️ **[Technical Documentation](file:///c:/Users/Smit/OneDrive/Desktop/Projects/startup/gamified_math/docs/technical_documentation.md)**
+1. 🛠️ **[Technical Documentation](./docs/architecture/technical_documentation.md)**
    - Deploys the complete system architecture, frontend Phaser-React EventBus bridge, Zustand state stores, MySQL schema, Express REST API, and deployment instructions.
    
-2. 📐 **[Business Logic & Pedagogy](file:///c:/Users/Smit/OneDrive/Desktop/Projects/startup/gamified_math/docs/business_logic.md)**
+2. 📐 **[Business Logic & Pedagogy](./docs/business/business_logic.md)**
    - Maps out the core learning loops, NCERT curriculum mapping, star/XP rewards formulas, and details the step-by-step intermediate verification engine designed to mirror Class X board exam formats.
    
-3. 🚀 **[Launch, Marketing & Monetization Strategy (Indian Localized)](file:///c:/Users/Smit/OneDrive/Desktop/Projects/startup/gamified_math/docs/launch_marketing_monetization.md)**
+3. 🚀 **[Launch, Marketing & Monetization Strategy (Indian Localized)](./docs/business/launch_marketing_monetization.md)**
    - Sets up a Go-To-Market roadmap, Indian-localized saffron/indigo theme tokens, logo concept, freemium pricing structures, school B2B licensing targets, and a detailed market analysis (potential, competition, student appeal).
 
-4. 📱 **[React Native Mobile Conversion Guide](file:///c:/Users/Smit/OneDrive/Desktop/Projects/startup/gamified_math/docs/react_native_conversion.md)**
+4. 📱 **[React Native Mobile Conversion Guide](./docs/guides/react_native_conversion.md)**
    - Outlines the step-by-step roadmap to migrate the web application into a React Native (Expo) mobile app, covering Phaser WebView bridging, native Skia layouts, gesture handlers, and secure local storage.
 
 ---
