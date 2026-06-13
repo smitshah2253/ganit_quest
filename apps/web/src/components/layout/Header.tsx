@@ -23,8 +23,8 @@ export const Header: React.FC = () => {
   if (isAuthPage) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center p-3 sm:p-4">
-      <div className="flex items-center gap-2 sm:gap-3 bg-white/80 backdrop-blur-md px-3 sm:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-md">
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center p-3 sm:p-4 pointer-events-none">
+      <div className="flex items-center gap-2 sm:gap-3 bg-white/80 backdrop-blur-md px-3 sm:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-md pointer-events-auto">
         {user && (
           <>
             <span className="text-slate-700 font-semibold text-[10px] sm:text-xs truncate max-w-[80px] sm:max-w-[120px]">

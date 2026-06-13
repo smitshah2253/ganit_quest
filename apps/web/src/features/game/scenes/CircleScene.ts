@@ -2,7 +2,6 @@ import Phaser, { GameObjects } from 'phaser';
 import { BaseScene } from './BaseScene';
 import { EventBus } from '../engine/EventBus';
 import { getLevelSpec } from '@/data/levelSpecs';
-import type { LevelSpecification } from '@/data/levelSpecs';
 import { soundManager } from '../engine/SoundManager';
 
 /**
@@ -113,7 +112,7 @@ export class CircleScene extends BaseScene {
         this.time.delayedCall(450, () => this.cameras.main.zoomTo(1, 350, 'Power2'));
     }
 
-    protected onUserInput(value: string, levelId: string) {
+    protected onUserInput(value: string, _levelId: string): void {
         const v = parseFloat(value);
         if (!isNaN(v)) {
             this.currentInputVal = v;

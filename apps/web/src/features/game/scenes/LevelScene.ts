@@ -1,8 +1,6 @@
 import Phaser, { GameObjects } from 'phaser';
 import { BaseScene } from './BaseScene';
-import { EventBus, EVENTS } from '../engine/EventBus';
 import { getLevelSpec } from '@/data/levelSpecs';
-import type { LevelSpecification } from '@/data/levelSpecs';
 
 export class LevelScene extends BaseScene {
     
@@ -102,7 +100,7 @@ export class LevelScene extends BaseScene {
         });
     }
 
-    protected onUserInput(value: string, levelId: string) {
+    protected onUserInput(value: string, _levelId: string) {
         const val = parseFloat(value);
         if (!isNaN(val) && val > 0) {
             this.currentValue = val;
@@ -126,7 +124,7 @@ export class LevelScene extends BaseScene {
         }
     }
 
-    protected onBoardInput(inputs: string[], levelId: string) {
+    protected onBoardInput(inputs: string[], _levelId: string) {
         this.boardExamInputs = inputs;
         let lastVal = 0;
         for (let i = inputs.length - 1; i >= 0; i--) {

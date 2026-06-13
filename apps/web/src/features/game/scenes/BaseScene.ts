@@ -113,7 +113,7 @@ export abstract class BaseScene extends Scene {
     // Virtual method for cleanup if child needs it
     protected onCleanup(): void {}
     // Virtual method for resize logic
-    protected onResize(gameSize: Phaser.Structs.Size): void {}
+    protected onResize(_gameSize: Phaser.Structs.Size): void {}
 
     // Default implementations for feedback
     protected onAnswerCorrect() {

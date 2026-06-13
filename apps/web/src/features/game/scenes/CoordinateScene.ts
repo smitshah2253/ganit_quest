@@ -13,6 +13,10 @@ export class CoordinateScene extends Scene {
     // Grid details
     private gridGraphics!: GameObjects.Graphics;
     private laserGraphics!: GameObjects.Graphics;
+    private distanceGraphics!: GameObjects.Graphics;
+    private distanceTexts: GameObjects.Text[] = [];
+    private areaGraphics!: GameObjects.Graphics;
+    private sectionObjects: GameObjects.GameObject[] = [];
     private spacing: number = 30;
     private centerX: number = 0;
     private centerY: number = 0;
@@ -45,7 +49,7 @@ export class CoordinateScene extends Scene {
         this.cameras.main.setBackgroundColor('#ecf2f7');
         
         // Initialize particle emitter for celebrations
-        this.particles = this.add.particles(0, 0, 'spark', {
+        this.particles = this.add.particles(0, 0, 'particle_star', {
             speed: { min: 50, max: 150 },
             scale: { start: 0.8, end: 0 },
             alpha: { start: 1, end: 0 },
@@ -59,6 +63,8 @@ export class CoordinateScene extends Scene {
         // Main layers
         this.gridGraphics = this.add.graphics();
         this.laserGraphics = this.add.graphics();
+        this.distanceGraphics = this.add.graphics();
+        this.areaGraphics = this.add.graphics();
 
         // Level details overlay
         this.add.text(20, 20, 'Coordinate Geometry Lab', {
@@ -209,16 +215,29 @@ export class CoordinateScene extends Scene {
             }
         };
 
+        const onAnswerCorrect = () => {
+            if (!this.scene || !this.scene.systems || !this.isLevelActive) return;
+            // Celebrate at the last active or relevant point, or center
+            const targetPoint = this.pointsList.find(p => p.draggable) || this.pointsList[0];
+            if (targetPoint) {
+                this.celebrateCoordinateSuccess(targetPoint.gridX, targetPoint.gridY);
+            } else {
+                this.celebrateCoordinateSuccess(0, 0);
+            }
+        };
+
         // Attach listeners
         EventBus.on('load-level', onLoadLevel);
         EventBus.on('user-input-changed', onUserInputChanged);
         EventBus.on('board-exam-input-changed', onBoardExamInputChanged);
+        EventBus.on('answer-correct', onAnswerCorrect);
 
         // Cleanup on Scene shutdown/destroy
         const cleanup = () => {
             EventBus.off('load-level', onLoadLevel);
             EventBus.off('user-input-changed', onUserInputChanged);
             EventBus.off('board-exam-input-changed', onBoardExamInputChanged);
+            EventBus.off('answer-correct', onAnswerCorrect);
             this.scale.off('resize', onResize);
         };
         this.events.once('shutdown', cleanup);
@@ -249,6 +268,12 @@ export class CoordinateScene extends Scene {
             p.projectionY.destroy();
         });
         this.pointsList = [];
+        this.distanceTexts.forEach(t => t.destroy());
+        this.distanceTexts = [];
+        this.sectionObjects.forEach(o => o.destroy());
+        this.sectionObjects = [];
+        this.distanceGraphics.clear();
+        this.areaGraphics.clear();
 
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
@@ -284,6 +309,20 @@ export class CoordinateScene extends Scene {
             });
         }
 
+        // Hook up Section Formula slider for levels 19-24
+        if (this.levelSpec.id.startsWith('lvl-cg-19') ||
+            this.levelSpec.id.startsWith('lvl-cg-20') ||
+            this.levelSpec.id.startsWith('lvl-cg-21') ||
+            this.levelSpec.id.startsWith('lvl-cg-22') ||
+            this.levelSpec.id.startsWith('lvl-cg-23') ||
+            this.levelSpec.id.startsWith('lvl-cg-24')) {
+            if (this.pointsList.length >= 2) {
+                const pt1 = this.pointsList[0];
+                const pt2 = this.pointsList[1];
+                this.drawSectionFormulaSlider({ x: pt1.gridX, y: pt1.gridY }, { x: pt2.gridX, y: pt2.gridY });
+            }
+        }
+
         this.updateLaserLines();
     }
 
@@ -292,6 +331,11 @@ export class CoordinateScene extends Scene {
 
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
+
+        if (this.levelSpec && this.levelSpec.id === 'lvl-cg-30') {
+            this.drawBossMap(width, height);
+            return;
+        }
 
         // Draw light grid lines
         this.gridGraphics.lineStyle(1, 0xcbd5e1, 0.4);
@@ -517,20 +561,39 @@ export class CoordinateScene extends Scene {
 
     private updateLaserLines() {
         this.laserGraphics.clear();
-        if (!this.levelSpec || !this.levelSpec.lineConnections) return;
+        this.distanceGraphics.clear();
+        this.areaGraphics.clear();
+        this.distanceTexts.forEach(t => t.destroy());
+        this.distanceTexts = [];
+
+        if (!this.levelSpec) return;
+
+        // Draw area visualization if applicable (lvl-cg-25 or triangle levels)
+        if (this.levelSpec.id === 'lvl-cg-25' && this.levelSpec.points) {
+            this.drawAreaVisualization(this.levelSpec.points);
+        }
+
+        if (!this.levelSpec.lineConnections) return;
 
         // Draw connections (Distance lines, midpoints, polygons)
         this.levelSpec.lineConnections.forEach(([i1, i2]) => {
             const pt1 = this.pointsList[i1];
             const pt2 = this.pointsList[i2];
             if (pt1 && pt2) {
-                // High contrast vector glowing lines
-                this.laserGraphics.lineStyle(4, 0x10b981, 0.8); // Glowing green
-                this.laserGraphics.lineBetween(pt1.gameObject.x, pt1.gameObject.y, pt2.gameObject.x, pt2.gameObject.y);
+                const isDistanceLevel = this.levelSpec!.id.startsWith('lvl-cg-13') || 
+                                        this.levelSpec!.id.startsWith('lvl-cg-14') || 
+                                        this.levelSpec!.id.startsWith('lvl-cg-15') ||
+                                        this.levelSpec!.id.startsWith('lvl-cg-16') ||
+                                        this.levelSpec!.id.startsWith('lvl-cg-17') ||
+                                        this.levelSpec!.id.startsWith('lvl-cg-18') ||
+                                        this.levelSpec!.id.startsWith('lvl-cg-30');
 
-                // Add small midpoint overlay label if it is distance/section
-                if (this.levelSpec!.id.startsWith('lvl-cg-13') || this.levelSpec!.id.startsWith('lvl-cg-14')) {
-                    this.laserGraphics.lineStyle(2, 0xffffff, 0.9);
+                if (isDistanceLevel) {
+                    this.drawDistanceVisualizer({x: pt1.gridX, y: pt1.gridY}, {x: pt2.gridX, y: pt2.gridY});
+                } else {
+                    // High contrast vector glowing lines
+                    this.laserGraphics.lineStyle(4, 0x10b981, 0.8); // Glowing green
+                    this.laserGraphics.lineBetween(pt1.gameObject.x, pt1.gameObject.y, pt2.gameObject.x, pt2.gameObject.y);
                 }
             }
         });
@@ -578,13 +641,13 @@ export class CoordinateScene extends Scene {
         const distance = Math.sqrt(dx * dx + dy * dy).toFixed(2);
 
         // Draw right triangle visualization
-        this.laserGraphics.lineStyle(2, 0x3b82f6, 0.6);
-        this.laserGraphics.lineBetween(x1, y1, x2, y1); // Horizontal
-        this.laserGraphics.lineBetween(x2, y1, x2, y2); // Vertical
+        this.distanceGraphics.lineStyle(2, 0x3b82f6, 0.6);
+        this.distanceGraphics.lineBetween(x1, y1, x2, y1); // Horizontal
+        this.distanceGraphics.lineBetween(x2, y1, x2, y2); // Vertical
 
         // Animated distance line
-        this.laserGraphics.lineStyle(4, 0x10b981, 0.9);
-        this.laserGraphics.lineBetween(x1, y1, x2, y2);
+        this.distanceGraphics.lineStyle(4, 0x10b981, 0.9);
+        this.distanceGraphics.lineBetween(x1, y1, x2, y2);
 
         // Distance label at midpoint
         const midX = (x1 + x2) / 2;
@@ -597,27 +660,76 @@ export class CoordinateScene extends Scene {
             fontStyle: 'bold',
             backgroundColor: '#0f172a',
             padding: { x: 8, y: 4 }
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(20);
+        this.distanceTexts.push(distText);
 
         // Delta labels
-        const dxText = this.add.text((x1 + x2) / 2, y1 + 15, `Δx = ${dx}`, {
-            fontFamily: 'Inter, system-ui, sans-serif',
-            fontSize: '11px',
-            color: '#3b82f6'
-        }).setOrigin(0.5);
+        if (dx > 0) {
+            const dxText = this.add.text((x1 + x2) / 2, y1 + 15, `Δx = ${dx}`, {
+                fontFamily: 'Inter, system-ui, sans-serif',
+                fontSize: '11px',
+                color: '#3b82f6',
+                backgroundColor: '#ffffffbf',
+                padding: { x: 2, y: 2 }
+            }).setOrigin(0.5).setDepth(19);
+            this.distanceTexts.push(dxText);
+        }
 
-        const dyText = this.add.text(x2 + 20, (y1 + y2) / 2, `Δy = ${dy}`, {
-            fontFamily: 'Inter, system-ui, sans-serif',
-            fontSize: '11px',
-            color: '#3b82f6'
-        }).setOrigin(0, 0.5);
+        if (dy > 0) {
+            const dyText = this.add.text(x2 + 20, (y1 + y2) / 2, `Δy = ${dy}`, {
+                fontFamily: 'Inter, system-ui, sans-serif',
+                fontSize: '11px',
+                color: '#3b82f6',
+                backgroundColor: '#ffffffbf',
+                padding: { x: 2, y: 2 }
+            }).setOrigin(0, 0.5).setDepth(19);
+            this.distanceTexts.push(dyText);
+        }
+    }
 
-        // Cleanup after 3 seconds
-        this.time.delayedCall(3000, () => {
-            distText.destroy();
-            dxText.destroy();
-            dyText.destroy();
-        });
+    private drawBossMap(W: number, H: number) {
+        // Draw Sci-Fi Reactor background
+        this.gridGraphics.fillStyle(0x020617, 1); // Deep space dark
+        this.gridGraphics.fillRect(0, 0, W, H);
+        
+        // Draw neon border
+        this.gridGraphics.lineStyle(4, 0x0ea5e9, 0.8);
+        this.gridGraphics.strokeRect(10, 10, W - 20, H - 20);
+        
+        // Draw grid lines as laser grid
+        this.gridGraphics.lineStyle(1, 0x38bdf8, 0.15);
+        for (let i = -10; i <= 10; i++) {
+            const x = this.centerX + i * this.spacing;
+            this.gridGraphics.lineBetween(x, 0, x, H);
+        }
+        for (let j = -10; j <= 10; j++) {
+            const y = this.centerY - j * this.spacing;
+            this.gridGraphics.lineBetween(0, y, W, y);
+        }
+        
+        // Boss Banner
+        this.gridGraphics.fillStyle(0x082f49, 1);
+        this.gridGraphics.fillRect(0, 0, W, 50);
+        this.add.text(W/2, 25, '⚠️ BOSS: REACTOR ALIGNMENT', {
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: '18px',
+            color: '#7dd3fc',
+            fontStyle: 'bold'
+        }).setOrigin(0.5).setDepth(20);
+
+        // Core graphics
+        const drawCore = (px: number, py: number) => {
+            this.gridGraphics.fillStyle(0x0284c7, 0.4);
+            this.gridGraphics.fillCircle(px, py, 30);
+            this.gridGraphics.fillStyle(0x38bdf8, 0.8);
+            this.gridGraphics.fillCircle(px, py, 15);
+            this.gridGraphics.lineStyle(2, 0xe0f2fe, 1);
+            this.gridGraphics.strokeCircle(px, py, 20);
+        };
+
+        // Cores are at (-4, -6) and (6, 9)
+        drawCore(this.centerX - 4 * this.spacing, this.centerY + 6 * this.spacing);
+        drawCore(this.centerX + 6 * this.spacing, this.centerY - 9 * this.spacing);
     }
 
     /**
@@ -690,7 +802,7 @@ export class CoordinateScene extends Scene {
         }
 
         // Sound
-        // soundManager.playSuccess(); // Uncomment when soundManager is available
+        soundManager.playSuccess();
 
         // Flash effect
         const flash = this.add.circle(screenX, screenY, 50, 0x10b981, 0.8);
@@ -741,6 +853,7 @@ export class CoordinateScene extends Scene {
 
         const sectionPoint = this.add.circle(sectionX, sectionY, 10, 0xec4899, 1);
         sectionPoint.setStrokeStyle(2, 0xffffff);
+        this.sectionObjects.push(sectionPoint);
         
         // Pass a custom 40px radius circle as hit zone to make dragging easy on mobile
         sectionPoint.setInteractive(new Phaser.Geom.Circle(0, 0, 40), Phaser.Geom.Circle.Contains);
@@ -753,6 +866,7 @@ export class CoordinateScene extends Scene {
             color: '#ec4899',
             fontStyle: 'bold'
         }).setOrigin(0.5);
+        this.sectionObjects.push(sectionLabel);
 
         // Drag to change ratio
         sectionPoint.on('drag', (pointer: Phaser.Input.Pointer) => {
@@ -773,6 +887,12 @@ export class CoordinateScene extends Scene {
             // Update ratio display
             const newRatio = t / (1 - t || 0.001);
             ratio = newRatio;
+
+            // Emit ratio changed to update React UI
+            EventBus.emit('user-input-changed', {
+                value: newRatio.toFixed(2),
+                levelId: this.levelSpec?.id
+            });
         });
 
         return { point: sectionPoint, label: sectionLabel, getRatio: () => ratio };
@@ -784,24 +904,22 @@ export class CoordinateScene extends Scene {
     private drawAreaVisualization(points: { x: number, y: number }[]) {
         if (points.length < 3) return;
 
-        const graphics = this.add.graphics();
-        graphics.fillStyle(0x10b981, 0.2);
-        graphics.lineStyle(2, 0x10b981, 0.8);
+        this.areaGraphics.fillStyle(0x10b981, 0.2);
+        this.areaGraphics.lineStyle(2, 0x10b981, 0.8);
 
-        graphics.beginPath();
+        this.areaGraphics.beginPath();
         const startX = this.centerX + points[0].x * this.spacing;
         const startY = this.centerY - points[0].y * this.spacing;
-        graphics.moveTo(startX, startY);
+        this.areaGraphics.moveTo(startX, startY);
 
         for (let i = 1; i < points.length; i++) {
             const x = this.centerX + points[i].x * this.spacing;
             const y = this.centerY - points[i].y * this.spacing;
-            graphics.lineTo(x, y);
+            this.areaGraphics.lineTo(x, y);
         }
-
-        graphics.closePath();
-        graphics.fillPath();
-        graphics.strokePath();
+        this.areaGraphics.closePath();
+        this.areaGraphics.fillPath();
+        this.areaGraphics.strokePath();
 
         // Calculate and display area
         let area = 0;
@@ -825,11 +943,13 @@ export class CoordinateScene extends Scene {
             fontStyle: 'bold',
             backgroundColor: '#0f172a',
             padding: { x: 8, y: 4 }
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(20);
+        this.distanceTexts.push(areaText);
 
         // Animate area filling
+        this.areaGraphics.alpha = 0;
         this.tweens.add({
-            targets: graphics,
+            targets: this.areaGraphics,
             alpha: { from: 0, to: 1 },
             duration: 800,
             ease: 'Power2'

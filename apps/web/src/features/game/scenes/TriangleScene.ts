@@ -30,6 +30,7 @@ export class TriangleScene extends Scene {
     // Live state
     private apexOffsetY: number = 0;       // World 1: how far apex is dragged (px)
     private bptRatio: number = 0.5;        // World 3: position of DE line (0..1 of AB)
+    private scaleFactorK: number = 2.0;    // World 2/4: interactive scale factor
     private currentInputVal: number = 0;   // typed answer value
     private lastSnap: number = -1;          // last snapped perimeter value (World 1)
 
@@ -79,7 +80,7 @@ export class TriangleScene extends Scene {
             .setVisible(false);
 
         // Create larger invisible hit zone for mobile (40px radius)
-        this.dragHitZone = this.add.circle(0, 0, 40, 0x000000, 0).setDepth(4).setVisible(false);
+        this.dragHitZone = this.add.circle(0, 0, 40, 0x000000, 0).setInteractive().setDepth(4).setVisible(false);
         this.input.setDraggable(this.dragHitZone);
 
         // Visual feedback for drag handle on hover
@@ -124,6 +125,7 @@ export class TriangleScene extends Scene {
             this.isLevelActive = true;
             this.apexOffsetY = 0;
             this.bptRatio    = 0.5;
+            this.scaleFactorK = 2.0;
             this.currentInputVal = 0;
             this.lastSnap = -1;
 
@@ -156,7 +158,10 @@ export class TriangleScene extends Scene {
             if (d.inputs[0] !== undefined) onUserInput({ value: d.inputs[0], levelId: d.levelId });
         };
 
-        const onCorrect = () => this.flashOverlay(0x10b981);
+        const onCorrect = () => {
+            this.flashOverlay(0x10b981);
+            this.celebrateSuccess();
+        };
         const onWrong   = () => this.flashOverlay(0xef4444);
 
         EventBus.on('load-level',               onLoadLevel);
@@ -193,34 +198,77 @@ export class TriangleScene extends Scene {
     }
 
     // ─────────────────────────────────────────────────────────────────
-    // DRAG HANDLER  (World 1 only — move apex up/down)
+    // DRAG HANDLER
     // ─────────────────────────────────────────────────────────────────
     private onDrag(_dragX: number, dragY: number) {
         if (!this.isLevelActive || !this.levelSpec) return;
         const world = this.worldNumber();
-        if (world !== 1) return;
 
-        const { cy, triH } = this.baseLayout();
-        const minApexY = cy - triH * 1.8;
-        const maxApexY = cy - triH * 0.3;
-        const newApexY = Phaser.Math.Clamp(dragY, minApexY, maxApexY);
-        this.apexOffsetY = newApexY - (cy - triH);
+        if (world === 1) {
+            const { cy, triH } = this.baseLayout();
+            const minApexY = cy - triH * 1.8;
+            const maxApexY = cy - triH * 0.3;
+            const newApexY = Phaser.Math.Clamp(dragY, minApexY, maxApexY);
+            this.apexOffsetY = newApexY - (cy - triH);
 
-        // Emit dragged "height" as user value for World-1 perimeter levels
-        const { triW } = this.baseLayout();
-        const h = Math.abs(newApexY - (cy + triH * 0.5));
-        const perimeter = Math.round(triW + 2 * Math.sqrt((triW / 2) ** 2 + h ** 2));
+            // Emit dragged "height" as user value for World-1 perimeter levels
+            const { triW } = this.baseLayout();
+            const h = Math.abs(newApexY - (cy + triH * 0.5));
+            const perimeter = Math.round(triW + 2 * Math.sqrt((triW / 2) ** 2 + h ** 2));
 
-        // Magnetic snap to exact perimeter = 12 (3+4+5) for lvl-tri-01
-        if (this.levelSpec.id === 'lvl-tri-01') {
-            if (Math.abs(perimeter - 12) < 2 && this.lastSnap !== 12) {
-                this.lastSnap = 12;
-                soundManager.playSnap();
-                this.tweens.add({ targets: this.dragHandle, scaleX: 1.5, scaleY: 1.5, duration: 80, yoyo: true });
+            // Magnetic snap to exact perimeter = 12 (3+4+5) for lvl-tri-01
+            if (this.levelSpec.id === 'lvl-tri-01') {
+                if (Math.abs(perimeter - 12) < 2 && this.lastSnap !== 12) {
+                    this.lastSnap = 12;
+                    soundManager.playSnap();
+                    this.tweens.add({ targets: this.dragHandle, scaleX: 1.5, scaleY: 1.5, duration: 80, yoyo: true });
+                }
             }
-        }
+            EventBus.emit('user-input-changed', { value: String(perimeter), levelId: this.levelSpec.id });
 
-        EventBus.emit('user-input-changed', { value: String(perimeter), levelId: this.levelSpec.id });
+        } else if (world === 3) {
+            // Drag DE line up and down (BPT)
+            const { cy, triH } = this.baseLayout();
+            const topY = cy - triH * 0.9 + 20; // A
+            const bottomY = cy + triH * 0.5 - 20; // B
+            
+            const newY = Phaser.Math.Clamp(dragY, topY, bottomY);
+            this.bptRatio = (newY - (cy - triH * 0.9)) / ((cy + triH * 0.5) - (cy - triH * 0.9));
+            
+            // Map ratio to the specific level's correct answer logic
+            let emitVal = 0;
+            const id = this.levelSpec.id;
+            if (id === 'lvl-tri-13') emitVal = this.bptRatio * 10;
+            else if (id === 'lvl-tri-14') emitVal = this.bptRatio * 20;
+            else if (id === 'lvl-tri-15') emitVal = this.bptRatio * 25;
+            else if (id === 'lvl-tri-16') emitVal = this.bptRatio * 12;
+            else if (id === 'lvl-tri-17') emitVal = this.bptRatio * 1.0;
+            else if (id === 'lvl-tri-18') emitVal = this.bptRatio * 28;
+            else emitVal = this.bptRatio * Math.max(1, this.levelSpec.correctAnswer);
+
+            if (this.levelSpec.id === 'lvl-tri-16' && Math.abs(this.bptRatio - 0.625) < 0.05) {
+                if (this.lastSnap !== 1) {
+                    this.lastSnap = 1;
+                    soundManager.playSnap();
+                }
+                this.bptRatio = 0.625; // 5/8 ratio exactly
+                emitVal = 7.5;
+            }
+
+            EventBus.emit('user-input-changed', { value: emitVal.toFixed(1), levelId: this.levelSpec.id });
+
+        } else if (world === 2 || world === 4) {
+            // Drag Scale Slider
+            const W = this.cameras.main.width;
+            const minX = W * 0.3;
+            const maxX = W * 0.7;
+            const newX = Phaser.Math.Clamp(_dragX, minX, maxX);
+            
+            const pct = (newX - minX) / (maxX - minX);
+            this.scaleFactorK = 0.5 + pct * 3.5; // Scale from 0.5x to 4.0x
+            
+            EventBus.emit('user-input-changed', { value: String(this.scaleFactorK * 10), levelId: this.levelSpec.id });
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -329,6 +377,40 @@ export class TriangleScene extends Scene {
             this.lbl(`10`, (Cx + Ax2) / 2 + 8, (Cy + Ay2) / 2 - 6, '#6d28d9', '12px');
             this.setLbl('hint', 'Two triangles share base BC = 6', cx, cy - triH * 0.8, '#7c3aed', '11px');
                 return;
+        }
+
+        // For lvl-tri-04, use currentInputVal to dynamically build the triangle or collapse it
+        if (id === 'lvl-tri-04') {
+            if (this.currentInputVal > 0) {
+                c = this.currentInputVal;
+                // Triangle inequality check
+                if (a + b <= c || a + c <= b || b + c <= a) {
+                    // Collapsed state
+                    this.setLbl('collapse_alert', '⚠️ Triangle Inequality Failed! Collapsed.', cx, cy - 40, '#ef4444', '13px');
+                    this.main.lineStyle(4, 0xef4444, 1);
+                    this.main.lineBetween(cx - 100, cy, cx + 100, cy);
+                    return; // skip drawing the normal triangle
+                } else {
+                    // Law of Cosines to find apex X and Y based on sides a,b,c
+                    // Place base c at bottom, from B(0,0) to C(c,0)
+                    // a is side BC (Wait, standard naming: a is opposite A. Let's say base is c (side AB), sides are a(BC) and b(AC))
+                    // Let's keep the existing base logic where base is b? No, let's just make base horizontal.
+                    const angleA = Math.acos((b*b + c*c - a*a) / (2*b*c));
+                    const newAy = cy - Math.sin(angleA) * b * scale;
+                    const newAx = cx - c * scale * 0.5 + Math.cos(angleA) * b * scale;
+                    
+                    const newBx = cx - c * scale * 0.5;
+                    const newBy = cy;
+                    const newCx = cx + c * scale * 0.5;
+                    const newCy = cy;
+                    
+                    this.drawTriangle(newBx, newBy, newCx, newCy, newAx, newAy, 0x3b82f6, 0x1d4ed8, 0.12);
+                    this.lbl(`a = ${a}`, (newBx + newCx)/2, newBy + 16, '#0369a1', '13px');
+                    this.lbl(`b = ${b}`, (newAx + newCx)/2 + 10, (newAy + newCy)/2, '#0369a1', '13px');
+                    this.lbl(`c = ${c}`, (newAx + newBx)/2 - 20, (newAy + newBy)/2, '#0369a1', '13px');
+                    return; // skip the rest
+                }
+            }
         }
 
         this.drawTriangle(Bx, By, Cx, Cy, Ax, Ay, 0x3b82f6, 0x1d4ed8, 0.12);
@@ -455,9 +537,22 @@ export class TriangleScene extends Scene {
         this.bg.lineStyle(1.5, 0xcbd5e1, 0.8);
         this.bg.lineBetween(W / 2, 60, W / 2, H - 40);
 
-        // Scale ratio badge
+        // Scale ratio badge & Interactive Slider
         this.setLbl('ratio_badge', `Scale Factor  k = ${liveK.toFixed(2)}`, W / 2, H * 0.12, '#4f46e5', '13px');
         this.setLbl('area_badge',  `Area ratio = k² = ${(liveK * liveK).toFixed(2)}`, W / 2, H * 0.12 + 20, '#7c3aed', '11px');
+        
+        // Draw physical slider bar
+        const sliderY = H * 0.18;
+        const minX = W * 0.3;
+        const maxX = W * 0.7;
+        this.bg.lineStyle(4, 0xcbd5e1, 1);
+        this.bg.lineBetween(minX, sliderY, maxX, sliderY);
+        
+        const handleX = minX + ((liveK - 0.5) / 3.5) * (maxX - minX);
+        
+        this.dragHandle.setPosition(handleX, sliderY).setVisible(true).setDepth(10);
+        this.dragHitZone.setPosition(handleX, sliderY).setVisible(true).setDepth(10);
+        this.setLbl('drag_hint', 'Drag to scale!', handleX, sliderY - 20, '#0891b2', '10px');
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -529,11 +624,21 @@ export class TriangleScene extends Scene {
         this.lbl(`EC=?`, midECx, midECy, '#dc2626', '12px');
 
         // Proportion badge
-        const ratioStr = `${adVal}/${dbVal} = ${aeVal}/${ecVal} → BPT ✓`;
+        const liveAD = (adVal + dbVal) * t;
+        const liveDB = (adVal + dbVal) * (1 - t);
+        const liveAE = (aeVal + ecVal) * t;
+        const liveEC = (aeVal + ecVal) * (1 - t);
+
+        const ratioStr = `${liveAD.toFixed(1)}/${liveDB.toFixed(1)} = ${liveAE.toFixed(1)}/${liveEC.toFixed(1)}`;
         this.setLbl('bpt_prop', ratioStr, cx, By + 28, '#374151', '12px');
 
         // DE || BC label
         this.setLbl('parallel_lbl', 'DE ∥ BC  (Thales Theorem)', cx, (Dy + Ey) / 2 - 14, '#d97706', '11px');
+
+        // Position drag handle on D
+        this.dragHandle.setPosition(Dx, Dy).setVisible(true).setDepth(10);
+        this.dragHitZone.setPosition(Dx, Dy).setVisible(true).setDepth(10);
+        this.setLbl('drag_hint', 'Drag DE!', Dx - 40, Dy - 20, '#0891b2', '10px');
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -599,9 +704,21 @@ export class TriangleScene extends Scene {
         this.bg.lineStyle(1.5, 0xcbd5e1, 0.8);
         this.bg.lineBetween(W / 2, 60, W / 2, H - 40);
 
-        // Badge
-        this.setLbl('k_badge',    `k = ${liveK.toFixed(2)}`, W / 2, H * 0.13, '#4f46e5', '13px');
+        // Badge & Slider
+        this.setLbl('k_badge',    `Scale Factor k = ${liveK.toFixed(2)}`, W / 2, H * 0.13, '#4f46e5', '13px');
         this.setLbl('area_badge2', `Area ratio = k² = ${(liveK ** 2).toFixed(2)}`, W / 2, H * 0.13 + 20, '#7c3aed', '11px');
+
+        const sliderY = H * 0.18 + 10;
+        const minX = W * 0.3;
+        const maxX = W * 0.7;
+        this.bg.lineStyle(4, 0xcbd5e1, 1);
+        this.bg.lineBetween(minX, sliderY, maxX, sliderY);
+        
+        const handleX = minX + ((liveK - 0.5) / 3.5) * (maxX - minX);
+        
+        this.dragHandle.setPosition(handleX, sliderY).setVisible(true).setDepth(10);
+        this.dragHitZone.setPosition(handleX, sliderY).setVisible(true).setDepth(10);
+        this.setLbl('drag_hint_2', 'Drag to scale!', handleX, sliderY - 20, '#0891b2', '10px');
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -612,6 +729,11 @@ export class TriangleScene extends Scene {
     private drawWorld5_Pythagoras() {
         const id = this.levelSpec!.id;
         const { cx, cy, triW, triH } = this.baseLayout();
+        
+        if (id === 'lvl-tri-30') {
+            this.drawBossMode(cx, cy, triW, triH);
+            return;
+        }
 
         // Pick leg values per level
         let leg1 = 3, leg2 = 4, hyp = 5;
@@ -675,6 +797,73 @@ export class TriangleScene extends Scene {
             const hint = diff < 0.5 ? '✓ Correct!' : diff < 3 ? 'Getting close...' : `Hint: try ${hyp}`;
             this.setLbl('live_hint', hint, cx, Cy + 56, diff < 0.5 ? '#10b981' : '#f97316', '12px');
         }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // BOSS MODE (lvl-tri-30)
+    // ─────────────────────────────────────────────────────────────────
+    private drawBossMode(cx: number, cy: number, _triW: number, _triH: number) {
+        const W = this.cameras.main.width;
+        const H = this.cameras.main.height;
+        
+        this.bg.fillStyle(0x0f172a, 1); // Dark night sky
+        this.bg.fillRect(0, 0, W, H);
+
+        // Boss Banner
+        this.main.fillStyle(0x312e81, 1);
+        this.main.fillRect(0, 0, W, 60);
+        this.lbl('⚠️ BOSS: THE ARCHITECT', cx, 30, '#818cf8', '18px');
+
+        // The Bridge Structure
+        const baseWidth = 300;
+        const startX = cx - baseWidth/2;
+        const startY = cy + 60;
+        
+        // Draw water
+        this.bg.fillStyle(0x1e3a8a, 0.5);
+        this.bg.fillRect(0, startY + 20, W, H - (startY + 20));
+        
+        // If correct, show solid neon blueprint. If wrong, show cracks.
+        const val = this.currentInputVal;
+        const correct = this.levelSpec?.correctAnswer ?? 13;
+        const isRight = val !== 0 && Math.abs(val - correct) <= (this.levelSpec?.tolerance ?? 0);
+        
+        const strokeColor = isRight ? 0x22c55e : (val !== 0 ? 0xef4444 : 0x64748b);
+        const fillColor = isRight ? 0x14532d : 0x0f172a;
+        
+        // Draw 3 triangles making up a bridge truss
+        const p1 = { x: startX, y: startY };
+        const p2 = { x: startX + 100, y: startY - 100 };
+        const p3 = { x: startX + 100, y: startY };
+        const p4 = { x: startX + 200, y: startY - 100 };
+        const p5 = { x: startX + 200, y: startY };
+        const p6 = { x: startX + 300, y: startY };
+
+        this.drawTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, fillColor, strokeColor, 0.4);
+        this.drawTriangle(p3.x, p3.y, p2.x, p2.y, p4.x, p4.y, fillColor, strokeColor, 0.4);
+        this.drawTriangle(p3.x, p3.y, p4.x, p4.y, p5.x, p5.y, fillColor, strokeColor, 0.4);
+        this.drawTriangle(p5.x, p5.y, p4.x, p4.y, p6.x, p6.y, fillColor, strokeColor, 0.4);
+
+        if (val !== 0 && !isRight) {
+            // Draw cracks
+            this.main.lineStyle(2, 0xff0000, 0.8);
+            this.main.beginPath();
+            this.main.moveTo(p3.x, p3.y);
+            this.main.lineTo(p3.x - 20, p3.y - 40);
+            this.main.lineTo(p3.x + 10, p3.y - 60);
+            this.main.lineTo(p2.x, p2.y);
+            this.main.strokePath();
+        }
+
+        // Labels
+        this.lbl('5m', p1.x + 50, p1.y + 15, '#cbd5e1', '14px');
+        this.lbl('12m', p3.x - 15, p3.y - 50, '#cbd5e1', '14px');
+        
+        // Missing hypotenuse
+        const hypText = val !== 0 ? `${val}m` : '? m';
+        this.lbl(hypText, p1.x + 30, p1.y - 50, strokeColor === 0x64748b ? '#fbbf24' : `#${strokeColor.toString(16)}`, '16px');
+
+        this.lbl('Bridge collapses if beam length is wrong!', cx, H - 40, '#fca5a5', '14px');
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -837,5 +1026,52 @@ export class TriangleScene extends Scene {
     private updateDragHandle() {
         const world = this.worldNumber();
         this.dragHandle.setVisible(world === 1 && this.levelSpec?.id === 'lvl-tri-01');
+    }
+
+    private celebrateSuccess() {
+        if (!this.scene || !this.scene.systems) return;
+
+        const W = this.cameras.main.width;
+        const H = this.cameras.main.height;
+        const cx = W / 2;
+        const cy = H / 2;
+
+        soundManager.playSuccess();
+
+        // Particle burst
+        const particles = this.add.particles(cx, cy, 'particle_star', {
+            speed: { min: 100, max: 300 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 1, end: 0 },
+            lifespan: 1500,
+            blendMode: 'ADD',
+            tint: [0xffeb3b, 0x4ade80, 0x06b6d4],
+            quantity: 30,
+            duration: 200
+        });
+
+        // "Excellent!" text
+        const successText = this.add.text(cx, cy - 60, 'Excellent! ✅', {
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: '32px',
+            color: '#10b981',
+            fontStyle: 'bold',
+            stroke: '#ffffff',
+            strokeThickness: 6
+        }).setOrigin(0.5).setAlpha(0).setScale(0.5);
+
+        this.tweens.add({
+            targets: successText,
+            scale: 1.2,
+            alpha: 1,
+            duration: 400,
+            ease: 'Back.easeOut',
+            yoyo: true,
+            hold: 800,
+            onComplete: () => {
+                successText.destroy();
+                particles.destroy();
+            }
+        });
     }
 }
