@@ -88,6 +88,7 @@ interface ConceptPanelProps {
   onHintUsed: () => void;
   isSolved: boolean;
   onNextLevel: () => void;
+  isMobilePortrait?: boolean;
 }
 
 export const ConceptPanel: React.FC<ConceptPanelProps> = ({ 
@@ -96,7 +97,8 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
   onOpenBook,
   onHintUsed,
   isSolved, 
-  onNextLevel 
+  onNextLevel,
+  isMobilePortrait = false
 }) => {
   const { xp, addXp } = useGameStore();
   const [inputValue, setInputValue] = useState<string>('');
@@ -327,11 +329,15 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
     : !inputValue;
 
   return (
-    <div className="flex flex-col h-full bg-white/80 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6.5 shadow-xl border border-slate-200/80 relative overflow-hidden flex-1 select-none">
+    <div className={`flex flex-col bg-white/80 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6.5 shadow-xl border border-slate-200/80 relative select-none ${
+      isMobilePortrait ? 'h-auto overflow-visible flex-none' : 'h-full overflow-hidden flex-1'
+    }`}>
       {/* Soft gradient corner background blob */}
-      <div className="absolute -top-16 -right-16 sm:-top-24 sm:-right-24 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-br from-orange-500 to-indigo-500 rounded-full opacity-5 blur-3xl pointer-events-none" />
+      <div className="absolute -top-16 -right-16 sm:-top-24 sm:-right-24 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-br from-orange-50 to-indigo-50 rounded-full opacity-5 blur-3xl pointer-events-none" />
       
-      <div className="flex-1 flex flex-col min-h-0 relative z-10 space-y-3 sm:space-y-5 pr-1">
+      <div className={`flex flex-col relative z-10 space-y-3 pr-1 ${
+        isMobilePortrait ? 'flex-none' : 'flex-1 min-h-0 sm:space-y-5'
+      }`}>
         
         {/* Header Badges */}
         <ConceptPanelHeader levelType={levelData.type} onOpenBook={onOpenBook} />
@@ -345,7 +351,9 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
         <FormulaDisplayBox formulaDisplay={spec.formulaDisplay} concept={spec.bookPage.concept} />
         
         {/* Dynamic Workspace content */}
-        <div className="flex-1 flex flex-col min-h-0 space-y-3 sm:space-y-4 overflow-y-auto">
+        <div className={`flex flex-col space-y-3 ${
+          isMobilePortrait ? 'h-auto overflow-visible flex-none' : 'flex-1 min-h-0 sm:space-y-4 overflow-y-auto'
+        }`}>
           <AnimatePresence initial={false}>
             
             {isSolved || (showHint && spec.boardExamLines) ? (
@@ -355,6 +363,7 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
                 boardExamInputs={boardExamInputs}
                 isSolved={isSolved}
                 onInputChange={handleBoardExamInputChange}
+                isMobilePortrait={isMobilePortrait}
               />
             ) : (
               /* SCENARIO 3: DIRECT MODE ACTIVE (Default view with clear question description) */
@@ -442,7 +451,9 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
       </div>
 
       {/* FOOTER FORM (Answer submission & level progression navigation) */}
-      <div className="mt-auto pt-4 sm:pt-5 border-t border-slate-100 relative z-10 shrink-0 select-none">
+      <div className={`pt-4 border-t border-slate-100 relative z-10 select-none ${
+        isMobilePortrait ? 'mt-6 flex-none' : 'mt-auto sm:pt-5 shrink-0'
+      }`}>
         <AnimatePresence mode="wait">
           {isSolved ? (
             
@@ -483,7 +494,7 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
                 </div>
               )}
               
-              <div className="flex gap-2 sm:gap-3 items-center">
+              <div className="flex gap-2 sm:gap-3 items-center flex-col sm:flex-row">
                 {!showHint ? (
                   <input
                     id="answer-input"
@@ -492,12 +503,14 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
                     value={inputValue}
                     onChange={handleInputChange}
                     placeholder={spec.placeholder}
-                    className="flex-1 text-sm sm:text-base font-bold bg-slate-50 border border-slate-200 rounded-2xl px-3.5 sm:px-4 py-3 sm:py-3.5 text-slate-800 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all placeholder:text-slate-400 placeholder:font-medium font-mono"
+                    className="w-full sm:flex-1 text-base sm:text-base font-bold bg-slate-50 border border-slate-200 rounded-2xl px-4 sm:px-4 py-3 sm:py-3.5 text-slate-800 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all placeholder:text-slate-400 placeholder:font-medium font-mono h-12 sm:h-auto"
+                    style={{ fontSize: '16px' }}
                     autoComplete="off"
                     required
+                    inputMode="decimal"
                   />
                 ) : (
-                  <div className="flex-1 text-[10px] sm:text-xs font-bold text-slate-500 bg-slate-50 px-3.5 sm:px-4.5 py-3 sm:py-4 rounded-xl border border-slate-200 uppercase tracking-wider">
+                  <div className="w-full sm:flex-1 text-xs sm:text-xs font-bold text-slate-500 bg-slate-50 px-4 sm:px-4.5 py-3 sm:py-4 rounded-xl border border-slate-200 uppercase tracking-wider h-12 sm:h-auto flex items-center">
                     Solve the step blanks on the notebook!
                   </div>
                 )}
@@ -505,7 +518,7 @@ export const ConceptPanel: React.FC<ConceptPanelProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitDisabled}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 sm:px-7 py-3 sm:py-3.5 rounded-2xl font-extrabold text-[11px] sm:text-sm uppercase tracking-wider hover:shadow-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0 active:scale-[0.97]"
+                  className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white px-6 sm:px-7 py-3 sm:py-3.5 rounded-2xl font-extrabold text-sm sm:text-sm uppercase tracking-wider hover:shadow-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0 active:scale-[0.97] h-12 sm:h-auto flex items-center justify-center"
                 >
                   Submit
                 </button>

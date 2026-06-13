@@ -12,13 +12,59 @@ interface PhaserGameProps {
 
 export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
     const game = useRef<Phaser.Game | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const [inputValue, setInputValue] = useState<number>(0);
     const [boardExamInputs, setBoardExamInputs] = useState<string[]>([]);
     const [isGameReady, setIsGameReady] = useState(false);
     const [isLoadingLevel, setIsLoadingLevel] = useState(false);
     const gameReadyRef = useRef(false);
+    const lastDistanceRef = useRef<number>(0);
 
     const spec = currentLevelData ? getLevelSpec(currentLevelData.id, currentLevelData) : null;
+
+    // Handle pinch-to-zoom for mobile
+    useEffect(() => {
+        if (!containerRef.current) return;
+
+        const handleTouchStart = (e: TouchEvent) => {
+            if (e.touches.length === 2) {
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                const distance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
+                );
+                lastDistanceRef.current = distance;
+            }
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            if (e.touches.length === 2 && game.current) {
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                const distance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
+                );
+
+                const lastDistance = lastDistanceRef.current;
+                const delta = (distance - lastDistance) * 0.01;
+
+                // Emit zoom event to Phaser scenes
+                EventBus.emit('pinch-zoom', { delta, distance });
+                lastDistanceRef.current = distance;
+            }
+        };
+
+        const container = containerRef.current;
+        container.addEventListener('touchstart', handleTouchStart, { passive: true });
+        container.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+        return () => {
+            container.removeEventListener('touchstart', handleTouchStart);
+            container.removeEventListener('touchmove', handleTouchMove);
+        };
+    }, []);
 
     useLayoutEffect(() => {
         let onGameReady: (() => void) | null = null;
@@ -200,10 +246,10 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
 
 
     return (
-        <div className="relative w-full h-full overflow-hidden flex flex-col">
+        <div className="relative w-full h-full overflow-hidden flex flex-col" ref={containerRef}>
 
-            {/* Phaser Game Canvas Wrapper */}
-            <div id="game-container" className="absolute inset-0 w-full h-full" />
+            {/* Phaser Game Canvas Wrapper - Touch-optimized */}
+            <div id="game-container" className="absolute inset-0 w-full h-full" style={{ touchAction: 'none' }} />
 
             {/* Loading Overlay */}
             <AnimatePresence>

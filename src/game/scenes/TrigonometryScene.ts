@@ -4,6 +4,7 @@ import { EventBus } from '../EventBus';
 import { getLevelSpec } from '../../data/levelSpecs';
 import type { LevelSpecification } from '../../data/levelSpecs';
 import { soundManager } from '../SoundManager';
+import { TouchHandler } from '../TouchHandler';
 
 export class TrigonometryScene extends Scene {
     private levelSpec: LevelSpecification | null = null;
@@ -17,6 +18,7 @@ export class TrigonometryScene extends Scene {
     // Interactive handle
     private dragHandle!: GameObjects.Arc;
     private dragHandleLabel!: GameObjects.Text;
+    private dragHitZone!: GameObjects.Circle; // Mobile-optimized 40px hit zone
 
     // Live variables
     private currentAngle: number = 0; // in degrees, 0 to 90
@@ -89,7 +91,31 @@ export class TrigonometryScene extends Scene {
             .setStrokeStyle(3, 0xffffff)
             .setInteractive({ useHandCursor: true });
         
-        this.input.setDraggable(this.dragHandle);
+        // Create larger invisible hit zone for mobile (40px radius)
+        this.dragHitZone = this.add.circle(0, 0, 40, 0x000000, 0).setDepth(4);
+        this.input.setDraggable(this.dragHitZone);
+
+        // Visual feedback for drag handle on hover
+        this.dragHitZone.on('pointerover', () => {
+            (this.dragHandle as any).setScale(1.4);
+            (this.dragHandle as any).setStrokeStyle(4, 0xffeb3b);
+        });
+
+        this.dragHitZone.on('pointerout', () => {
+            (this.dragHandle as any).setScale(1);
+            (this.dragHandle as any).setStrokeStyle(3, 0xffffff);
+        });
+
+        // Haptic feedback on drag
+        this.dragHitZone.on('dragstart', () => {
+            if ('vibrate' in navigator) {
+                try {
+                    navigator.vibrate(10);
+                } catch (e) {
+                    // Silently fail
+                }
+            }
+        });
 
         this.dragHandleLabel = this.add.text(0, 0, 'DRAG', {
             fontFamily: 'Inter, system-ui, sans-serif',
@@ -393,8 +419,9 @@ export class TrigonometryScene extends Scene {
 
         this.drawNeonLaser(cx, cy, lx, ly, 0x06b6d4);
 
-        // Reposition Interactive Drag Handle
+        // Reposition Interactive Drag Handle + Hit Zone
         this.dragHandle.setPosition(lx, ly);
+        this.dragHitZone.setPosition(lx, ly);
         this.dragHandleLabel.setPosition(lx, ly);
 
         // Dynamic Angle Text labels
@@ -442,6 +469,7 @@ export class TrigonometryScene extends Scene {
 
         // Reposition drag handle at top vertex
         this.dragHandle.setPosition(cx + w, cy - h);
+        this.dragHitZone.setPosition(cx + w, cy - h);
         this.dragHandleLabel.setPosition(cx + w, cy - h);
 
         // Compute hypotenuse and angle θ for text labeling
@@ -500,6 +528,7 @@ export class TrigonometryScene extends Scene {
 
         // Drag handle positioning
         this.dragHandle.setPosition(px, py);
+        this.dragHitZone.setPosition(px, py);
         this.dragHandleLabel.setPosition(px, py);
 
         // Projections text labels
@@ -556,6 +585,7 @@ export class TrigonometryScene extends Scene {
 
         // Drag handle
         this.dragHandle.setPosition(px, py);
+        this.dragHitZone.setPosition(px, py);
         this.dragHandleLabel.setPosition(px, py);
 
         // Label markings
@@ -612,6 +642,7 @@ export class TrigonometryScene extends Scene {
 
         // Reposition drag handle at top summit target point
         this.dragHandle.setPosition(cx + w, cy - h);
+        this.dragHitZone.setPosition(cx + w, cy - h);
         this.dragHandleLabel.setPosition(cx + w, cy - h);
 
         // Compute angle of elevation
@@ -779,7 +810,10 @@ export class TrigonometryScene extends Scene {
         // Slider handle
         const handle = this.add.circle(cx - sliderWidth/2, sliderY, 12, 0x3b82f6, 1);
         handle.setStrokeStyle(3, 0xffffff);
-        handle.setInteractive({ draggable: true });
+        
+        // Pass a custom 40px radius circle as hit zone to make dragging easy on mobile
+        handle.setInteractive(new Phaser.Geom.Circle(0, 0, 40), Phaser.Geom.Circle.Contains);
+        this.input.setDraggable(handle);
 
         // Angle display
         const angleText = this.add.text(cx, sliderY - 30, `Angle: ${currentAngle}°`, {
@@ -921,7 +955,10 @@ export class TrigonometryScene extends Scene {
         this.add.rectangle(sliderX, sliderY, 180, 6, 0xe2e8f0, 1).setOrigin(0.5);
         const handle = this.add.circle(sliderX - 90, sliderY, 10, 0xf59e0b, 1);
         handle.setStrokeStyle(2, 0xffffff);
-        handle.setInteractive({ draggable: true });
+        
+        // Pass a custom 40px radius circle as hit zone to make dragging easy on mobile
+        handle.setInteractive(new Phaser.Geom.Circle(0, 0, 40), Phaser.Geom.Circle.Contains);
+        this.input.setDraggable(handle);
 
         const angleLabel = this.add.text(sliderX, sliderY - 25, `θ = ${currentAngle}°`, {
             fontSize: '14px', color: '#f59e0b', fontStyle: 'bold'

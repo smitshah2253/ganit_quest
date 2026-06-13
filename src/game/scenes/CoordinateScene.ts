@@ -4,6 +4,7 @@ import { EventBus } from '../EventBus';
 import { getLevelSpec } from '../../data/levelSpecs';
 import type { LevelSpecification } from '../../data/levelSpecs';
 import { soundManager } from '../SoundManager';
+import { TouchHandler } from '../TouchHandler';
 
 export class CoordinateScene extends Scene {
     private levelSpec: LevelSpecification | null = null;
@@ -398,11 +399,26 @@ export class CoordinateScene extends Scene {
         this.updateProjections(pointData);
 
         if (draggable) {
-            circle.setInteractive({ useHandCursor: true });
-            this.input.setDraggable(circle);
+            // Create mobile-optimized touch handler with 40px hit zone and visual feedback
+            const hitZone = this.add.circle(screenX, screenY, 40, 0x000000, 0).setDepth(13);
+            hitZone.setInteractive({ useHandCursor: true });
+            this.input.setDraggable(hitZone);
 
-            // Drag behavior
-            circle.on('drag', (_pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
+            // Visual feedback on hover/touch
+            hitZone.on('pointerover', () => {
+                // Enhance glow effect
+                halo.setScale(1.3);
+                circle.setStrokeStyle(4, 0xffeb3b);
+            });
+
+            hitZone.on('pointerout', () => {
+                // Reset glow effect
+                halo.setScale(1);
+                circle.setStrokeStyle(3, 0xffffff);
+            });
+
+            // Drag behavior with mobile optimization
+            hitZone.on('drag', (_pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
                 // Clamp within grid boundaries
                 const maxOffset = 10 * this.spacing;
                 const clampedX = Phaser.Math.Clamp(dragX, this.centerX - maxOffset, this.centerX + maxOffset);
@@ -412,6 +428,8 @@ export class CoordinateScene extends Scene {
                 circle.y = clampedY;
                 halo.x = clampedX;
                 halo.y = clampedY;
+                hitZone.x = clampedX;
+                hitZone.y = clampedY;
 
                 // Live calculate grid snaps
                 const liveGridX = Math.round((clampedX - this.centerX) / this.spacing);
@@ -435,15 +453,24 @@ export class CoordinateScene extends Scene {
                     index,
                     levelId: this.levelSpec?.id
                 });
+
+                // Haptic feedback for mobile users
+                if ('vibrate' in navigator) {
+                    try {
+                        navigator.vibrate(5);
+                    } catch (e) {
+                        // Silently fail
+                    }
+                }
             });
 
             // On drag release, snap node to clean coordinates
-            circle.on('dragend', () => {
+            hitZone.on('dragend', () => {
                 const snappedX = this.centerX + pointData.gridX * this.spacing;
                 const snappedY = this.centerY - pointData.gridY * this.spacing;
 
                 this.tweens.add({
-                    targets: [circle, halo],
+                    targets: [circle, halo, hitZone],
                     x: snappedX,
                     y: snappedY,
                     duration: 100,
@@ -453,8 +480,22 @@ export class CoordinateScene extends Scene {
                         labelText.y = circle.y - 14;
                         this.updateProjections(pointData);
                         this.updateLaserLines();
+                    },
+                    onComplete: () => {
+                        // Reset visual state
+                        halo.setScale(1);
+                        circle.setStrokeStyle(3, 0xffffff);
                     }
                 });
+
+                // Haptic feedback for successful snap
+                if ('vibrate' in navigator) {
+                    try {
+                        navigator.vibrate(15);
+                    } catch (e) {
+                        // Silently fail
+                    }
+                }
             });
         }
     }
@@ -697,7 +738,10 @@ export class CoordinateScene extends Scene {
 
         const sectionPoint = this.add.circle(sectionX, sectionY, 10, 0xec4899, 1);
         sectionPoint.setStrokeStyle(2, 0xffffff);
-        sectionPoint.setInteractive({ draggable: true });
+        
+        // Pass a custom 40px radius circle as hit zone to make dragging easy on mobile
+        sectionPoint.setInteractive(new Phaser.Geom.Circle(0, 0, 40), Phaser.Geom.Circle.Contains);
+        this.input.setDraggable(sectionPoint);
 
         // Label
         const sectionLabel = this.add.text(sectionX, sectionY - 25, 'P', {

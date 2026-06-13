@@ -72,8 +72,10 @@ export class CircleScene extends Scene {
         // Slider Handle (for manual rotation aim in World 1)
         this.sliderHandle = this.add.circle(0, 0, 11, 0x06b6d4, 1.0)
             .setStrokeStyle(3, 0xffffff)
-            .setInteractive({ useHandCursor: true })
             .setVisible(false);
+        
+        // Set interactive hit zone centered at (0, 0) with a 40px radius (80px diameter) for touch usability
+        this.sliderHandle.setInteractive(new Phaser.Geom.Circle(0, 0, 40), Phaser.Geom.Circle.Contains);
         this.input.setDraggable(this.sliderHandle);
 
         this.input.on('drag', (_ptr: any, _go: any, dragX: number, dragY: number) => {

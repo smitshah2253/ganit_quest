@@ -192,7 +192,7 @@ export default class AreasCircleScene extends Scene {
     this.radiusHandle.add([glow, handle]);
     this.tweens.add({ targets: glow, scale: 1.5, alpha: 0, duration: 1000, repeat: -1 });
     
-    this.radiusHandle.setSize(24, 24);
+    this.radiusHandle.setSize(44, 44);
     this.radiusHandle.setInteractive({ draggable: true, useHandCursor: true });
     this.input.setDraggable(this.radiusHandle);
     

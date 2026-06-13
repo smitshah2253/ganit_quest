@@ -7,16 +7,20 @@ interface BoardExamNotebookProps {
   boardExamInputs: string[];
   isSolved: boolean;
   onInputChange: (index: number, val: string) => void;
+  isMobilePortrait?: boolean;
 }
 
 export const BoardExamNotebook: React.FC<BoardExamNotebookProps> = ({
   boardExamLines,
   boardExamInputs,
   isSolved,
-  onInputChange
+  onInputChange,
+  isMobilePortrait = false
 }) => {
   return (
-    <div className="flex-1 flex flex-col min-h-0 space-y-2 sm:space-y-3">
+    <div className={`flex flex-col space-y-2 ${
+      isMobilePortrait ? 'flex-none' : 'flex-1 min-h-0 sm:space-y-3'
+    }`}>
       <h4 className={`text-[9px] sm:text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 shrink-0 ${
         isSolved ? 'text-emerald-600' : 'text-slate-450'
       }`}>
@@ -32,12 +36,16 @@ export const BoardExamNotebook: React.FC<BoardExamNotebookProps> = ({
       </h4>
       
       {/* Lined notebook container with vertical red margin */}
-      <div className={`flex-1 flex flex-col min-h-0 bg-[#fbfcfd] border rounded-2xl shadow-inner relative overflow-hidden ${
+      <div className={`flex flex-col bg-[#fbfcfd] border rounded-2xl shadow-inner relative ${
         isSolved ? 'border-emerald-200' : 'border-slate-200/80'
+      } ${
+        isMobilePortrait ? 'flex-none overflow-visible' : 'flex-1 min-h-0 overflow-hidden'
       }`}>
         <div className="absolute top-0 bottom-0 left-7 sm:left-9 w-px bg-red-200 z-0 pointer-events-none" />
         
-        <div className="flex-1 overflow-y-auto font-mono text-[11px] sm:text-[13px] leading-7 sm:leading-8 p-3 sm:p-4 relative z-10 select-text">
+        <div className={`font-mono text-[11px] sm:text-[13px] leading-7 sm:leading-8 p-3 sm:p-4 relative z-10 select-text ${
+          isMobilePortrait ? 'h-auto overflow-visible' : 'flex-1 overflow-y-auto'
+        }`}>
           {boardExamLines.map((line) => {
             if (!line.hasInput) {
               return (
@@ -63,14 +71,23 @@ export const BoardExamNotebook: React.FC<BoardExamNotebookProps> = ({
                 ) : (
                   <input
                     type="text"
+                    inputMode="decimal"
                     value={currentVal}
                     onChange={e => onInputChange(inputIdx, e.target.value)}
-                    className={`font-mono font-bold text-[10px] sm:text-[11px] px-1 sm:px-1.5 py-0.5 rounded-lg border-2 outline-none transition-all ${
+                    className={`font-mono font-bold px-2 py-1.5 sm:py-1 rounded-lg border-2 outline-none transition-all ${
                       currentVal 
                         ? 'border-blue-300 bg-blue-50 text-blue-700' 
                         : 'border-slate-200 bg-slate-50 text-slate-600'
                     }`}
-                    style={{ width: `${(line.widthChars || 6) * 8 + 12}px`, minWidth: '2.5ch' }}
+                    style={{ 
+                      fontSize: '16px', 
+                      width: `${(line.widthChars || 6) * 9 + 16}px`, 
+                      minWidth: '3.5ch',
+                      height: '32px',
+                      display: 'inline-block',
+                      verticalAlign: 'middle',
+                      margin: '2px 4px'
+                    }}
                     placeholder="?"
                   />
                 )}

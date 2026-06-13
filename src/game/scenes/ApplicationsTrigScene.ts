@@ -98,7 +98,7 @@ export class ApplicationsTrigScene extends Scene {
     const glow = this.add.circle(0, 0, 20, PRIMARY, 0.3);
 
     this.dragHandle = this.add.container(0, 0, [glow, handleCircle]);
-    this.dragHandle.setSize(24, 24);
+    this.dragHandle.setSize(44, 44);
     this.dragHandle.setInteractive({ useHandCursor: true });
     this.input.setDraggable(this.dragHandle);
 

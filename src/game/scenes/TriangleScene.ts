@@ -25,6 +25,7 @@ export class TriangleScene extends Scene {
 
     // Draggable handle (used for World 1 apex drag)
     private dragHandle!: GameObjects.Arc;
+    private dragHitZone!: GameObjects.Arc; // Mobile-optimized 40px hit zone
 
     // Live state
     private apexOffsetY: number = 0;       // World 1: how far apex is dragged (px)
@@ -76,7 +77,36 @@ export class TriangleScene extends Scene {
             .setStrokeStyle(3, 0xffffff)
             .setInteractive({ useHandCursor: true })
             .setVisible(false);
-        this.input.setDraggable(this.dragHandle);
+
+        // Create larger invisible hit zone for mobile (40px radius)
+        this.dragHitZone = this.add.circle(0, 0, 40, 0x000000, 0).setDepth(4).setVisible(false);
+        this.input.setDraggable(this.dragHitZone);
+
+        // Visual feedback for drag handle on hover
+        this.dragHitZone.on('pointerover', () => {
+            if (this.dragHandle.visible) {
+                (this.dragHandle as any).setScale(1.4);
+                (this.dragHandle as any).setStrokeStyle(4, 0xffeb3b);
+            }
+        });
+
+        this.dragHitZone.on('pointerout', () => {
+            if (this.dragHandle.visible) {
+                (this.dragHandle as any).setScale(1);
+                (this.dragHandle as any).setStrokeStyle(3, 0xffffff);
+            }
+        });
+
+        // Haptic feedback on drag
+        this.dragHitZone.on('dragstart', () => {
+            if ('vibrate' in navigator) {
+                try {
+                    navigator.vibrate(10);
+                } catch (e) {
+                    // Silently fail
+                }
+            }
+        });
 
         this.input.on('drag', (_ptr: any, _go: any, _dragX: number, dragY: number) => {
             this.onDrag(_dragX, dragY);
@@ -338,10 +368,14 @@ export class TriangleScene extends Scene {
 
         // Draggable apex for lvl-tri-01
         if (id === 'lvl-tri-01') {
-            this.dragHandle.setPosition(Ax + this.apexOffsetY * 0.1, Ay + this.apexOffsetY).setVisible(true);
+            const apexX = Ax + this.apexOffsetY * 0.1;
+            const apexY = Ay + this.apexOffsetY;
+            this.dragHandle.setPosition(apexX, apexY).setVisible(true);
+            this.dragHitZone.setPosition(apexX, apexY).setVisible(true);
             this.setLbl('drag_hint', '⬆ Drag apex to explore!', cx, Ay - 40, '#0891b2', '11px');
         } else {
             this.dragHandle.setVisible(false);
+            this.dragHitZone.setVisible(false);
         }
     }
 

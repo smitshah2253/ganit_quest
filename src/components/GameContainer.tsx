@@ -17,6 +17,9 @@ import { soundManager } from '../game/SoundManager';
 export const GameContainer: React.FC = () => {
   const { chapterId, levelId } = useParams<{ chapterId: string; levelId: string }>();
   const navigate = useNavigate();
+  const [canvasHeight, setCanvasHeight] = useState('280px');
+  const [isLandscape, setIsLandscape] = useState(window.innerWidth > window.innerHeight);
+  const [deviceBreakpoint, setDeviceBreakpoint] = useState<'mobile' | 'tablet' | 'desktop'>('mobile');
 
   const levelData = levels.find(l => l.id === levelId);
   const spec = levelData ? getLevelSpec(levelData.id, levelData) : null;
@@ -29,6 +32,63 @@ export const GameContainer: React.FC = () => {
   const [hintUsed, setHintUsed] = useState(false);
   const { addXp, addStars, unlockLevel, setCurrentLevel, completeLevel, syncProgress } = useGameStore();
   const { token } = useAuthStore();
+
+  // Responsive canvas height calculation with landscape/tablet detection
+  useEffect(() => {
+    const calculateCanvasHeight = () => {
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      const headerHeight = 56; // Header height in pixels
+      const controlsPadding = 24; // Padding around controls
+      const availableHeight = screenHeight - headerHeight - controlsPadding;
+      
+      // Detect orientation
+      const landscape = screenWidth > screenHeight;
+      setIsLandscape(landscape);
+
+      // Detect device breakpoint
+      let breakpoint: 'mobile' | 'tablet' | 'desktop' = 'mobile';
+      if (screenWidth >= 1024) {
+        breakpoint = 'desktop';
+      } else if (screenWidth >= 768) {
+        breakpoint = 'tablet';
+      }
+      setDeviceBreakpoint(breakpoint);
+
+      // Canvas height calculation based on device & orientation
+      if (breakpoint === 'mobile') {
+        const mobileCanvasHeight = landscape ? 
+          Math.max(availableHeight * 0.80, 300) :  // Landscape: 80% (full immersive)
+          Math.max(availableHeight * 0.55, 240);   // Portrait: 55% (room for controls)
+        setCanvasHeight(`${mobileCanvasHeight}px`);
+      } 
+      else if (breakpoint === 'tablet') {
+        if (landscape) {
+          // Tablet landscape: Side-by-side with 65% for canvas
+          setCanvasHeight(`${availableHeight}px`);
+        } else {
+          // Tablet portrait: Stacked with 60% height
+          setCanvasHeight(`${Math.max(availableHeight * 0.60, 350)}px`);
+        }
+      }
+      else {
+        // Desktop: Full height (handled by CSS)
+        setCanvasHeight('100%');
+      }
+
+      // Notify Phaser if orientation changed
+      EventBus.emit('device-orientation-changed', { isLandscape: landscape, breakpoint });
+    };
+
+    calculateCanvasHeight();
+    window.addEventListener('resize', calculateCanvasHeight);
+    window.addEventListener('orientationchange', calculateCanvasHeight);
+    
+    return () => {
+      window.removeEventListener('resize', calculateCanvasHeight);
+      window.removeEventListener('orientationchange', calculateCanvasHeight);
+    };
+  }, []);
 
   // Filter levels for the current chapter to handle progression
   const chapterLevels = levels.filter(level => {
@@ -119,6 +179,8 @@ export const GameContainer: React.FC = () => {
 
   if (!levelData || !spec) return <div className="text-white p-8">Level not found</div>;
 
+  const isSideBySide = deviceBreakpoint === 'desktop' || isLandscape;
+
   return (
     <div className="w-screen h-screen bg-[var(--color-bg)] flex flex-col overflow-hidden relative pt-16">
       
@@ -150,10 +212,10 @@ export const GameContainer: React.FC = () => {
       </div>
 
       {/* Main Content: Responsive Layout */}
-      <div className="flex flex-col md:flex-row flex-1 w-full p-3 md:p-6 gap-3 md:gap-6 overflow-y-auto md:overflow-hidden">
+      <div className={`flex ${isSideBySide ? 'flex-row overflow-hidden' : 'flex-col overflow-y-auto'} flex-1 w-full p-3 md:p-6 gap-3 md:gap-6`}>
         
-        {/* Left Side - Concept Panel (Full width on mobile, 40% on desktop) */}
-        <div className="w-full md:w-[40%] md:h-full flex flex-col order-2 md:order-1 min-h-0">
+        {/* Left Side - Concept Panel */}
+        <div className={`${isSideBySide ? (deviceBreakpoint === 'desktop' ? 'w-[40%]' : 'w-[35%]') + ' h-full order-1' : 'w-full h-auto order-2'} flex flex-col min-h-0 overflow-y-auto`}>
           <ConceptPanel 
             levelData={levelData} 
             onCheckAnswer={handleCheckAnswer}
@@ -161,11 +223,15 @@ export const GameContainer: React.FC = () => {
             onOpenBook={() => setShowConceptBook(true)}
             isSolved={isSolved}
             onNextLevel={handleNextLevel}
+            isMobilePortrait={!isSideBySide}
           />
         </div>
 
-        {/* Right Side - Animative UI (Phaser) (Full width on mobile, 60% on desktop) */}
-        <div className="w-full md:w-[60%] h-[220px] sm:h-[280px] md:h-full shrink-0 relative rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-slate-200 bg-[#ecf2f7] order-1 md:order-2">
+        {/* Right Side - Animative UI (Phaser) */}
+        <div 
+          className={`${isSideBySide ? (deviceBreakpoint === 'desktop' ? 'w-[60%]' : 'w-[65%]') + ' order-2' : 'w-full order-1'} shrink-0 relative rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-slate-200 bg-[#ecf2f7]`}
+          style={{ height: canvasHeight }}
+        >
           <PhaserGame currentLevelData={levelData} />
         </div>
 
