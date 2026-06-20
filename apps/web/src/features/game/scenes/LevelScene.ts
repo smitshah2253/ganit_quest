@@ -79,6 +79,7 @@ export class LevelScene extends BaseScene {
         if (levelData.id.startsWith('lvl-circle-')) { this.isLevelActive = false; this.scene.start('CircleScene'); return; }
         if (levelData.id.startsWith('lvl-areas-c-')) { this.isLevelActive = false; this.scene.start('AreasCircleScene'); return; }
         if (levelData.id.startsWith('lvl-stats-')) { this.isLevelActive = false; this.scene.start('StatisticsScene'); return; }
+        if (levelData.id.startsWith('lvl-rn-')) { this.isLevelActive = false; this.scene.start('RealNumbersScene'); return; }
         
         this.currentLevelData = levelData;
         this.levelSpec = getLevelSpec(levelData.id, levelData);

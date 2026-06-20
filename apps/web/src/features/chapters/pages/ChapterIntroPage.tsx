@@ -12,6 +12,20 @@ interface ChapterIntro {
 }
 
 const CHAPTER_INTROS: Record<string, ChapterIntro> = {
+  'ch-1': {
+    title: 'Real Numbers',
+    subtitle: 'Chapter 1 • Class X Mathematics',
+    description: 'Enter The Number Kingdom — an ancient mathematical civilization with futuristic technology. Discover the fundamental building blocks of mathematics through exploration, factorization puzzles, and number machines. Master prime numbers, the Euclid Division Algorithm, HCF/LCM, and decimal expansions.',
+    objectives: [
+      'Understand prime, composite, and co-prime numbers',
+      'Apply Euclid\'s Division Algorithm to find HCF',
+      'Master the Fundamental Theorem of Arithmetic',
+      'Calculate HCF and LCM using prime factorization',
+      'Classify numbers as rational, irrational, and analyze decimal expansions'
+    ],
+    examWeightage: '6 Marks (Standard & Basic)',
+    difficulty: 'Beginner'
+  },
   'ch-14': {
     title: 'Probability',
     subtitle: 'Chapter 14 • Class X Mathematics',

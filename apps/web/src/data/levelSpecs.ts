@@ -8,6 +8,7 @@ import trianglesSpecs from './specs/trianglesSpecs';
 import circleSpecs from './specs/circleSpecs';
 import areasCircleSpecs from './specs/areasCircleSpecs';
 import statisticsSpecs from './specs/statisticsSpecs';
+import realNumbersSpecs from './specs/realNumbersSpecs';
 
 export interface BookPage {
   title: string;
@@ -145,6 +146,7 @@ const specs: Record<string, LevelSpecification> = {
   ...circleSpecs,
   ...areasCircleSpecs,
   ...statisticsSpecs,
+  ...realNumbersSpecs,
 };
 
 export const getLevelSpec = (levelId: string, levelData?: any): LevelSpecification => {

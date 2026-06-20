@@ -11,10 +11,10 @@ export interface NCERTChapter {
 }
 
 export const NCERT_CHAPTERS: NCERTChapter[] = [
-  { id: "ch-1", number: 1, title: "Real Numbers", isUnlocked: false, conceptCount: "4 Subtopics" },
-  { id: "ch-2", number: 2, title: "Polynomials", isUnlocked: false, conceptCount: "3 Subtopics" },
-  { id: "ch-3", number: 3, title: "Pair of Linear Equations in Two Variables", isUnlocked: false, conceptCount: "4 Subtopics" },
-  { id: "ch-4", number: 4, title: "Quadratic Equations", isUnlocked: false, conceptCount: "3 Subtopics" },
+  { id: "ch-1", number: 1, title: "Real Numbers", isUnlocked: true, conceptCount: "30 Math Challenges" },
+  { id: "ch-2", number: 2, title: "Polynomials", isUnlocked: true, conceptCount: "3 Subtopics" },
+  { id: "ch-3", number: 3, title: "Pair of Linear Equations in Two Variables", isUnlocked: true, conceptCount: "4 Subtopics" },
+  { id: "ch-4", number: 4, title: "Quadratic Equations", isUnlocked: true, conceptCount: "3 Subtopics" },
   { id: "ch-5", number: 5, title: "Arithmetic Progressions", isUnlocked: true, conceptCount: "30 Math Challenges" },
   { id: "ch-6", number: 6, title: "Triangles", isUnlocked: true, conceptCount: "30 Math Challenges" },
   { id: "ch-7", number: 7, title: "Coordinate Geometry", isUnlocked: true, conceptCount: "30 Math Challenges" },

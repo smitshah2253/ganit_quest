@@ -10,6 +10,7 @@ import { TriangleScene } from '../scenes/TriangleScene';
 import { CircleScene } from '../scenes/CircleScene';
 import AreasCircleScene from '../scenes/AreasCircleScene';
 import { StatisticsScene } from '../scenes/StatisticsScene';
+import { RealNumbersScene } from '../scenes/RealNumbersScene';
 
 export const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -33,6 +34,7 @@ export const config: Phaser.Types.Core.GameConfig = {
         TriangleScene,
         CircleScene,
         AreasCircleScene,
-        StatisticsScene
+        StatisticsScene,
+        RealNumbersScene
     ]
 };

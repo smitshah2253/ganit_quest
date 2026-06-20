@@ -4,6 +4,11 @@ import { ArrowLeft, BookOpen } from 'lucide-react';
 import LevelGrid from '../components/LevelGrid';
 
 const CHAPTER_METADATA: Record<string, { title: string; syllabus: string; fullName: string }> = {
+  'ch-1': {
+    title: 'Real Numbers',
+    fullName: 'Chapter 1: Real Numbers',
+    syllabus: 'Syllabus: Prime & composite numbers, factor trees, Euclid\'s Division Lemma and Algorithm, Fundamental Theorem of Arithmetic, HCF and LCM, and irrational numbers. Restore the Number Kingdom to begin.'
+  },
   'ch-6': {
     title: 'Triangles',
     fullName: 'Chapter 6: Triangles',

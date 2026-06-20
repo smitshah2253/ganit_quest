@@ -6,6 +6,13 @@ import type { LevelData } from '@/data/levels';
 import { useGameStore } from '@/store/game.store';
 
 export const CHAPTER_WORLD_NAMES: Record<string, Record<number, string>> = {
+  'ch-1': {
+    1: "World 1: Factor Forest",
+    2: "World 2: Euclid's Temple",
+    3: "World 3: Prime Factorization Caverns",
+    4: "World 4: HCF & LCM Factory",
+    5: "World 5: Decimal Dimension"
+  },
   'ch-6': {
     1: "World 1: Triangle Foundations",
     2: "World 2: Similar Triangles",
@@ -88,6 +95,9 @@ export const LevelGrid: React.FC<LevelGridProps> = ({ chapterId }) => {
 
   // Filter levels by selected chapter
   const selectedLevels = levels.filter(level => {
+    if (chapterId === 'ch-1') {
+      return level.id.startsWith('lvl-rn-');
+    }
     if (chapterId === 'ch-6') {
       return level.id.startsWith('lvl-tri-');
     }
@@ -116,7 +126,7 @@ export const LevelGrid: React.FC<LevelGridProps> = ({ chapterId }) => {
       return level.id.startsWith('lvl-stats-');
     }
     if (chapterId === 'ch-12') {
-      return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-') && !level.id.startsWith('lvl-tri-') && !level.id.startsWith('lvl-circle-') && !level.id.startsWith('lvl-areas-c-') && !level.id.startsWith('lvl-stats-');
+      return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-') && !level.id.startsWith('lvl-tri-') && !level.id.startsWith('lvl-circle-') && !level.id.startsWith('lvl-areas-c-') && !level.id.startsWith('lvl-stats-') && !level.id.startsWith('lvl-rn-');
     }
     return false;
   });

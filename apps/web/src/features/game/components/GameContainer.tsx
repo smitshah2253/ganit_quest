@@ -92,6 +92,7 @@ export const GameContainer: React.FC = () => {
 
   // Filter levels for the current chapter to handle progression
   const chapterLevels = levels.filter(level => {
+    if (chapterId === 'ch-1') return level.id.startsWith('lvl-rn-');
     if (chapterId === 'ch-6') return level.id.startsWith('lvl-tri-');
     if (chapterId === 'ch-7') return level.id.startsWith('lvl-cg-');
     if (chapterId === 'ch-8') return level.id.startsWith('lvl-trig-');
@@ -101,7 +102,7 @@ export const GameContainer: React.FC = () => {
     if (chapterId === 'ch-10') return level.id.startsWith('lvl-circle-');
     if (chapterId === 'ch-11') return level.id.startsWith('lvl-areas-c-');
     if (chapterId === 'ch-13') return level.id.startsWith('lvl-stats-');
-    return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-apptrig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-') && !level.id.startsWith('lvl-tri-') && !level.id.startsWith('lvl-circle-') && !level.id.startsWith('lvl-areas-c-') && !level.id.startsWith('lvl-stats-');
+    return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-apptrig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-') && !level.id.startsWith('lvl-tri-') && !level.id.startsWith('lvl-circle-') && !level.id.startsWith('lvl-areas-c-') && !level.id.startsWith('lvl-stats-') && !level.id.startsWith('lvl-rn-');
   });
 
   useEffect(() => {
