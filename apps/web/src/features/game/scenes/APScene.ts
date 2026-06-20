@@ -245,7 +245,7 @@ export class APScene extends Scene {
 
             // Jump arc to next block (show +d)
             const next = items[i + 1];
-            if (next && next.kind !== 'ellipsis' && item.kind !== 'ellipsis') {
+            if (next && next.kind !== 'ellipsis') {
                 const arcLabel = aType === 'difference' ? '+d' : (d >= 0 ? `+${d}` : `${d}`);
                 const arcColor = d < 0 ? 0xef4444 : 0x3b82f6;
                 this.drawArc(cx, beltY - BLOCK_H / 2, STEP, arcColor, arcLabel, `arc_${i}`);

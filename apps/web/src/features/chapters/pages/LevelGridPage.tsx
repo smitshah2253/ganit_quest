@@ -9,6 +9,11 @@ const CHAPTER_METADATA: Record<string, { title: string; syllabus: string; fullNa
     fullName: 'Chapter 1: Real Numbers',
     syllabus: 'Syllabus: Prime & composite numbers, factor trees, Euclid\'s Division Lemma and Algorithm, Fundamental Theorem of Arithmetic, HCF and LCM, and irrational numbers. Restore the Number Kingdom to begin.'
   },
+  'ch-2': {
+    title: 'Polynomials',
+    fullName: 'Chapter 2: Polynomials',
+    syllabus: 'Syllabus: Polynomial basics, degrees, linear/quadratic/cubic polynomials, zeros of a polynomial, graphical intuition, and relationship between zeros and coefficients. Restore the Polynomial Factory to begin.'
+  },
   'ch-6': {
     title: 'Triangles',
     fullName: 'Chapter 6: Triangles',

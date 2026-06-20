@@ -18,6 +18,18 @@ interface LearnModule {
 }
 
 const CHAPTER_CONTENT: Record<string, { title: string; modules: LearnModule[] }> = {
+  'ch-2': {
+    title: 'Polynomials',
+    modules: [
+      {
+        id: 'poly-coming',
+        title: 'Coming Soon',
+        description: 'Interactive polynomial graphs and algebra generators',
+        component: <ComingSoon />,
+        isPremium: true
+      }
+    ]
+  },
   'ch-6': {
     title: 'Triangles',
     modules: [

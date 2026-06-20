@@ -1,0 +1,36 @@
+[
+  { "id": "lvl-poly-01", "world": 1, "type": "poly_basics", "title": "Activate Polynomial Machine", "shape": "machine_activate", "targetValue": 0, "concept": "Understanding what a polynomial expression is" },
+  { "id": "lvl-poly-02", "world": 1, "type": "poly_basics", "title": "Identify Machine Components", "shape": "term_identify", "targetValue": 0, "concept": "Identifying terms, coefficients, and variables in a polynomial" },
+  { "id": "lvl-poly-03", "world": 1, "type": "poly_basics", "title": "Build Polynomial Conveyor", "shape": "conveyor_build", "targetValue": 0, "concept": "Constructing a polynomial from individual terms" },
+  { "id": "lvl-poly-04", "world": 1, "type": "poly_basics", "title": "Sort Machines by Degree", "shape": "degree_sort", "targetValue": 0, "concept": "Determining the degree of a polynomial" },
+  { "id": "lvl-poly-05", "world": 1, "type": "poly_basics", "title": "Repair Polynomial Engine", "shape": "engine_repair", "targetValue": 0, "concept": "Fixing a polynomial by identifying missing terms" },
+  { "id": "lvl-poly-06", "world": 1, "type": "poly_basics", "title": "Factory Startup Challenge", "shape": "factory_startup", "targetValue": 0, "concept": "Comprehensive polynomial structure review" },
+
+  { "id": "lvl-poly-07", "world": 2, "type": "degree_control", "title": "Classify Reactors by Degree", "shape": "reactor_classify", "targetValue": 0, "concept": "Classifying polynomials as linear, quadratic, or cubic" },
+  { "id": "lvl-poly-08", "world": 2, "type": "degree_control", "title": "Upgrade Linear to Quadratic", "shape": "upgrade_machine", "targetValue": 0, "concept": "Understanding the difference between linear and quadratic polynomials" },
+  { "id": "lvl-poly-09", "world": 2, "type": "degree_control", "title": "Manage Cubic Generator", "shape": "cubic_generator", "targetValue": 0, "concept": "Understanding cubic polynomials and their structure" },
+  { "id": "lvl-poly-10", "world": 2, "type": "degree_control", "title": "Sort Reactors into Zones", "shape": "zone_sort", "targetValue": 0, "concept": "Sorting polynomials by degree into correct categories" },
+  { "id": "lvl-poly-11", "world": 2, "type": "degree_control", "title": "Balance Degree Machinery", "shape": "balance_degree", "targetValue": 0, "concept": "Matching polynomials of the same degree" },
+  { "id": "lvl-poly-12", "world": 2, "type": "degree_control", "title": "Timed Classification Mission", "shape": "classification_mission", "targetValue": 0, "concept": "Rapid polynomial type identification" },
+
+  { "id": "lvl-poly-13", "world": 3, "type": "zero_hunter", "title": "Find Energy Shutdown Points", "shape": "shutdown_find", "targetValue": 0, "concept": "Understanding what a zero of a polynomial means" },
+  { "id": "lvl-poly-14", "world": 3, "type": "zero_hunter", "title": "Locate Machine Root Positions", "shape": "root_locate", "targetValue": 0, "concept": "Finding zeros by evaluating the polynomial at different values" },
+  { "id": "lvl-poly-15", "world": 3, "type": "zero_hunter", "title": "Deactivate Reactor Using Zero", "shape": "reactor_deactivate", "targetValue": 0, "concept": "Using the zero of a linear polynomial to deactivate a system" },
+  { "id": "lvl-poly-16", "world": 3, "type": "zero_hunter", "title": "Unlock Vault with Roots", "shape": "vault_unlock", "targetValue": 0, "concept": "Finding both zeros of a quadratic polynomial" },
+  { "id": "lvl-poly-17", "world": 3, "type": "zero_hunter", "title": "Repair Graph Control System", "shape": "graph_repair", "targetValue": 0, "concept": "Understanding zeros as x-axis intersections on a graph" },
+  { "id": "lvl-poly-18", "world": 3, "type": "zero_hunter", "title": "Root-Finding Challenge Arena", "shape": "root_arena", "targetValue": 0, "concept": "Advanced zero-finding across multiple polynomial types" },
+
+  { "id": "lvl-poly-19", "world": 4, "type": "graph_reactor", "title": "Control Graph Energy Beam", "shape": "energy_beam", "targetValue": 0, "concept": "Understanding the graph of a linear polynomial" },
+  { "id": "lvl-poly-20", "world": 4, "type": "graph_reactor", "title": "Observe Polynomial Paths", "shape": "path_observe", "targetValue": 0, "concept": "Recognizing graph shapes of linear, quadratic, and cubic polynomials" },
+  { "id": "lvl-poly-21", "world": 4, "type": "graph_reactor", "title": "Guide Drone Along Trajectory", "shape": "drone_guide", "targetValue": 0, "concept": "Understanding the parabolic shape of quadratic polynomial graphs" },
+  { "id": "lvl-poly-22", "world": 4, "type": "graph_reactor", "title": "Repair Graph Navigation", "shape": "nav_repair", "targetValue": 0, "concept": "Predicting polynomial graph behavior between known points" },
+  { "id": "lvl-poly-23", "world": 4, "type": "graph_reactor", "title": "Predict Graph Intersections", "shape": "intersection_predict", "targetValue": 0, "concept": "Finding where polynomial graphs cross the x-axis" },
+  { "id": "lvl-poly-24", "world": 4, "type": "graph_reactor", "title": "Advanced Graph Puzzle", "shape": "graph_puzzle", "targetValue": 0, "concept": "Matching polynomial expressions to their graphs" },
+
+  { "id": "lvl-poly-25", "world": 5, "type": "coefficient_mastery", "title": "Construct Polynomial from Roots", "shape": "build_from_roots", "targetValue": 0, "concept": "Building a quadratic polynomial given its zeros" },
+  { "id": "lvl-poly-26", "world": 5, "type": "coefficient_mastery", "title": "Balance Coefficient Reactor", "shape": "coefficient_balance", "targetValue": 0, "concept": "Relationship between zeros and coefficients: sum and product" },
+  { "id": "lvl-poly-27", "world": 5, "type": "coefficient_mastery", "title": "Reverse-Engineer Settings", "shape": "reverse_engineer", "targetValue": 0, "concept": "Finding sum and product of zeros using -b/a and c/a" },
+  { "id": "lvl-poly-28", "world": 5, "type": "coefficient_mastery", "title": "Build Optimal Generator", "shape": "optimal_build", "targetValue": 0, "concept": "Forming a polynomial when sum and product of zeros are given" },
+  { "id": "lvl-poly-29", "world": 5, "type": "coefficient_mastery", "title": "Multi-Reactor Sync Puzzle", "shape": "multi_sync", "targetValue": 0, "concept": "Connecting zeros, coefficients, and graphs together" },
+  { "id": "lvl-poly-30", "world": 5, "type": "boss", "title": "FINAL BOSS: Central Polynomial Core", "shape": "boss_poly", "targetValue": 0, "concept": "Complete polynomial mastery: degree, types, zeros, graphs, and coefficients" }
+]

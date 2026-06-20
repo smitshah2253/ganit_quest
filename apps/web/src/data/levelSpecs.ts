@@ -9,6 +9,7 @@ import circleSpecs from './specs/circleSpecs';
 import areasCircleSpecs from './specs/areasCircleSpecs';
 import statisticsSpecs from './specs/statisticsSpecs';
 import realNumbersSpecs from './specs/realNumbersSpecs';
+import polynomialSpecs from './specs/polynomialSpecs';
 
 export interface BookPage {
   title: string;
@@ -119,6 +120,9 @@ export interface LevelSpecification {
   statsCategories?: string[];
   statsTargetMedian?: number;
   statsAnswerType?: 'value' | 'frequency' | 'interval' | 'median' | 'cumulative';
+  
+  // Allow arbitrary additional properties for specific modes (like polyMode, rnMode, etc.)
+  [key: string]: any;
 }
 
 const defaultBookPage = (title: string, shape: string, formula: string, inputName: string): BookPage => ({
@@ -147,6 +151,7 @@ const specs: Record<string, LevelSpecification> = {
   ...areasCircleSpecs,
   ...statisticsSpecs,
   ...realNumbersSpecs,
+  ...polynomialSpecs,
 };
 
 export const getLevelSpec = (levelId: string, levelData?: any): LevelSpecification => {

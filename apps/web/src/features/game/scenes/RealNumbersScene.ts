@@ -306,7 +306,7 @@ export class RealNumbersScene extends Scene {
         this.mainGfx.fillCircle(cx, lockY, 5);
 
         // Factor stones grid below gate
-        const factorsOf = [];
+        const factorsOf: number[] = [];
         for (let i = 1; i <= n; i++) { if (n % i === 0) factorsOf.push(i); }
         const candidates = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 24, 48];
         const gridCols = Math.min(6, candidates.length);
@@ -375,7 +375,7 @@ export class RealNumbersScene extends Scene {
 
         let primeCount = 0;
         const spacing = Math.min(40, (H - 120) / nums.length);
-        nums.forEach((n, idx) => {
+        nums.forEach((n: number, idx: number) => {
             const wobble = Math.sin((60 + idx * spacing) * 0.04) * 20;
             const bx = cx + wobble;
             const by = 65 + idx * spacing;
@@ -1673,7 +1673,7 @@ export class RealNumbersScene extends Scene {
             lcm = (lcm * nums[i]) / this.gcd(lcm, nums[i]);
         }
 
-        const rotations = nums.map(n => lcm / n);
+        const rotations = nums.map((n: number) => lcm / n);
         const infoY = gY + gR + 32;
         this.txt('gb_lcm', `LCM = ${lcm}`, cx, infoY, TEXT_GOLD, '14px', 0.5, 0);
         this.txt('gb_rot', `Rotations: A=${rotations[0]}, B=${rotations[1]}, C=${rotations[2]}`, cx, infoY + 18, TEXT_DARK, '9px', 0.5, 0);
@@ -1697,7 +1697,7 @@ export class RealNumbersScene extends Scene {
         const machineColors = [BLUE_LIGHT, EMERALD, PURPLE];
         const machineLabels = ['Machine A', 'Machine B', 'Machine C'];
 
-        nums.forEach((n, idx) => {
+        nums.forEach((n: number, idx: number) => {
             const mx = machineGap + idx * (machineW + machineGap);
             this.mainGfx.fillStyle(machineColors[idx], 0.15);
             this.mainGfx.fillRoundedRect(mx, machineY, machineW, machineH, 8);
@@ -1737,7 +1737,7 @@ export class RealNumbersScene extends Scene {
         const tScale = timeW / maxT;
         const rowH = timeH / 3;
 
-        nums.forEach((n, idx) => {
+        nums.forEach((n: number, idx: number) => {
             const ry = timeY + idx * rowH + rowH / 2;
             const colors = [BLUE_LIGHT, EMERALD, PURPLE];
             for (let m = n; m <= maxT; m += n) {

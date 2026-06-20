@@ -26,6 +26,8 @@ const generateAllLevels = (): string[] => {
   for (let i = 1; i <= 30; i++) levels.push(`lvl-circle-${i.toString().padStart(2, '0')}`)
   // Real Numbers (lvl-rn-01 to lvl-rn-30)
   for (let i = 1; i <= 30; i++) levels.push(`lvl-rn-${i.toString().padStart(2, '0')}`)
+  // Polynomials (lvl-poly-01 to lvl-poly-30)
+  for (let i = 1; i <= 30; i++) levels.push(`lvl-poly-${i.toString().padStart(2, '0')}`)
   return levels
 }
 
@@ -115,7 +117,7 @@ export const useGameStore = create<GameState>()(
     }),
     {
       name: 'ganitquest-game-store',
-      version: 4, // TEST MODE: Bump version to force reset and unlock all levels
+      version: 5, // TEST MODE: Bump version to force reset and unlock all levels
       partialize: (state) => ({
         xp: state.xp,
         stars: state.stars,

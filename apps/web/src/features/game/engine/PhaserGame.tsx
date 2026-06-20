@@ -137,13 +137,14 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
     const isProb  = currentLevelData.id.startsWith('lvl-prob-');
     const isTri   = currentLevelData.id.startsWith('lvl-tri-');
     const isRN    = currentLevelData.id.startsWith('lvl-rn-');
+    const isPoly  = currentLevelData.id.startsWith('lvl-poly-');
 
     let calculatedVal = 0;
     let targetVal = currentLevelData.targetValue;
     let matchStatus = 'awaiting_input';
     let accuracy = 0;
 
-    if (isCG || isTrig || isAppTrig || isAP || isProb || isTri) {
+    if (isCG || isTrig || isAppTrig || isAP || isProb || isTri || isPoly) {
         let activeVal: number | null = null;
         if (spec.boardExamLines) {
             const val = parseFloat(boardExamInputs[0]);
@@ -307,7 +308,7 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                         {/* Live Calculated Display */}
                         <div>
                             <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
-                                {isCG ? "Live Answer" : isAppTrig ? (spec.trigMode === 'angle' ? "Live Angle" : "Live Value") : isTrig ? (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity' ? "Live Angle" : "Live Ratio") : isAP ? "Live Answer" : isProb ? "Live Answer" : isRN ? "Live Answer" : "Live Volume"}
+                                {isCG ? "Live Answer" : isAppTrig ? (spec.trigMode === 'angle' ? "Live Angle" : "Live Value") : isTrig ? (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity' ? "Live Angle" : "Live Ratio") : isAP ? "Live Answer" : isProb ? "Live Answer" : isPoly ? "Live Answer" : isRN ? "Live Answer" : "Live Volume"}
                             </span>
                             <span className={`text-sm sm:text-base md:text-xl font-bold transition-colors duration-200 ${
                                 matchStatus === 'correct' 
@@ -321,7 +322,7 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                                 {matchStatus !== 'awaiting_input' ? calculatedVal.toLocaleString(undefined, {maximumFractionDigits: (isTrig || isAppTrig) && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? 1 : 2}) : '---'}
                             </span>
                             <span className="text-[7px] sm:text-[8px] md:text-[9px] font-semibold text-slate-400 block uppercase">
-                                {isCG ? "units" : isAppTrig ? (spec.trigMode === 'angle' ? "degrees" : "meters") : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "degrees" : "ratio") : isRN ? "units" : "units³"}
+                                {isCG ? "units" : isAppTrig ? (spec.trigMode === 'angle' ? "degrees" : "meters") : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "degrees" : "ratio") : isPoly ? "units" : isRN ? "units" : "units³"}
                             </span>
                         </div>
                     </div>

@@ -13,6 +13,13 @@ export const CHAPTER_WORLD_NAMES: Record<string, Record<number, string>> = {
     4: "World 4: HCF & LCM Factory",
     5: "World 5: Decimal Dimension"
   },
+  'ch-2': {
+    1: "World 1: Polynomial Factory Foundations",
+    2: "World 2: Degree Control Systems",
+    3: "World 3: Zero Hunters",
+    4: "World 4: Graph Reactor Lab",
+    5: "World 5: Coefficient Mastery Center"
+  },
   'ch-6': {
     1: "World 1: Triangle Foundations",
     2: "World 2: Similar Triangles",
@@ -97,6 +104,9 @@ export const LevelGrid: React.FC<LevelGridProps> = ({ chapterId }) => {
   const selectedLevels = levels.filter(level => {
     if (chapterId === 'ch-1') {
       return level.id.startsWith('lvl-rn-');
+    }
+    if (chapterId === 'ch-2') {
+      return level.id.startsWith('lvl-poly-');
     }
     if (chapterId === 'ch-6') {
       return level.id.startsWith('lvl-tri-');

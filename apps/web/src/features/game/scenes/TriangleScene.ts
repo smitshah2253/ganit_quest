@@ -267,13 +267,13 @@ export class TriangleScene extends Scene {
         if (id === 'lvl-tri-05') {
             this.drawTri(Bx, By, Cx, Cy, Ax, Ay, C_BLUE);
             this.drawTri(Bx, By, Cx, Cy, Bx, Ay, C_VIOLET);
-            this.lbl('B', Bx - 22, By + 12, C_BLUE.text, '13px');
-            this.lbl('C', Cx + 10, Cy + 12, C_BLUE.text, '13px');
-            this.lbl('A', Ax + 10, Ay - 6, C_BLUE.text, '13px');
-            this.lbl("A'", Bx - 28, Ay - 6, C_VIOLET.text, '13px');
-            this.lbl('6', (Bx + Cx) / 2, Cy + 18, '#374151', '12px');
-            this.lbl('8r', Cx + 14, (Cy + Ay) / 2, '#374151', '12px');
-            this.lbl('8l', Bx - 28, (By + Ay) / 2, '#374151', '12px');
+            this.lbl('B', 'B', Bx - 22, By + 12, C_BLUE.text, '13px');
+            this.lbl('C', 'C', Cx + 10, Cy + 12, C_BLUE.text, '13px');
+            this.lbl('A', 'A', Ax + 10, Ay - 6, C_BLUE.text, '13px');
+            this.lbl("A'", "A'", Bx - 28, Ay - 6, C_VIOLET.text, '13px');
+            this.lbl('6', '6', (Bx + Cx) / 2, Cy + 18, '#374151', '12px');
+            this.lbl('8r', '8r', Cx + 14, (Cy + Ay) / 2, '#374151', '12px');
+            this.lbl('8l', '8l', Bx - 28, (By + Ay) / 2, '#374151', '12px');
             // Working panel
             this.drawPanel(cx, H * 0.83, Math.min(300, W - 24), 38,
                 `P₁ = 6+8+10 = 24   |   P₂ = 6+8+10 = 24`, '#374151', '10px',
@@ -308,9 +308,9 @@ export class TriangleScene extends Scene {
         this.drawTri(Bx, By, Cx, Cy, Ax, Ay, C_BLUE);
         if (isRight) this.drawRightMark(Cx, Cy, -1, -1, 13);
 
-        this.lbl('A', Ax + 10, Ay - 8, C_BLUE.text, '14px');
-        this.lbl('B', Bx - 26, By + 10, C_BLUE.text, '14px');
-        this.lbl('C', Cx + 10, Cy + 10, C_BLUE.text, '14px');
+        this.lbl('A', 'A', Ax + 10, Ay - 8, C_BLUE.text, '14px');
+        this.lbl('B', 'B', Bx - 26, By + 10, C_BLUE.text, '14px');
+        this.lbl('C', 'C', Cx + 10, Cy + 10, C_BLUE.text, '14px');
 
         // Side labels with colored backgrounds
         const cStr = c === 0 ? '?' : String(c);
@@ -384,9 +384,9 @@ export class TriangleScene extends Scene {
         const rBy = midY + rH / 2, rAy = midY - rH / 2;
         this.drawTri(rBx, rBy, rCx, rBy, rCx, rAy, C_BLUE);
         this.drawRightMark(rCx, rBy, -1, -1, 11);
-        this.lbl('rA', rCx + 8, rAy - 6, C_BLUE.text, '12px');
-        this.lbl('rB', rBx - 22, rBy + 8, C_BLUE.text, '12px');
-        this.lbl('rC', rCx + 8, rBy + 8, C_BLUE.text, '12px');
+        this.lbl('rA', 'rA', rCx + 8, rAy - 6, C_BLUE.text, '12px');
+        this.lbl('rB', 'rB', rBx - 22, rBy + 8, C_BLUE.text, '12px');
+        this.lbl('rC', 'rC', rCx + 8, rBy + 8, C_BLUE.text, '12px');
         this.lblBox(`ra`, String(a1), (rBx + rCx) / 2, rBy + 16, C_BLUE);
         this.lblBox(`rb`, String(b1), rCx + 10, (rBy + rAy) / 2, C_BLUE);
         this.lblBox(`rc`, String(c1), (rBx + rCx) / 2 - 28, (rBy + rAy) / 2 - 8, C_BLUE);
@@ -403,9 +403,9 @@ export class TriangleScene extends Scene {
         const sBy = midY + sH / 2, sAy = midY - sH / 2;
         this.drawTri(sBx, sBy, sCx, sBy, sCx, sAy, C_VIOLET);
         this.drawRightMark(sCx, sBy, -1, -1, 11);
-        this.lbl('sD', sCx + 8, sAy - 6, C_VIOLET.text, '12px');
-        this.lbl('sE', sBx - 22, sBy + 8, C_VIOLET.text, '12px');
-        this.lbl('sF', sCx + 8, sBy + 8, C_VIOLET.text, '12px');
+        this.lbl('sD', 'sD', sCx + 8, sAy - 6, C_VIOLET.text, '12px');
+        this.lbl('sE', 'sE', sBx - 22, sBy + 8, C_VIOLET.text, '12px');
+        this.lbl('sF', 'sF', sCx + 8, sBy + 8, C_VIOLET.text, '12px');
         this.lblBox('sa2', (a1 * liveK).toFixed(1), (sBx + sCx) / 2, sBy + 16, C_VIOLET);
         this.lblBox('sb2', (b1 * liveK).toFixed(1), sCx + 10, (sBy + sAy) / 2, C_VIOLET);
         this.lblBox('sc2', (c1 * liveK).toFixed(1), (sBx + sCx) / 2 - 28, (sBy + sAy) / 2 - 8, C_VIOLET);
@@ -482,11 +482,11 @@ export class TriangleScene extends Scene {
         this.parallelTicks(Bx, By, Cx, Cy, 0x3b82f6);
 
         // Vertex labels
-        this.lbl('A3', Ax - 6, Ay - 22, C_BLUE.text, '14px');
-        this.lbl('B3', Bx - 26, By + 8, C_BLUE.text, '14px');
-        this.lbl('C3', Cx + 12, Cy + 8, C_BLUE.text, '14px');
-        this.lbl('D3', Dx - 28, Dy - 4, C_AMBER.text, '13px');
-        this.lbl('E3', Ex + 12, Ey - 4, C_AMBER.text, '13px');
+        this.lbl('A3', 'A3', Ax - 6, Ay - 22, C_BLUE.text, '14px');
+        this.lbl('B3', 'B3', Bx - 26, By + 8, C_BLUE.text, '14px');
+        this.lbl('C3', 'C3', Cx + 12, Cy + 8, C_BLUE.text, '14px');
+        this.lbl('D3', 'D3', Dx - 28, Dy - 4, C_AMBER.text, '13px');
+        this.lbl('E3', 'E3', Ex + 12, Ey - 4, C_AMBER.text, '13px');
 
         // Segment value labels (using colored boxes)
         this.lblBox('AD', `AD = ${adVal}`, (Ax + Dx) / 2 - 28, (Ay + Dy) / 2, C_BLUE);
@@ -546,9 +546,9 @@ export class TriangleScene extends Scene {
         const lA = { x: lCx, y: midY - bH / 2 };
 
         this.drawTri(lB.x, lB.y, lC.x, lC.y, lA.x, lA.y, C_BLUE);
-        this.lbl('A4', lA.x - 6, lA.y - 18, C_BLUE.text, '13px');
-        this.lbl('B4', lB.x - 22, lB.y + 8, C_BLUE.text, '13px');
-        this.lbl('C4', lC.x + 8, lC.y + 8, C_BLUE.text, '13px');
+        this.lbl('A4', 'A4', lA.x - 6, lA.y - 18, C_BLUE.text, '13px');
+        this.lbl('B4', 'B4', lB.x - 22, lB.y + 8, C_BLUE.text, '13px');
+        this.lbl('C4', 'C4', lC.x + 8, lC.y + 8, C_BLUE.text, '13px');
         this.lbl('AreaS', 'Area = S', lCx, lA.y - 36, C_BLUE.text, '10px', 0.5, 0.5);
 
         const rCx = W * 0.73;
@@ -559,9 +559,9 @@ export class TriangleScene extends Scene {
         const rA = { x: rCx, y: midY - r2H / 2 };
 
         this.drawTri(rB.x, rB.y, rC.x, rC.y, rA.x, rA.y, C_VIOLET);
-        this.lbl('D4', rA.x - 6, rA.y - 18, C_VIOLET.text, '13px');
-        this.lbl('E4', rB.x - 22, rB.y + 8, C_VIOLET.text, '13px');
-        this.lbl('F4', rC.x + 8, rC.y + 8, C_VIOLET.text, '13px');
+        this.lbl('D4', 'D4', rA.x - 6, rA.y - 18, C_VIOLET.text, '13px');
+        this.lbl('E4', 'E4', rB.x - 22, rB.y + 8, C_VIOLET.text, '13px');
+        this.lbl('F4', 'F4', rC.x + 8, rC.y + 8, C_VIOLET.text, '13px');
         this.lbl('AreaK', `Area = k²·S`, rCx, rA.y - 36, C_VIOLET.text, '10px', 0.5, 0.5);
 
         // Divider
@@ -625,9 +625,9 @@ export class TriangleScene extends Scene {
         this.drawTri(Bx, By, Cx, Cy, Ax, Ay, C_BLUE);
         this.drawRightMark(Cx, Cy, -1, -1, 14);
 
-        this.lbl('A5', Ax + 10, Ay - 10, C_BLUE.text, '14px');
-        this.lbl('B5', Bx - 26, By + 8, C_BLUE.text, '14px');
-        this.lbl('C5', Cx + 10, Cy + 10, C_BLUE.text, '14px');
+        this.lbl('A5', 'A5', Ax + 10, Ay - 10, C_BLUE.text, '14px');
+        this.lbl('B5', 'B5', Bx - 26, By + 8, C_BLUE.text, '14px');
+        this.lbl('C5', 'C5', Cx + 10, Cy + 10, C_BLUE.text, '14px');
 
         const liveHyp = this.currentVal > 0 ? this.currentVal : hyp;
         const correct = Math.abs(liveHyp - hyp) < 0.5;

@@ -26,6 +26,20 @@ const CHAPTER_INTROS: Record<string, ChapterIntro> = {
     examWeightage: '6 Marks (Standard & Basic)',
     difficulty: 'Beginner'
   },
+  'ch-2': {
+    title: 'Polynomials',
+    subtitle: 'Chapter 2 • Class X Mathematics',
+    description: 'Enter The Polynomial Factory — a futuristic facility powered by algebraic equations. Discover the behavior of linear, quadratic, and cubic polynomials. Master coefficients, degrees, zeros, and the intricate relationships that govern their graphical and algebraic forms.',
+    objectives: [
+      'Identify polynomials and their degrees, coefficients, and types',
+      'Find the zeros of linear, quadratic, and cubic polynomials',
+      'Understand the geometrical meaning of zeros (x-intercepts)',
+      'Relate the zeros of a polynomial to its coefficients (sum & product)',
+      'Construct polynomials given their zeros or sum/product relationships'
+    ],
+    examWeightage: '4 Marks (Standard & Basic)',
+    difficulty: 'Intermediate'
+  },
   'ch-14': {
     title: 'Probability',
     subtitle: 'Chapter 14 • Class X Mathematics',

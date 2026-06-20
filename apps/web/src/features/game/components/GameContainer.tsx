@@ -93,6 +93,7 @@ export const GameContainer: React.FC = () => {
   // Filter levels for the current chapter to handle progression
   const chapterLevels = levels.filter(level => {
     if (chapterId === 'ch-1') return level.id.startsWith('lvl-rn-');
+    if (chapterId === 'ch-2') return level.id.startsWith('lvl-poly-');
     if (chapterId === 'ch-6') return level.id.startsWith('lvl-tri-');
     if (chapterId === 'ch-7') return level.id.startsWith('lvl-cg-');
     if (chapterId === 'ch-8') return level.id.startsWith('lvl-trig-');
