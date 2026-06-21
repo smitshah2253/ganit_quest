@@ -139,13 +139,14 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
     const isRN = currentLevelData.id.startsWith('lvl-rn-');
     const isPoly = currentLevelData.id.startsWith('lvl-poly-');
     const isLE = currentLevelData.id.startsWith('lvl-le-');
+    const isQE = currentLevelData.id.startsWith('lvl-qe-');
 
     let calculatedVal = 0;
     let targetVal = currentLevelData.targetValue;
     let matchStatus = 'awaiting_input';
     let accuracy = 0;
 
-    if (isCG || isTrig || isAppTrig || isAP || isProb || isTri || isPoly || isLE) {
+    if (isCG || isTrig || isAppTrig || isAP || isProb || isTri || isPoly || isLE || isQE) {
         let activeVal: number | null = null;
         if (spec.boardExamLines) {
             const val = parseFloat(boardExamInputs[0]);
@@ -297,8 +298,8 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                 <div className="bg-white/80 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-2 md:px-5 md:py-3 rounded-lg sm:rounded-xl md:rounded-2xl border border-slate-200/80 shadow-md flex items-center gap-1.5 sm:gap-2 md:gap-3">
                     <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-blue-500 animate-pulse" />
                     <div>
-                        <span className="text-[7px] sm:text-[8px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block leading-tight">interactive model</span>
-                        <span className="text-[10px] sm:text-xs md:text-sm font-bold text-slate-800 uppercase tracking-wider">{currentLevelData.shape}</span>
+                        <span className="text-[7px] sm:text-[8px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block leading-tight">{isLE || isQE ? 'mission type' : 'interactive model'}</span>
+                        <span className="text-[10px] sm:text-xs md:text-sm font-bold text-slate-800 uppercase tracking-wider">{currentLevelData.shape.replace(/_/g, ' ')}</span>
                     </div>
                 </div>
 
@@ -309,7 +310,7 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                         {/* Live Calculated Display */}
                         <div>
                             <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
-                                {isCG ? "Live Answer" : isAppTrig ? (spec.trigMode === 'angle' ? "Live Angle" : "Live Value") : isTrig ? (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity' ? "Live Angle" : "Live Ratio") : isAP ? "Live Answer" : isProb ? "Live Answer" : isPoly ? "Live Answer" : isLE ? "Live Answer" : isRN ? "Live Answer" : "Live Volume"}
+                                {isCG ? "Live Answer" : isAppTrig ? (spec.trigMode === 'angle' ? "Live Angle" : "Live Value") : isTrig ? (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity' ? "Live Angle" : "Live Ratio") : isAP ? "Live Answer" : isProb ? "Live Answer" : isPoly ? "Live Answer" : isLE ? "Live Answer" : isQE ? "Live Answer" : isRN ? "Live Answer" : "Live Volume"}
                             </span>
                             <span className={`text-sm sm:text-base md:text-xl font-bold transition-colors duration-200 ${matchStatus === 'correct'
                                     ? 'text-emerald-600'

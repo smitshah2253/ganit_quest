@@ -82,6 +82,7 @@ export class LevelScene extends BaseScene {
         if (levelData.id.startsWith('lvl-rn-')) { this.isLevelActive = false; this.scene.start('RealNumbersScene'); return; }
         if (levelData.id.startsWith('lvl-poly-')) { this.isLevelActive = false; this.scene.start('PolynomialScene'); return; }
         if (levelData.id.startsWith('lvl-le-')) { this.isLevelActive = false; this.scene.start('LinearEquationsScene'); return; }
+        if (levelData.id.startsWith('lvl-qe-')) { this.isLevelActive = false; this.scene.start('QuadraticEquationsScene'); return; }
         
         this.currentLevelData = levelData;
         this.levelSpec = getLevelSpec(levelData.id, levelData);

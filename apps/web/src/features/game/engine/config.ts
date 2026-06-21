@@ -13,6 +13,7 @@ import { StatisticsScene } from '../scenes/StatisticsScene';
 import { RealNumbersScene } from '../scenes/RealNumbersScene';
 import { PolynomialScene } from '../scenes/PolynomialScene';
 import { LinearEquationsScene } from '../scenes/LinearEquationsScene';
+import { QuadraticEquationsScene } from '../scenes/QuadraticEquationsScene';
 
 export const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -39,6 +40,7 @@ export const config: Phaser.Types.Core.GameConfig = {
         StatisticsScene,
         RealNumbersScene,
         PolynomialScene,
-        LinearEquationsScene
+        LinearEquationsScene,
+        QuadraticEquationsScene
     ]
 };

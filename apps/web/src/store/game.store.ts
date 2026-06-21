@@ -30,6 +30,8 @@ const generateAllLevels = (): string[] => {
   for (let i = 1; i <= 30; i++) levels.push(`lvl-poly-${i.toString().padStart(2, '0')}`)
   // Pair of Linear Equations in Two Variables (lvl-le-01 to lvl-le-30)
   for (let i = 1; i <= 30; i++) levels.push(`lvl-le-${i.toString().padStart(2, '0')}`)
+  // Quadratic Equations (lvl-qe-01 to lvl-qe-30)
+  for (let i = 1; i <= 30; i++) levels.push(`lvl-qe-${i.toString().padStart(2, '0')}`)
   return levels
 }
 
@@ -62,23 +64,21 @@ export const useGameStore = create<GameState>()(
       completedLevels: [],
       isSyncing: false,
 
-      addXp: (amount) => set((state) => ({ xp: Math.max(0, state.xp + amount) })),
+      addXp: (amount) => set((state) => ({ xp: state.xp + amount })),
       addStars: (amount) => set((state) => ({ stars: state.stars + amount })),
       setCurrentLevel: (levelId) => set({ currentLevelId: levelId }),
 
-      unlockLevel: (levelId) => set((state) => {
-        if (!state.unlockedLevels.includes(levelId)) {
-          return { unlockedLevels: [...state.unlockedLevels, levelId] }
-        }
-        return state
-      }),
+      unlockLevel: (levelId) => set((state) => ({
+        unlockedLevels: state.unlockedLevels.includes(levelId) 
+          ? state.unlockedLevels 
+          : [...state.unlockedLevels, levelId]
+      })),
 
-      completeLevel: (levelId) => set((state) => {
-        if (!state.completedLevels.includes(levelId)) {
-          return { completedLevels: [...state.completedLevels, levelId] }
-        }
-        return state
-      }),
+      completeLevel: (levelId) => set((state) => ({
+        completedLevels: state.completedLevels.includes(levelId)
+          ? state.completedLevels
+          : [...state.completedLevels, levelId]
+      })),
 
       loadProgress: (progress) => set((state) => ({
         xp: progress.xp > 0 ? progress.xp : state.xp,
@@ -92,10 +92,9 @@ export const useGameStore = create<GameState>()(
       })),
 
       syncProgress: async (token: string) => {
-        if (get().isSyncing) return
+        const { xp, stars, completedLevels, unlockedLevels } = get()
         set({ isSyncing: true })
         try {
-          const { xp, stars, completedLevels, unlockedLevels } = get()
           await axios.post(
             `${API_URL}/progress/sync`,
             { xp, stars, completedLevels, unlockedLevels },
@@ -119,7 +118,7 @@ export const useGameStore = create<GameState>()(
     }),
     {
       name: 'ganitquest-game-store',
-      version: 6, // TEST MODE: Bump version to force reset and unlock all levels
+      version: 7, // TEST MODE: Bump version to force reset and unlock all levels
       partialize: (state) => ({
         xp: state.xp,
         stars: state.stars,

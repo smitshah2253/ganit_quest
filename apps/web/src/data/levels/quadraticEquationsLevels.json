@@ -1,0 +1,36 @@
+[
+  { "id": "lvl-qe-01", "world": 1, "type": "quadratic", "title": "Identify Standard Form", "shape": "parabola", "targetValue": 1, "concept": "Identify a, b, c in ax² + bx + c = 0" },
+  { "id": "lvl-qe-02", "world": 1, "type": "quadratic", "title": "Missing Coefficient", "shape": "parabola", "targetValue": 2, "concept": "Find the missing coefficient to complete the standard form" },
+  { "id": "lvl-qe-03", "world": 1, "type": "quadratic", "title": "Evaluate Expression", "shape": "parabola", "targetValue": 3, "concept": "Evaluate ax² + bx + c for a given x" },
+  { "id": "lvl-qe-04", "world": 1, "type": "quadratic", "title": "Determine if Quadratic", "shape": "parabola", "targetValue": 4, "concept": "Verify if a given equation is quadratic (a ≠ 0)" },
+  { "id": "lvl-qe-05", "world": 1, "type": "quadratic", "title": "Root Verification", "shape": "parabola", "targetValue": 5, "concept": "Verify if a given value is a root of the equation" },
+  { "id": "lvl-qe-06", "world": 1, "type": "quadratic", "title": "Find the Other Root", "shape": "parabola", "targetValue": 6, "concept": "Given one root, find the other root" },
+  
+  { "id": "lvl-qe-07", "world": 2, "type": "quadratic", "title": "Factoring Basics", "shape": "area_model", "targetValue": 7, "concept": "Factor out the greatest common binomial" },
+  { "id": "lvl-qe-08", "world": 2, "type": "quadratic", "title": "Splitting the Middle Term 1", "shape": "area_model", "targetValue": 8, "concept": "Factor x² + bx + c" },
+  { "id": "lvl-qe-09", "world": 2, "type": "quadratic", "title": "Splitting the Middle Term 2", "shape": "area_model", "targetValue": 9, "concept": "Factor ax² + bx + c where a > 1" },
+  { "id": "lvl-qe-10", "world": 2, "type": "quadratic", "title": "Difference of Squares", "shape": "area_model", "targetValue": 10, "concept": "Solve using a² - b² = (a-b)(a+b)" },
+  { "id": "lvl-qe-11", "world": 2, "type": "quadratic", "title": "Perfect Square Trinomial", "shape": "area_model", "targetValue": 11, "concept": "Solve using (a±b)²" },
+  { "id": "lvl-qe-12", "world": 2, "type": "quadratic", "title": "Factoring Challenge", "shape": "area_model", "targetValue": 12, "concept": "Mixed factoring word problem" },
+
+  { "id": "lvl-qe-13", "world": 3, "type": "quadratic", "title": "Visualizing the Square", "shape": "completing_square", "targetValue": 13, "concept": "Find the constant to make a perfect square" },
+  { "id": "lvl-qe-14", "world": 3, "type": "quadratic", "title": "Complete the Square 1", "shape": "completing_square", "targetValue": 14, "concept": "Solve x² + bx = c by completing the square" },
+  { "id": "lvl-qe-15", "world": 3, "type": "quadratic", "title": "Complete the Square 2", "shape": "completing_square", "targetValue": 15, "concept": "Solve ax² + bx = c where a > 1" },
+  { "id": "lvl-qe-16", "world": 3, "type": "quadratic", "title": "Vertex Form Conversion", "shape": "completing_square", "targetValue": 16, "concept": "Convert standard form to vertex form" },
+  { "id": "lvl-qe-17", "world": 3, "type": "quadratic", "title": "Finding the Vertex", "shape": "completing_square", "targetValue": 17, "concept": "Identify the turning point (vertex) of the parabola" },
+  { "id": "lvl-qe-18", "world": 3, "type": "quadratic", "title": "Maximum Height", "shape": "completing_square", "targetValue": 18, "concept": "Apply vertex form to find the maximum height" },
+
+  { "id": "lvl-qe-19", "world": 4, "type": "quadratic", "title": "The Discriminant", "shape": "roots", "targetValue": 19, "concept": "Calculate b² - 4ac" },
+  { "id": "lvl-qe-20", "world": 4, "type": "quadratic", "title": "Nature of Roots: Two Real", "shape": "roots", "targetValue": 20, "concept": "Discriminant > 0" },
+  { "id": "lvl-qe-21", "world": 4, "type": "quadratic", "title": "Nature of Roots: One Real", "shape": "roots", "targetValue": 21, "concept": "Discriminant = 0" },
+  { "id": "lvl-qe-22", "world": 4, "type": "quadratic", "title": "Nature of Roots: No Real", "shape": "roots", "targetValue": 22, "concept": "Discriminant < 0" },
+  { "id": "lvl-qe-23", "world": 4, "type": "quadratic", "title": "Quadratic Formula 1", "shape": "roots", "targetValue": 23, "concept": "Apply formula to find positive root" },
+  { "id": "lvl-qe-24", "world": 4, "type": "quadratic", "title": "Quadratic Formula 2", "shape": "roots", "targetValue": 24, "concept": "Apply formula for complex fractions" },
+
+  { "id": "lvl-qe-25", "world": 5, "type": "quadratic", "title": "Projectile Motion", "shape": "projectile", "targetValue": 25, "concept": "Calculate time to hit the ground" },
+  { "id": "lvl-qe-26", "world": 5, "type": "quadratic", "title": "Area of a Rectangle", "shape": "area_problem", "targetValue": 26, "concept": "Solve for dimensions given perimeter and area" },
+  { "id": "lvl-qe-27", "world": 5, "type": "quadratic", "title": "Speed and Distance 1", "shape": "word_problem", "targetValue": 27, "concept": "Upstream/downstream speed problems" },
+  { "id": "lvl-qe-28", "world": 5, "type": "quadratic", "title": "Speed and Distance 2", "shape": "word_problem", "targetValue": 28, "concept": "Train speed equations" },
+  { "id": "lvl-qe-29", "world": 5, "type": "quadratic", "title": "Work and Time", "shape": "word_problem", "targetValue": 29, "concept": "Solve pipes filling a tank" },
+  { "id": "lvl-qe-30", "world": 5, "type": "quadratic", "title": "The Golden Ratio", "shape": "area_problem", "targetValue": 30, "concept": "Advanced application of quadratic roots" }
+]
