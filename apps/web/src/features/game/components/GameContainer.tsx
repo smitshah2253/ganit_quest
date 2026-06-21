@@ -94,6 +94,7 @@ export const GameContainer: React.FC = () => {
   const chapterLevels = levels.filter(level => {
     if (chapterId === 'ch-1') return level.id.startsWith('lvl-rn-');
     if (chapterId === 'ch-2') return level.id.startsWith('lvl-poly-');
+    if (chapterId === 'ch-3') return level.id.startsWith('lvl-le-');
     if (chapterId === 'ch-6') return level.id.startsWith('lvl-tri-');
     if (chapterId === 'ch-7') return level.id.startsWith('lvl-cg-');
     if (chapterId === 'ch-8') return level.id.startsWith('lvl-trig-');
@@ -103,7 +104,7 @@ export const GameContainer: React.FC = () => {
     if (chapterId === 'ch-10') return level.id.startsWith('lvl-circle-');
     if (chapterId === 'ch-11') return level.id.startsWith('lvl-areas-c-');
     if (chapterId === 'ch-13') return level.id.startsWith('lvl-stats-');
-    return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-apptrig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-') && !level.id.startsWith('lvl-tri-') && !level.id.startsWith('lvl-circle-') && !level.id.startsWith('lvl-areas-c-') && !level.id.startsWith('lvl-stats-') && !level.id.startsWith('lvl-rn-');
+    return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-apptrig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-') && !level.id.startsWith('lvl-tri-') && !level.id.startsWith('lvl-circle-') && !level.id.startsWith('lvl-areas-c-') && !level.id.startsWith('lvl-stats-') && !level.id.startsWith('lvl-rn-') && !level.id.startsWith('lvl-poly-') && !level.id.startsWith('lvl-le-');
   });
 
   useEffect(() => {

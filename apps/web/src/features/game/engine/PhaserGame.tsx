@@ -120,7 +120,7 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
 
         EventBus.on('user-input-changed', handleLiveInput);
         EventBus.on('board-exam-input-changed', handleBoardExamLiveInput);
-        
+
         return () => {
             EventBus.off('user-input-changed', handleLiveInput);
             EventBus.off('board-exam-input-changed', handleBoardExamLiveInput);
@@ -133,18 +133,19 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
     const isCG = currentLevelData.id.startsWith('lvl-cg-');
     const isTrig = currentLevelData.id.startsWith('lvl-trig-');
     const isAppTrig = currentLevelData.id.startsWith('lvl-apptrig-');
-    const isAP   = currentLevelData.id.startsWith('lvl-ap-');
-    const isProb  = currentLevelData.id.startsWith('lvl-prob-');
-    const isTri   = currentLevelData.id.startsWith('lvl-tri-');
-    const isRN    = currentLevelData.id.startsWith('lvl-rn-');
-    const isPoly  = currentLevelData.id.startsWith('lvl-poly-');
+    const isAP = currentLevelData.id.startsWith('lvl-ap-');
+    const isProb = currentLevelData.id.startsWith('lvl-prob-');
+    const isTri = currentLevelData.id.startsWith('lvl-tri-');
+    const isRN = currentLevelData.id.startsWith('lvl-rn-');
+    const isPoly = currentLevelData.id.startsWith('lvl-poly-');
+    const isLE = currentLevelData.id.startsWith('lvl-le-');
 
     let calculatedVal = 0;
     let targetVal = currentLevelData.targetValue;
     let matchStatus = 'awaiting_input';
     let accuracy = 0;
 
-    if (isCG || isTrig || isAppTrig || isAP || isProb || isTri || isPoly) {
+    if (isCG || isTrig || isAppTrig || isAP || isProb || isTri || isPoly || isLE) {
         let activeVal: number | null = null;
         if (spec.boardExamLines) {
             const val = parseFloat(boardExamInputs[0]);
@@ -166,7 +167,7 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
             } else {
                 matchStatus = 'too_big';
             }
-            
+
             if (matchStatus === 'correct') {
                 accuracy = 100;
             } else {
@@ -291,7 +292,7 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
 
             {/* REAL-TIME PREMIUM HUD OVERLAY */}
             <div className="absolute inset-x-0 top-0 p-2 sm:p-3 md:p-6 flex justify-between items-start pointer-events-none z-10 select-none">
-                
+
                 {/* Shape title badge */}
                 <div className="bg-white/80 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-2 md:px-5 md:py-3 rounded-lg sm:rounded-xl md:rounded-2xl border border-slate-200/80 shadow-md flex items-center gap-1.5 sm:gap-2 md:gap-3">
                     <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-blue-500 animate-pulse" />
@@ -304,40 +305,38 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                 {/* Live Answer Display - hidden on very small screens */}
                 <div className="flex flex-col gap-1.5 sm:gap-2 md:gap-3 items-end">
                     <div className="hidden sm:flex bg-white/80 backdrop-blur-md px-3 py-2.5 sm:px-4 sm:py-3 md:px-5 md:py-4.5 rounded-xl md:rounded-2xl border border-slate-200/80 shadow-md">
-                        
+
                         {/* Live Calculated Display */}
                         <div>
                             <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
-                                {isCG ? "Live Answer" : isAppTrig ? (spec.trigMode === 'angle' ? "Live Angle" : "Live Value") : isTrig ? (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity' ? "Live Angle" : "Live Ratio") : isAP ? "Live Answer" : isProb ? "Live Answer" : isPoly ? "Live Answer" : isRN ? "Live Answer" : "Live Volume"}
+                                {isCG ? "Live Answer" : isAppTrig ? (spec.trigMode === 'angle' ? "Live Angle" : "Live Value") : isTrig ? (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity' ? "Live Angle" : "Live Ratio") : isAP ? "Live Answer" : isProb ? "Live Answer" : isPoly ? "Live Answer" : isLE ? "Live Answer" : isRN ? "Live Answer" : "Live Volume"}
                             </span>
-                            <span className={`text-sm sm:text-base md:text-xl font-bold transition-colors duration-200 ${
-                                matchStatus === 'correct' 
-                                    ? 'text-emerald-600' 
-                                    : matchStatus === 'too_big' 
-                                    ? 'text-rose-600' 
-                                    : matchStatus !== 'awaiting_input'
-                                    ? 'text-amber-600' 
-                                    : 'text-slate-400'
-                            }`}>
-                                {matchStatus !== 'awaiting_input' ? calculatedVal.toLocaleString(undefined, {maximumFractionDigits: (isTrig || isAppTrig) && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? 1 : 2}) : '---'}
+                            <span className={`text-sm sm:text-base md:text-xl font-bold transition-colors duration-200 ${matchStatus === 'correct'
+                                    ? 'text-emerald-600'
+                                    : matchStatus === 'too_big'
+                                        ? 'text-rose-600'
+                                        : matchStatus !== 'awaiting_input'
+                                            ? 'text-amber-600'
+                                            : 'text-slate-400'
+                                }`}>
+                                {matchStatus !== 'awaiting_input' ? calculatedVal.toLocaleString(undefined, { maximumFractionDigits: (isTrig || isAppTrig) && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? 1 : 2 }) : '---'}
                             </span>
                             <span className="text-[7px] sm:text-[8px] md:text-[9px] font-semibold text-slate-400 block uppercase">
-                                {isCG ? "units" : isAppTrig ? (spec.trigMode === 'angle' ? "degrees" : "meters") : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "degrees" : "ratio") : isPoly ? "units" : isRN ? "units" : "units³"}
+                                {isCG ? "units" : isAppTrig ? (spec.trigMode === 'angle' ? "degrees" : "meters") : isTrig ? (isTrig && (spec.trigMode === 'angle' || spec.trigMode === 'complementary' || spec.trigMode === 'identity') ? "degrees" : "ratio") : isPoly ? "units" : isLE ? "units" : isRN ? "units" : "units³"}
                             </span>
                         </div>
                     </div>
 
                     {/* Compact mobile-only status indicator */}
-                    <div className={`sm:hidden bg-white/80 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200/80 shadow-sm text-[9px] font-bold uppercase tracking-wider ${
-                        matchStatus === 'correct' ? 'text-emerald-600' : matchStatus === 'too_big' ? 'text-rose-600' : matchStatus === 'too_small' ? 'text-amber-600' : 'text-slate-400'
-                    }`}>
-                        {matchStatus !== 'awaiting_input' ? calculatedVal.toLocaleString(undefined, {maximumFractionDigits: 2}) : '---'}
+                    <div className={`sm:hidden bg-white/80 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200/80 shadow-sm text-[9px] font-bold uppercase tracking-wider ${matchStatus === 'correct' ? 'text-emerald-600' : matchStatus === 'too_big' ? 'text-rose-600' : matchStatus === 'too_small' ? 'text-amber-600' : 'text-slate-400'
+                        }`}>
+                        {matchStatus !== 'awaiting_input' ? calculatedVal.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '---'}
                     </div>
 
                     {/* Live Match State Badge - hidden on mobile */}
                     <AnimatePresence mode="wait">
                         {matchStatus === 'correct' && (
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, scale: 0.8, y: -10 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.8, y: -10 }}
@@ -348,7 +347,7 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                             </motion.div>
                         )}
                         {matchStatus === 'too_small' && (
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, scale: 0.8, y: -10 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.8, y: -10 }}
@@ -359,7 +358,7 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                             </motion.div>
                         )}
                         {matchStatus === 'too_big' && (
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, scale: 0.8, y: -10 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.8, y: -10 }}
@@ -379,7 +378,7 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                     <div className="bg-slate-50 p-1 sm:p-1.5 md:p-2 rounded-lg sm:rounded-xl border border-slate-200 text-blue-600 shrink-0 shadow-sm">
                         <Crosshair className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4.5 md:h-4.5" />
                     </div>
-                    
+
                     <div className="flex-1 space-y-0.5 sm:space-y-1">
                         <div className="flex justify-between items-center text-[8px] sm:text-[9px] md:text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
                             <span>accuracy</span>
@@ -387,15 +386,14 @@ export const PhaserGame: React.FC<PhaserGameProps> = ({ currentLevelData }) => {
                                 {accuracy}%
                             </span>
                         </div>
-                        
+
                         <div className="w-full bg-slate-100 rounded-full h-1.5 sm:h-2 md:h-2.5 border border-slate-200 overflow-hidden p-0.5">
-                            <motion.div 
-                                className={`h-full rounded-full ${
-                                    matchStatus === 'correct' 
-                                        ? 'bg-gradient-to-r from-emerald-500 to-teal-400 shadow-lg shadow-emerald-400/50' 
-                                        : matchStatus === 'too_big' 
-                                        ? 'bg-gradient-to-r from-rose-500 to-orange-400' 
-                                        : 'bg-gradient-to-r from-blue-500 to-sky-400'
+                            <motion.div
+                                className={`h-full rounded-full ${matchStatus === 'correct'
+                                        ? 'bg-gradient-to-r from-emerald-500 to-teal-400 shadow-lg shadow-emerald-400/50'
+                                        : matchStatus === 'too_big'
+                                            ? 'bg-gradient-to-r from-rose-500 to-orange-400'
+                                            : 'bg-gradient-to-r from-blue-500 to-sky-400'
                                     }`}
                                 initial={{ width: 0 }}
                                 animate={{ width: `${accuracy}%` }}

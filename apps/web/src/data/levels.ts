@@ -10,6 +10,7 @@ import statisticsLevels from './levels/statisticsLevels.json';
 import areasCircleLevels from './levels/areasCircleLevels.json';
 import realNumbersLevels from './levels/realNumbersLevels.json';
 import polynomialLevels from './levels/polynomialLevels.json';
+import linearEquationsLevels from './levels/linearEquationsLevels.json';
 
 export interface LevelData {
   id: string;
@@ -33,7 +34,8 @@ const levels: LevelData[] = [
   ...(areasCircleLevels as LevelData[]),
   ...(statisticsLevels as LevelData[]),
   ...(realNumbersLevels as LevelData[]),
-  ...(polynomialLevels as LevelData[])
+  ...(polynomialLevels as LevelData[]),
+  ...(linearEquationsLevels as LevelData[])
 ];
 
 export default levels;

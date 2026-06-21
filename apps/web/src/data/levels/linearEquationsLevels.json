@@ -1,0 +1,272 @@
+[
+  {
+    "id": "lvl-le-01",
+    "world": 1,
+    "type": "plot_line",
+    "title": "Plot Your First Line",
+    "shape": "linear_equation",
+    "targetValue": 0,
+    "concept": "Plot a linear equation on the coordinate plane"
+  },
+  {
+    "id": "lvl-le-02",
+    "world": 1,
+    "type": "identify_pair",
+    "title": "Identify the Equation Pair",
+    "shape": "equation_pair",
+    "targetValue": 0,
+    "concept": "Identify a pair of linear equations in two variables"
+  },
+  {
+    "id": "lvl-le-03",
+    "world": 1,
+    "type": "standard_form",
+    "title": "Standard Form Converter",
+    "shape": "standard_form",
+    "targetValue": 0,
+    "concept": "Convert equations to standard form ax + by + c = 0"
+  },
+  {
+    "id": "lvl-le-04",
+    "world": 1,
+    "type": "find_solution_point",
+    "title": "Is This a Solution?",
+    "shape": "solution_check",
+    "targetValue": 0,
+    "concept": "Verify if a point satisfies both equations"
+  },
+  {
+    "id": "lvl-le-05",
+    "world": 1,
+    "type": "plot_both_lines",
+    "title": "Two Lines, One Grid",
+    "shape": "two_lines",
+    "targetValue": 0,
+    "concept": "Plot two linear equations on the same coordinate plane"
+  },
+  {
+    "id": "lvl-le-06",
+    "world": 1,
+    "type": "foundation_boss",
+    "title": "Equation Pair Commander",
+    "shape": "pair_analysis",
+    "targetValue": 0,
+    "concept": "Analyze a pair of linear equations completely"
+  },
+  {
+    "id": "lvl-le-07",
+    "world": 2,
+    "type": "find_intersection",
+    "title": "Intersection Finder",
+    "shape": "intersecting_lines",
+    "targetValue": 0,
+    "concept": "Find the intersection point of two lines graphically"
+  },
+  {
+    "id": "lvl-le-08",
+    "world": 2,
+    "type": "unique_solution",
+    "title": "Unique Solution Detector",
+    "shape": "unique_solution",
+    "targetValue": 0,
+    "concept": "Determine when a system has exactly one solution"
+  },
+  {
+    "id": "lvl-le-09",
+    "world": 2,
+    "type": "parallel_detect",
+    "title": "Parallel Line Detector",
+    "shape": "parallel_lines",
+    "targetValue": 0,
+    "concept": "Identify parallel lines (no solution / inconsistent)"
+  },
+  {
+    "id": "lvl-le-10",
+    "world": 2,
+    "type": "coincident_check",
+    "title": "Coincident Pair Identifier",
+    "shape": "coincident_lines",
+    "targetValue": 0,
+    "concept": "Identify coincident lines (infinitely many solutions)"
+  },
+  {
+    "id": "lvl-le-11",
+    "world": 2,
+    "type": "consistency_check",
+    "title": "Consistency Analyzer",
+    "shape": "consistency",
+    "targetValue": 0,
+    "concept": "Classify systems as consistent or inconsistent using ratios"
+  },
+  {
+    "id": "lvl-le-12",
+    "world": 2,
+    "type": "graphical_boss",
+    "title": "Graph Master Challenge",
+    "shape": "graph_master",
+    "targetValue": 0,
+    "concept": "Solve a system completely using the graphical method"
+  },
+  {
+    "id": "lvl-le-13",
+    "world": 3,
+    "type": "variable_isolate",
+    "title": "Variable Isolator",
+    "shape": "isolate",
+    "targetValue": 0,
+    "concept": "Express one variable in terms of the other"
+  },
+  {
+    "id": "lvl-le-14",
+    "world": 3,
+    "type": "substitution_solve",
+    "title": "Substitute & Solve",
+    "shape": "substitution",
+    "targetValue": 0,
+    "concept": "Solve by substituting one equation into another"
+  },
+  {
+    "id": "lvl-le-15",
+    "world": 3,
+    "type": "substitution_solve",
+    "title": "Substitution Pipeline",
+    "shape": "substitution",
+    "targetValue": 0,
+    "concept": "Solve a harder pair by substitution method"
+  },
+  {
+    "id": "lvl-le-16",
+    "world": 3,
+    "type": "substitution_solve",
+    "title": "Negative Coefficient Challenge",
+    "shape": "substitution",
+    "targetValue": 0,
+    "concept": "Handle negative coefficients in substitution"
+  },
+  {
+    "id": "lvl-le-17",
+    "world": 3,
+    "type": "substitution_solve",
+    "title": "Fractional Solutions",
+    "shape": "substitution",
+    "targetValue": 0,
+    "concept": "Solve systems with fractional solutions using substitution"
+  },
+  {
+    "id": "lvl-le-18",
+    "world": 3,
+    "type": "substitution_boss",
+    "title": "Substitution Master",
+    "shape": "substitution_boss",
+    "targetValue": 0,
+    "concept": "Master the substitution method with a complex pair"
+  },
+  {
+    "id": "lvl-le-19",
+    "world": 4,
+    "type": "coefficient_match",
+    "title": "Coefficient Matcher",
+    "shape": "elimination",
+    "targetValue": 0,
+    "concept": "Match coefficients by multiplying equations"
+  },
+  {
+    "id": "lvl-le-20",
+    "world": 4,
+    "type": "elimination_solve",
+    "title": "Add & Eliminate",
+    "shape": "elimination",
+    "targetValue": 0,
+    "concept": "Add equations to eliminate one variable"
+  },
+  {
+    "id": "lvl-le-21",
+    "world": 4,
+    "type": "elimination_solve",
+    "title": "Subtract & Eliminate",
+    "shape": "elimination",
+    "targetValue": 0,
+    "concept": "Subtract equations to eliminate one variable"
+  },
+  {
+    "id": "lvl-le-22",
+    "world": 4,
+    "type": "elimination_solve",
+    "title": "Double Multiply Elimination",
+    "shape": "elimination",
+    "targetValue": 0,
+    "concept": "Multiply both equations before eliminating"
+  },
+  {
+    "id": "lvl-le-23",
+    "world": 4,
+    "type": "elimination_solve",
+    "title": "Larger System Elimination",
+    "shape": "elimination",
+    "targetValue": 0,
+    "concept": "Solve a system with larger coefficients"
+  },
+  {
+    "id": "lvl-le-24",
+    "world": 4,
+    "type": "elimination_boss",
+    "title": "Elimination Engine Boss",
+    "shape": "elimination_boss",
+    "targetValue": 0,
+    "concept": "Master the elimination method"
+  },
+  {
+    "id": "lvl-le-25",
+    "world": 5,
+    "type": "cross_multiply",
+    "title": "Cross-Multiplication Formula",
+    "shape": "cross_multiply",
+    "targetValue": 0,
+    "concept": "Apply the cross-multiplication method"
+  },
+  {
+    "id": "lvl-le-26",
+    "world": 5,
+    "type": "word_problem",
+    "title": "Age Problem Solver",
+    "shape": "word_problem",
+    "targetValue": 0,
+    "concept": "Formulate and solve age-related word problems"
+  },
+  {
+    "id": "lvl-le-27",
+    "world": 5,
+    "type": "word_problem",
+    "title": "Speed & Distance Mission",
+    "shape": "word_problem",
+    "targetValue": 0,
+    "concept": "Solve speed-distance-time word problems"
+  },
+  {
+    "id": "lvl-le-28",
+    "world": 5,
+    "type": "word_problem",
+    "title": "Fraction Puzzle",
+    "shape": "word_problem",
+    "targetValue": 0,
+    "concept": "Solve number and fraction word problems"
+  },
+  {
+    "id": "lvl-le-29",
+    "world": 5,
+    "type": "word_problem",
+    "title": "Commerce & Currency",
+    "shape": "word_problem",
+    "targetValue": 0,
+    "concept": "Solve cost-price-quantity word problems"
+  },
+  {
+    "id": "lvl-le-30",
+    "world": 5,
+    "type": "final_boss",
+    "title": "Linear Equations Grandmaster",
+    "shape": "final_boss",
+    "targetValue": 0,
+    "concept": "Multi-method boss challenge combining all techniques"
+  }
+]

@@ -14,6 +14,11 @@ const CHAPTER_METADATA: Record<string, { title: string; syllabus: string; fullNa
     fullName: 'Chapter 2: Polynomials',
     syllabus: 'Syllabus: Polynomial basics, degrees, linear/quadratic/cubic polynomials, zeros of a polynomial, graphical intuition, and relationship between zeros and coefficients. Restore the Polynomial Factory to begin.'
   },
+  'ch-3': {
+    title: 'Pair of Linear Equations',
+    fullName: 'Chapter 3: Pair of Linear Equations in Two Variables',
+    syllabus: 'Syllabus: Graphical representation, consistency conditions (ratios), and algebraic methods: substitution, elimination, cross-multiplication, and word problems. Enter the Command Center to begin.'
+  },
   'ch-6': {
     title: 'Triangles',
     fullName: 'Chapter 6: Triangles',

@@ -10,6 +10,7 @@ import areasCircleSpecs from './specs/areasCircleSpecs';
 import statisticsSpecs from './specs/statisticsSpecs';
 import realNumbersSpecs from './specs/realNumbersSpecs';
 import polynomialSpecs from './specs/polynomialSpecs';
+import linearEquationsSpecs from './specs/linearEquationsSpecs';
 
 export interface BookPage {
   title: string;
@@ -152,6 +153,7 @@ const specs: Record<string, LevelSpecification> = {
   ...statisticsSpecs,
   ...realNumbersSpecs,
   ...polynomialSpecs,
+  ...linearEquationsSpecs,
 };
 
 export const getLevelSpec = (levelId: string, levelData?: any): LevelSpecification => {

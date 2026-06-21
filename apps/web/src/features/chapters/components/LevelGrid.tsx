@@ -20,6 +20,13 @@ export const CHAPTER_WORLD_NAMES: Record<string, Record<number, string>> = {
     4: "World 4: Graph Reactor Lab",
     5: "World 5: Coefficient Mastery Center"
   },
+  'ch-3': {
+    1: "World 1: Equation Foundations",
+    2: "World 2: Graphical Solutions",
+    3: "World 3: Substitution Lab",
+    4: "World 4: Elimination Engine",
+    5: "World 5: Real-World Command Center"
+  },
   'ch-6': {
     1: "World 1: Triangle Foundations",
     2: "World 2: Similar Triangles",
@@ -108,6 +115,9 @@ export const LevelGrid: React.FC<LevelGridProps> = ({ chapterId }) => {
     if (chapterId === 'ch-2') {
       return level.id.startsWith('lvl-poly-');
     }
+    if (chapterId === 'ch-3') {
+      return level.id.startsWith('lvl-le-');
+    }
     if (chapterId === 'ch-6') {
       return level.id.startsWith('lvl-tri-');
     }
@@ -136,7 +146,7 @@ export const LevelGrid: React.FC<LevelGridProps> = ({ chapterId }) => {
       return level.id.startsWith('lvl-stats-');
     }
     if (chapterId === 'ch-12') {
-      return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-') && !level.id.startsWith('lvl-tri-') && !level.id.startsWith('lvl-circle-') && !level.id.startsWith('lvl-areas-c-') && !level.id.startsWith('lvl-stats-') && !level.id.startsWith('lvl-rn-');
+      return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-') && !level.id.startsWith('lvl-tri-') && !level.id.startsWith('lvl-circle-') && !level.id.startsWith('lvl-areas-c-') && !level.id.startsWith('lvl-stats-') && !level.id.startsWith('lvl-rn-') && !level.id.startsWith('lvl-poly-') && !level.id.startsWith('lvl-le-');
     }
     return false;
   });

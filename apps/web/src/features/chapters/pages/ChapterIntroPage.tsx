@@ -40,6 +40,20 @@ const CHAPTER_INTROS: Record<string, ChapterIntro> = {
     examWeightage: '4 Marks (Standard & Basic)',
     difficulty: 'Intermediate'
   },
+  'ch-3': {
+    title: 'Pair of Linear Equations in Two Variables',
+    subtitle: 'Chapter 3 • Class X Mathematics',
+    description: 'Enter the Equation Command Center. Master pairs of linear equations through graphical solutions, substitution pipelines, and elimination engines. Find intersections, detect parallel lines, and solve real-world problems using multiple methods.',
+    objectives: [
+      'Plot and analyze pairs of linear equations graphically',
+      'Determine consistency and number of solutions using a1/a2, b1/b2, c1/c2',
+      'Solve systems using the Substitution Method',
+      'Solve systems using the Elimination Method',
+      'Translate real-world problems into pairs of equations and solve'
+    ],
+    examWeightage: '8 Marks (Standard & Basic)',
+    difficulty: 'Intermediate'
+  },
   'ch-14': {
     title: 'Probability',
     subtitle: 'Chapter 14 • Class X Mathematics',
