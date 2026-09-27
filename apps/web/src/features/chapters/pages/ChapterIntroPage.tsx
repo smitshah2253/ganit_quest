@@ -54,6 +54,20 @@ const CHAPTER_INTROS: Record<string, ChapterIntro> = {
     examWeightage: '8 Marks (Standard & Basic)',
     difficulty: 'Intermediate'
   },
+  'ch-4': {
+    title: 'Quadratic Equations',
+    subtitle: 'Chapter 4 • Class X Mathematics',
+    description: 'Enter the Parabola Launch Complex — a dynamic physics and trajectory simulation center. Master standard form, factoring through geometric area models, completing the square, and the quadratic formula to predict roots and projectile paths.',
+    objectives: [
+      'Identify quadratic equations in standard form (ax² + bx + c = 0)',
+      'Find roots using factorization and geometric area models',
+      'Solve equations by completing the square and vertex identification',
+      'Apply the Quadratic Formula and analyze discriminant (b² − 4ac)',
+      'Solve real-world projectile, speed, and area word problems'
+    ],
+    examWeightage: '6 Marks (Standard & Basic)',
+    difficulty: 'Intermediate'
+  },
   'ch-14': {
     title: 'Probability',
     subtitle: 'Chapter 14 • Class X Mathematics',

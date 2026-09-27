@@ -19,6 +19,11 @@ const CHAPTER_METADATA: Record<string, { title: string; syllabus: string; fullNa
     fullName: 'Chapter 3: Pair of Linear Equations in Two Variables',
     syllabus: 'Syllabus: Graphical representation, consistency conditions (ratios), and algebraic methods: substitution, elimination, cross-multiplication, and word problems. Enter the Command Center to begin.'
   },
+  'ch-4': {
+    title: 'Quadratic Equations',
+    fullName: 'Chapter 4: Quadratic Equations',
+    syllabus: 'Syllabus: Standard form ax² + bx + c = 0, solution of quadratic equations by factorization, completing the square, quadratic formula, and nature of roots. Select a level to begin.'
+  },
   'ch-6': {
     title: 'Triangles',
     fullName: 'Chapter 6: Triangles',

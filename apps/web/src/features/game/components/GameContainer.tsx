@@ -104,8 +104,8 @@ export const GameContainer: React.FC = () => {
     if (chapterId === 'ch-14') return level.id.startsWith('lvl-prob-');
     if (chapterId === 'ch-10') return level.id.startsWith('lvl-circle-');
     if (chapterId === 'ch-11') return level.id.startsWith('lvl-areas-c-');
-    if (chapterId === 'ch-13') return level.id.startsWith('lvl-stats-');
-    return !level.id.startsWith('lvl-cg-') && !level.id.startsWith('lvl-trig-') && !level.id.startsWith('lvl-apptrig-') && !level.id.startsWith('lvl-ap-') && !level.id.startsWith('lvl-prob-') && !level.id.startsWith('lvl-tri-') && !level.id.startsWith('lvl-circle-') && !level.id.startsWith('lvl-areas-c-') && !level.id.startsWith('lvl-stats-') && !level.id.startsWith('lvl-rn-') && !level.id.startsWith('lvl-poly-') && !level.id.startsWith('lvl-le-') && !level.id.startsWith('lvl-qe-');
+    if (chapterId === 'ch-12') return /^lvl-\d+$/.test(level.id);
+    return false;
   });
 
   useEffect(() => {
