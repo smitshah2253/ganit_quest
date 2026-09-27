@@ -10,14 +10,15 @@ dotenv.config();
 export const AppDataSource = new DataSource({
   type: 'mysql',
   host: process.env.DB_HOST || 'localhost',
-  port: 3306,
+  port: parseInt(process.env.DB_PORT || '3306', 10),
   username: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || 'root',
   database: process.env.DB_NAME || 'gamified_math',
-  synchronize: false, // Disable in production, use migrations instead
+  synchronize: process.env.DB_SYNCHRONIZE === 'true',
   logging: process.env.NODE_ENV === 'development',
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
   entities: [User, UserProgress, Subscription],
-  migrations: ['src/migrations/*.ts'],
+  migrations: [process.env.NODE_ENV === 'production' ? 'dist/migrations/*.js' : 'src/migrations/*.ts'],
   subscribers: [],
 });
 
